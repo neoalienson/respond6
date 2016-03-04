@@ -1,0 +1,10 @@
+<form class="app-form standalone" (submit)="forgot($event, email.value)">
+
+    <h2>Forgot Password</h2>
+
+    <label>Email</label>
+    <input type="text" name="email" #email required="required">
+
+    <button type="submit">Send Email</button>
+
+</form>

@@ -1,0 +1,13 @@
+<form class="app-form standalone" (submit)="reset($event, password.value, retype.value)">
+
+    <h2>Reset Password</h2>
+
+    <label>Password</label>
+    <input type="password" name="password" #password>
+
+    <label>Re-Type Password</label>
+    <input type="password" name="retype" #retype>
+
+    <button type="submit">Reset Password</button>
+
+</form>

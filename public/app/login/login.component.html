@@ -1,0 +1,17 @@
+<form class="app-form standalone" (submit)="login($event, email.value, password.value)">
+
+    <h2>Login</h2>
+
+    <label>Email</label>
+    <input type="text" name="email" #email>
+
+    <label>Password</label>
+    <input type="password" name="password" #password>
+
+    <button type="submit">Sign In</button>
+
+    <a (click)="forgot()">Forgot Password</a>
+
+    <!--<a [routerLink]="['Pages']">Pages</a> -->
+
+</form>
