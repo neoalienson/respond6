@@ -10,7 +10,7 @@
     <script src="node_modules/es6-shim/es6-shim.min.js"></script>
     <script src="node_modules/systemjs/dist/system-polyfills.js"></script>
     <script src="node_modules/angular2/es6/dev/src/testing/shims_for_IE.js"></script>
-    
+
     <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="node_modules/rxjs/bundles/Rx.js"></script>
@@ -28,7 +28,7 @@
         packages: {
           app: {
             format: 'register',
-            defaultExtension: 'js'          
+            defaultExtension: 'js'
           },
           'rxjs': {
             defaultExtension: 'js'
@@ -38,10 +38,11 @@
       System.import('app/main')
             .then(null, console.error.bind(console));
     </script>
-    
+
     <!-- css -->
+    <link rel="stylesheet" href="app/shared/resources/reset.css">
     <link rel="stylesheet" href="app/shared/resources/app.css">
-    
+
     <!-- font -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 
@@ -50,7 +51,7 @@
 
   <!-- 3. Display the application -->
   <body>
-    <respond-app>Loading...</respond-app>
+    <respond-app></respond-app>
   </body>
 
 </html>

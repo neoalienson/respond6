@@ -25,9 +25,9 @@ System.register(['angular2/core', 'angular2/http'], function(exports_1, context_
             UserService = (function () {
                 function UserService(http) {
                     this.http = http;
-                    this._loginUrl = 'api/user/login';
-                    this._forgotUrl = 'api/user/forgot';
-                    this._resetUrl = 'api/user/reset';
+                    this._loginUrl = 'api/users/login';
+                    this._forgotUrl = 'api/users/forgot';
+                    this._resetUrl = 'api/users/reset';
                 }
                 /**
                  * Login to the application

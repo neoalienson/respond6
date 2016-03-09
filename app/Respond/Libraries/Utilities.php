@@ -6,6 +6,124 @@ use \Firebase\JWT\JWT;
 
 class Utilities
 {
+    /**
+     * Build pages.json
+     *
+     * @param {string} $path the recipient's email address
+     * @return {Array} list of HTML fiels
+     */
+    public static function ListPages($dir, $userId, $friendlyId) {
+
+      // list files
+      $files = Utilities::ListFiles($dir, $friendlyId);
+
+      // setup array to return
+      $arr = array();
+
+      // setup timestamp as JS date
+      $timestamp = gmdate('D M d Y H:i:s O', time());
+
+      foreach($files as $file){
+
+        // defaults
+        $name = '';
+        $description = '';
+        $keywords = '';
+        $url = $file;
+
+        // set full file path
+        $file = app()->basePath().'/public/sites/'.$friendlyId.'/'.$file;
+
+        // open with phpQuery
+        \phpQuery::newDocumentFileHTML($file);
+
+        $name = pq('title')->html();
+        $description = pq('meta[name=description]')->attr('content');
+        $keywords = pq('meta[name=keywords]')->attr('content');
+
+        // push array
+        array_push($arr, array(
+                'Name' => $name,
+                'Description' => $description,
+                'Keywords' => $keywords,
+                'Url' => $url,
+                'LastModifiedBy' => $userId,
+                'LastModifiedDate' => $timestamp
+                ));
+
+      }
+
+      return $arr;
+
+    }
+
+    /**
+     * Returns all HTML files for a given path
+     *
+     * @param {string} $path the recipient's email address
+     * @return {Array} list of HTML fiels
+     */
+    public static function ListFiles($dir, $friendlyId) {
+
+	    $root = scandir($dir);
+
+	    if(!isset($result)) {
+  	    $result = array();
+	    }
+
+      foreach($root as $value)
+      {
+          if($value === '.' || $value === '..') {
+            continue;
+          }
+
+          if(is_file("$dir/$value")) {
+
+            $file = "$dir/$value";
+
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+            //echo $ext;
+            if($ext == 'html') {
+              $paths = explode('sites/'.$friendlyId.'/', "$dir/$value");
+
+              $restrict = array('components/', 'css/', 'data/', 'files/', 'js/', 'locales/', 'templates/', 'themes/');
+
+              $is_restricted = FALSE;
+
+              foreach($restrict as $item) {
+
+                // TODO: MAKE SURE THE FILE DOES NOT START WITH A RESTRICTED PATH
+                if(substr($paths[1], 0, strlen($item)) === $item) {
+                  $is_restricted = TRUE;
+                }
+
+              }
+
+              if($is_restricted === FALSE){
+                $result[]=$paths[1];
+              }
+
+
+            }
+            else {
+              continue;
+            }
+
+            continue;
+          }
+
+          foreach(Utilities::ListFiles("$dir/$value", $friendlyId) as $value)
+          {
+              $result[]=$value;
+          }
+
+      }
+
+      return $result;
+
+    }
+
 
     /**
      * Sends an email from a specified file
@@ -102,12 +220,13 @@ class Utilities
      * @param {string} $siteId the id of the site
      * @return void
      */
-    public static function CreateJWTToken($userId, $siteId){
+    public static function CreateJWTToken($userId, $siteId, $friendlyId){
 
 	    // create token
   		$token = array(
   		    'UserId' => $userId,
   		    'SiteId' => $siteId,
+  		    'FriendlyId' => $friendlyId,
   		    'Expires' => (strtotime('NOW') + (3*60*60)) // expires in an hour
   		);
 
@@ -126,9 +245,7 @@ class Utilities
      * @param {string} $siteId the id of the site
      * @return void
      */
-    public static function ValidateJWTToken(){
-
-		  $auth = isset($_SERVER['HTTP_X_AUTH']) ? $_SERVER['HTTP_X_AUTH'] : '';
+    public static function ValidateJWTToken($auth){
 
   		// locate token
   		if(strpos($auth, 'Bearer') !== false){
@@ -168,7 +285,26 @@ class Utilities
   			return NULL;
   		}
 
-
     }
+
+    /**
+     * Saves content to a file (creates the directory if needed)
+     *
+     * @param {string} $dir the directory
+     * @param {string} $filename the filename of the new file
+     * @param {string} $content the content of the new file
+     * @return void
+     */
+  	public static function SaveContent($dir, $filename, $content){
+  		$full = $dir.$filename;
+
+  		if(!file_exists($dir)){
+  			mkdir($dir, 0777, true);
+  		}
+
+  		$fp = @fopen($full, 'w'); // Generate a new cache file
+  		@fwrite($fp, $content); // save the contents of output buffer to the file
+  		@fclose($fp);
+  	}
 
 }

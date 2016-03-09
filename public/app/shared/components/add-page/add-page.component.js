@@ -1,0 +1,93 @@
+System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/page.service'], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
+    var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var __metadata = (this && this.__metadata) || function (k, v) {
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+    };
+    var core_1, router_1, angular2_jwt_1, page_service_1;
+    var AddPageComponent;
+    return {
+        setters:[
+            function (core_1_1) {
+                core_1 = core_1_1;
+            },
+            function (router_1_1) {
+                router_1 = router_1_1;
+            },
+            function (angular2_jwt_1_1) {
+                angular2_jwt_1 = angular2_jwt_1_1;
+            },
+            function (page_service_1_1) {
+                page_service_1 = page_service_1_1;
+            }],
+        execute: function() {
+            AddPageComponent = (function () {
+                function AddPageComponent(_pageService) {
+                    this._pageService = _pageService;
+                    this._visible = false;
+                    this.onCancel = new core_1.EventEmitter();
+                    this.onAdd = new core_1.EventEmitter();
+                }
+                Object.defineProperty(AddPageComponent.prototype, "visible", {
+                    get: function () { return this._visible; },
+                    set: function (visible) {
+                        this._visible = visible;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                /**
+                 * Init pages
+                 */
+                AddPageComponent.prototype.ngOnInit = function () { };
+                /**
+                 * Hides the add page modal
+                 */
+                AddPageComponent.prototype.hide = function () {
+                    this._visible = false;
+                    this.onCancel.emit(null);
+                };
+                /**
+                 * Adds a page
+                 */
+                AddPageComponent.prototype.addPage = function () {
+                    alert('[respond] add page');
+                    this._visible = false;
+                    this.onAdd.emit(null);
+                };
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Boolean), 
+                    __metadata('design:paramtypes', [Boolean])
+                ], AddPageComponent.prototype, "visible", null);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], AddPageComponent.prototype, "onCancel", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], AddPageComponent.prototype, "onAdd", void 0);
+                AddPageComponent = __decorate([
+                    core_1.Component({
+                        selector: 'respond-add-page',
+                        templateUrl: './app/shared/components/add-page/add-page.component.html',
+                        providers: [page_service_1.PageService]
+                    }),
+                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object])
+                ], AddPageComponent);
+                return AddPageComponent;
+                var _a;
+            }());
+            exports_1("AddPageComponent", AddPageComponent);
+        }
+    }
+});
+//# sourceMappingURL=add-page.component.js.map

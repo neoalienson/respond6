@@ -1,0 +1,22 @@
+<div class="app-modal" [class.visible]="visible === true">
+
+  <h2>Add Page</h2>
+
+  <label>Path</label>
+  <select id="hashedit-add-page-path" type="text"></select>
+
+  <label>URL</label>
+  <input id="hashedit-add-page-url" type="text" maxlength="128" placeholder="new-page">
+
+  <label>Title</label>
+  <input id="hashedit-add-page-title" type="text" maxlength="128">
+
+  <label>Description</label>
+  <input id="hashedit-add-page-desc" type="text" maxlength="128">
+
+  <div class="actions">
+    <a (click)="hide()">Cancel</a>
+    <a (click)="addPage()" class="primary">Add Page</a>
+  </div>
+
+</div>

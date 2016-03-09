@@ -16,7 +16,7 @@ export class LoginComponent {
     id;
     errorMessage;
 
-    constructor (private _userService: UserService, private _routeParams: RouteParams, private _router: Router,) {}
+    constructor (private _userService: UserService, private _routeParams: RouteParams, private _router: Router) {}
 
     ngOnInit() {
         this.id = this._routeParams.get('id');

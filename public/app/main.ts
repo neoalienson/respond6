@@ -7,11 +7,16 @@ import 'rxjs/add/operator/map';
 
 bootstrap(AppComponent, [
   HTTP_PROVIDERS,
+  provide(AuthConfig, {useValue: new AuthConfig({
+    headerName: 'X-AUTH'
+  })}),
   provide(AuthHttp, {
     useFactory: (http) => {
-      return new AuthHttp(new AuthConfig(), http);
+      return new AuthHttp(new AuthConfig({
+        headerName: 'X-AUTH'
+      }), http);
     },
     deps: [Http]
   }),
   AuthHttp
-])  
+])

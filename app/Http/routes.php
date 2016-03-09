@@ -32,6 +32,13 @@ $app->get('create', function () {
     return file_get_contents($public);
 });
 
+// the pages route should load the angular2 app
+$app->get('pages', function () {
+    $public = rtrim(app()->basePath('public/index.html'), '/');
+
+    return file_get_contents($public);
+});
+
 // the login/my-site route should load the angular2 app
 $app->get('login/{id}', function ($id) {
     $public = rtrim(app()->basePath('public/index.html'), '/');
@@ -53,20 +60,29 @@ $app->get('reset/{id}/{token}', function ($id) {
     return file_get_contents($public);
 });
 
-// test site
-$app->get('/api/site/test', 'SiteController@test');
+// handles editing
+$app->get('/edit', 'EditController@edit');
 
-// test auth
-$app->get('/api/site/auth/test', ['middleware' => 'jwtauth', 'SiteController@testAuth']);
+// checks auth status
+$app -> get('/api/auth', ['middleware' => 'jwtauth', 'uses'=> 'UserController@auth']);
+
+// test site
+$app->get('/api/sites/test', 'SiteController@test');
 
 // validate id
-$app->post('/api/site/validate/id', 'SiteController@validateId');
+$app->post('/api/sites/validate/id', 'SiteController@validateId');
 
 // login
-$app->post('/api/user/login', 'UserController@login');
+$app->post('/api/users/login', 'UserController@login');
 
 // forgot
-$app->post('/api/user/forgot', 'UserController@forgot');
+$app->post('/api/users/forgot', 'UserController@forgot');
 
 // reset
-$app->post('/api/user/reset', 'UserController@reset');
+$app->post('/api/users/reset', 'UserController@reset');
+
+// list pages
+$app -> get('/api/pages/list', ['middleware' => 'jwtauth', 'uses'=> 'PageController@listAll']);
+
+// save page
+$app -> post('/api/pages/save', ['middleware' => 'jwtauth', 'uses'=> 'PageController@save']);

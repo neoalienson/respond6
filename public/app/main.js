@@ -23,9 +23,14 @@ System.register(['angular2/platform/browser', 'angular2/core', 'angular2/http', 
         execute: function() {
             browser_1.bootstrap(app_component_1.AppComponent, [
                 http_1.HTTP_PROVIDERS,
+                core_1.provide(angular2_jwt_1.AuthConfig, { useValue: new angular2_jwt_1.AuthConfig({
+                        headerName: 'X-AUTH'
+                    }) }),
                 core_1.provide(angular2_jwt_1.AuthHttp, {
                     useFactory: function (http) {
-                        return new angular2_jwt_1.AuthHttp(new angular2_jwt_1.AuthConfig(), http);
+                        return new angular2_jwt_1.AuthHttp(new angular2_jwt_1.AuthConfig({
+                            headerName: 'X-AUTH'
+                        }), http);
                     },
                     deps: [http_1.Http]
                 }),

@@ -16,16 +16,20 @@ class JWTAuth
      */
     public function handle($request, Closure $next)
     {
-        $token = Utilities::ValidateJWTToken();
-        
-        // if token is NULL return 401
-        if($token == NULL) {
-            return response('Unauthorized.', 401);
+
+        $auth = $request->header('X-AUTH');
+        $token = NULL;
+
+        if($auth != NULL) {
+          $token = Utilities::ValidateJWTToken($auth);
         }
-    
-        // merge the userId and siteId into the request
-        $request.merge(array('userId' => $token->UserId, 'siteId' => $token->SiteId));
-    
+        else {
+          return response('Unauthorized.', 401);
+        }
+
+        // merge the userId, siteId and friendlyId into the request
+        $request->merge(array('userId' => $token->UserId, 'siteId' => $token->SiteId, 'friendlyId' => $token->FriendlyId));
+
         // continue
         return $next($request);
     }

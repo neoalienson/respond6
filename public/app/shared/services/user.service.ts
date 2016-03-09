@@ -7,9 +7,9 @@ import {Observable} from 'rxjs/Observable'
 export class UserService {
   constructor (private http: Http) {}
 
-  private _loginUrl = 'api/user/login';
-  private _forgotUrl = 'api/user/forgot';
-  private _resetUrl = 'api/user/reset';
+  private _loginUrl = 'api/users/login';
+  private _forgotUrl = 'api/users/forgot';
+  private _resetUrl = 'api/users/reset';
 
   /**
    * Login to the application
