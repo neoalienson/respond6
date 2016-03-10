@@ -1,5 +1,6 @@
 .hashedit-container {
   z-index: 5000px;
+  font-family: 'Open Sans', sans-serif;
 }
 
 [hashedit-sortable] {
@@ -212,7 +213,6 @@ body .hashedit-config label {
   line-height: 50px;
   color: #555;
   font-size: 11px;
-  text-transform: uppercase;
   border-right: 1px solid #ddd;
   padding: 0 10px;
   font-weight: 400;
@@ -323,7 +323,6 @@ body .hashedit-config a:hover,body .hashedit-config a:hover {
   padding: 0;
   color: #FFF;
   background-color: #345A6F;
-  text-transform: uppercase;
   box-shadow: 2px 2px 5px rgba(0,0,0,.1);
   z-index: 100005;
   visibility: hidden;
@@ -416,8 +415,7 @@ body .hashedit-config a:hover,body .hashedit-config a:hover {
 
 .hashedit-menu .hashedit-save svg,.hashedit-menu .hashedit-add svg {
   fill: currentColor;
-  width: 60%;
-  margin: 10px auto 0;
+  margin: 12px auto 0;
 }
 
 /* menu */
@@ -484,7 +482,7 @@ body .hashedit-modal {
   width: 400px;
   background-color: #fff;
   margin: 5px;
-  padding: 25px 25px 60px;
+  padding: 25px 25px 60px 25px;
   color: #888;
   border-bottom: 1px solid #DDD;
   overflow-x: auto;
@@ -511,19 +509,19 @@ body .hashedit-modal label {
   font-weight: 400;
   display: block;
   margin: 0;
-  padding: 0 0 5px;
-  text-transform: uppercase;
+  padding: 0;
   font-size: 13px;
 }
 
 body .hashedit-modal label a {
   float: right;
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
-body .hashedit-modal input,body .hashedit-modal select {
-  margin: 0 0 15px;
+body .hashedit-modal input, body .hashedit-modal select {
+  margin: 0 0 10px 0;
   padding: 10px;
   color: #555;
   box-sizing: border-box;
@@ -536,6 +534,7 @@ body .hashedit-modal input[type=submit] {
   padding: 15px 10px;
   text-transform: uppercase;
   border: 1px solid #ddd;
+  height: 35px;
 }
 
 body .hashedit-modal select {
@@ -546,8 +545,8 @@ body .hashedit-modal select {
   border: none;
   border-radius: 0;
   padding: 5px 5px 5px 15px;
-  margin: 0 0 15px;
-  height: 40px;
+  margin: 0 0 10px 0;
+  height: 35px;
   min-width: 50px;
   background-color: transparent;
   -webkit-appearance: none;
@@ -557,7 +556,7 @@ body .hashedit-modal select {
 }
 
 body .hashedit-modal h2 {
-  font-size: 25px;
+  font-size: 20px;
   color: #345A6F;
   margin: 0 0 25px;
   padding: 0;
@@ -588,8 +587,8 @@ body .hashedit-modal .actions a.primary {
   height: 500px;
 }
 
-#hashedit-link-settings.hashedit-card {
-  height: 550px;
+#hashedit-link-settings-modal.hashedit-card {
+  height: 600px;
 }
 
 .hashedit-card-front,.hashedit-card-back {

@@ -1,9 +1,16 @@
 # Respond CMS
 
+### Todos
+- When adding a component to the hashedit mirror, need to add the base html to the mirror (not all the generated html)
+- A [primary-content] attribute needs to be set at publish time (backport to Respond 5.x)
+- When a menu has render=publish set, we need to include an attribute (e.g. respond-menu) along with references to its original attributes
+
 
 ### Notes
+
+
 ##### Install dependency via NPM, copy to public using gulp
-npm install [dependencies]
+npm install
 gulp
 
 ##### Run the TypeScript compiler

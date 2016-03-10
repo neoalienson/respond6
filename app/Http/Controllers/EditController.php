@@ -75,7 +75,8 @@ class EditController extends Controller
               }
               
               // setup hashedit
-              $hashedit = '<script src="/hashedit/js/fetch.min.js"></script>'.
+              $hashedit = '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">'.
+                          '<script src="/hashedit/js/fetch.min.js"></script>'.
                           '<script src="/node_modules/dropzone/dist/min/dropzone.min.js"></script>'.
                           '<link type="text/css" href="/node_modules/dropzone/dist/min/dropzone.min.css" rel="stylesheet">'.
                           '<script src="/node_modules/sortablejs/Sortable.min.js"></script>'.
@@ -85,6 +86,81 @@ class EditController extends Controller
               // load the edit library
               $doc['body']->append($hashedit);
             
+              // get updated html
+              $contents = $doc->htmlOuter();
+            
+              return $contents;
+            
+            }
+            
+            
+          }
+          
+
+        }
+
+    }
+    
+    /**
+     * Retrieves a mirror for hte html
+     *
+     * @return Response
+     */
+    public function mirror(Request $request)
+    {
+
+        $q = $request->input('q');
+
+        if($q != NULL){
+        
+          $arr = explode('/', $q);
+          
+          if(sizeof($arr) > 0) {
+          
+            $site = $arr[0];
+          
+            // load page
+            $path = rtrim(app()->basePath('public/sites/'.$q), '/');
+            
+            if(file_exists($path)) {
+            
+              $html = file_get_contents($path);
+            
+              // open document
+              $doc = \phpQuery::newDocument($html);
+              
+              // setup references
+              $els = $doc['body *'];
+              $i = 1;
+              
+              // add references to each element
+              foreach($els as $el) {
+                pq($el)->attr('data-ref', $i);
+                $i++;
+              }
+              
+              // setup editable area
+              $editable = ['#content'];
+               
+              foreach($editable as $value){
+                $doc[$value]->attr('hashedit', '');
+                $doc[$value]->attr('hashedit-selector', $value);
+              }
+            
+              // remove any scripts that could mess up the DOM              
+              $els = $doc['script'];
+        
+              foreach($els as $el) {
+                pq($el)->remove();
+              }
+              
+              // remove any links that could mess up the dom            
+              $els = $doc['link'];
+        
+              foreach($els as $el) {
+                pq($el)->remove();
+              }
+        
               // get updated html
               $contents = $doc->htmlOuter();
             
