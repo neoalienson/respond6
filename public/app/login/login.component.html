@@ -1,6 +1,6 @@
-<form class="app-form standalone" (submit)="login($event, email.value, password.value)">
+<div class="logo"><img src="/app/shared/resources/respond-logo.png"></div>
 
-    <h2>Login</h2>
+<form class="app-form standalone" (submit)="login($event, email.value, password.value)">
 
     <label>Email</label>
     <input type="text" name="email" #email>
@@ -8,10 +8,10 @@
     <label>Password</label>
     <input type="password" name="password" #password>
 
-    <button type="submit">Sign In</button>
+    <button type="submit">Login</button>
 
-    <a (click)="forgot()">Forgot Password</a>
+    <a (click)="forgot()">Forgot Password?</a>
 
-    <!--<a [routerLink]="['Pages']">Pages</a> -->
+    <p>Respond 6 &mdash; made by Matthew Smith in Manchester, MO</p>
 
 </form>

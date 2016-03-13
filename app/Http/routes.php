@@ -87,5 +87,14 @@ $app->post('/api/users/reset', 'UserController@reset');
 // list pages
 $app -> get('/api/pages/list', ['middleware' => 'jwtauth', 'uses'=> 'PageController@listAll']);
 
+// add page
+$app -> post('/api/pages/add', ['middleware' => 'jwtauth', 'uses'=> 'PageController@add']);
+
+// list routes
+$app -> get('/api/routes/list', ['middleware' => 'jwtauth', 'uses'=> 'PageController@listRoutes']);
+
 // save page
 $app -> post('/api/pages/save', ['middleware' => 'jwtauth', 'uses'=> 'PageController@save']);
+
+// add page
+$app -> post('/api/pages/add', ['middleware' => 'jwtauth', 'uses'=> 'PageController@add']);

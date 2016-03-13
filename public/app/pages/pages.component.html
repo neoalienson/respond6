@@ -1,6 +1,6 @@
 <menu class="app-menu">
 
-    <button class="app-more"><svg viewBox="0 0 24 24" width="24" height="24" preserveAspectRatio="xMidYMid meet"><g><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></g></svg></button>
+    <button class="app-more" (click)="toggleDrawer()"><svg viewBox="0 0 24 24" width="24" height="24" preserveAspectRatio="xMidYMid meet"><g><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></g></svg></button>
 
     <h1>Pages</h1>
 
@@ -11,7 +11,7 @@
 <div id="pages-list" class="app-list">
   <div class="app-list-item" *ngFor="#page of pages" (click)="setActive(page)" [class.selected]="page === selectedPage">
     <h2><span class="primary">{{ page.Name }}</span><span class="secondary">{{ page.LastModifiedDate }}</span></h2>
-    <small>{{ page.Url }}</small>
+    <small>/{{ page.Url }}</small>
     <p>{{ page.Description }}</p>
     <div class="app-list-actions">
         <a (click)="showRemove(page)">Remove</a>
@@ -21,4 +21,6 @@
   </div>
 </div>
 
-<respond-add-page [visible]="showAddPage" (onCancel)="reset($event)" (onAdd)="list($event)"></respond-add-page>
+<respond-add-page [visible]="addPageVisible" (onCancel)="reset($event)" (onAdd)="list($event)"></respond-add-page>
+
+<respond-drawer [visible]="drawerVisible" (onHide)="reset($event)"></respond-drawer>

@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/page.service'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/page.service', '/app/shared/services/route.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, angular2_jwt_1, page_service_1;
+    var core_1, router_1, angular2_jwt_1, page_service_1, route_service_1;
     var AddPageComponent;
     return {
         setters:[
@@ -25,11 +25,15 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
             },
             function (page_service_1_1) {
                 page_service_1 = page_service_1_1;
+            },
+            function (route_service_1_1) {
+                route_service_1 = route_service_1_1;
             }],
         execute: function() {
             AddPageComponent = (function () {
-                function AddPageComponent(_pageService) {
+                function AddPageComponent(_pageService, _routeService) {
                     this._pageService = _pageService;
+                    this._routeService = _routeService;
                     this._visible = false;
                     this.onCancel = new core_1.EventEmitter();
                     this.onAdd = new core_1.EventEmitter();
@@ -37,7 +41,15 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 Object.defineProperty(AddPageComponent.prototype, "visible", {
                     get: function () { return this._visible; },
                     set: function (visible) {
+                        // set visible
                         this._visible = visible;
+                        // reset model
+                        this.model = {
+                            path: '/',
+                            url: '',
+                            title: '',
+                            description: ''
+                        };
                     },
                     enumerable: true,
                     configurable: true
@@ -45,7 +57,11 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 /**
                  * Init pages
                  */
-                AddPageComponent.prototype.ngOnInit = function () { };
+                AddPageComponent.prototype.ngOnInit = function () {
+                    var _this = this;
+                    this._routeService.list()
+                        .subscribe(function (data) { _this.routes = data; }, function (error) { return _this.errorMessage = error; });
+                };
                 /**
                  * Hides the add page modal
                  */
@@ -54,10 +70,23 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     this.onCancel.emit(null);
                 };
                 /**
-                 * Adds a page
+                 * Submits the form
                  */
-                AddPageComponent.prototype.addPage = function () {
-                    alert('[respond] add page');
+                AddPageComponent.prototype.submit = function () {
+                    var _this = this;
+                    // set full path
+                    var fullUrl = this.model.path + '/' + this.model.url;
+                    if (this.model.path == '/') {
+                        fullUrl = '/' + this.model.url;
+                    }
+                    this._pageService.add(fullUrl, this.model.title, this.model.description)
+                        .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
+                };
+                /**
+                 * Handles a successful add
+                 */
+                AddPageComponent.prototype.success = function () {
+                    alert('success');
                     this._visible = false;
                     this.onAdd.emit(null);
                 };
@@ -78,13 +107,13 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Component({
                         selector: 'respond-add-page',
                         templateUrl: './app/shared/components/add-page/add-page.component.html',
-                        providers: [page_service_1.PageService]
+                        providers: [page_service_1.PageService, route_service_1.RouteService]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object, (typeof (_b = typeof route_service_1.RouteService !== 'undefined' && route_service_1.RouteService) === 'function' && _b) || Object])
                 ], AddPageComponent);
                 return AddPageComponent;
-                var _a;
+                var _a, _b;
             }());
             exports_1("AddPageComponent", AddPageComponent);
         }

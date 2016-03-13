@@ -20,6 +20,7 @@
     "angular2-jwt": "~0.1.7",
     "lodash": "~4.5.1",
     "hashedit": "*",
+    "respond-components": "*",
     "dropzone": "4.3.0",
     "sortablejs": "1.4.2"
   },

@@ -42,6 +42,17 @@ a, a:visited {
   box-sizing: border-box;
 }
 
+/* logo */
+body .logo {
+  width: 50px;
+  margin: 50px auto 0 auto;
+  padding: 0;
+}
+
+body .logo img {
+  width: 50px;
+}
+
 /* .app-list */
 body .app-list {
   margin: 0;
@@ -165,25 +176,25 @@ body .app-list {
   overflow-x: auto;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, .1);
   transition: all 0.2s ease;
+  font-size: 13px;
 }
 
-  .app-drawer[visible] {
+  .app-drawer[visible], .app-drawer.visible {
     left: 0;
   }
 
   .app-drawer a {
     text-decoration: none;
     cursor: pointer;
-    text-transform: uppercase;
     color: #00ADE3;
-    padding: 0 10px;
+    padding: 0 15px;
     display: block;
 
   }
 
   .app-drawer ul {
     margin: 0;
-    padding: 0;
+    padding: 0 0 10px 0;
     border-bottom: 1px solid #ddd;
   }
 
@@ -202,6 +213,7 @@ body .app-list {
     height: 40px;
     line-height: 40px;
     color: #aaa;
+    padding: 0 5px;
     text-transform: uppercase;
     border-top: 1px solid #ddd;
   }
@@ -219,13 +231,6 @@ body .app-list {
 
   .app-drawer li:hover, .app-element-drawer li:hover {
     background-color: #f8f8f8;
-  }
-
-  .app-drawer svg {
-    fill: currentColor;
-    height: 20px;
-    display: inline-block;
-    margin: 0 15px -4px 15px;
   }
 
 /* app-toast */
@@ -317,6 +322,7 @@ body .app-modal {
     color: #555;
     box-sizing: border-box;
     width: 100%;
+    font-size: 14px;
   }
 
   body .app-modal input[type=submit] {
@@ -506,10 +512,16 @@ body .app-form.standalone {
   margin: 100px auto 5px auto;
   padding: 25px 25px 25px 25px;
   color: #888;
-  border-bottom: 1px solid #DDD;
   overflow-x: auto;
-  border: 1px solid #ddd;
 }
+
+  body .app-form.standalone p{
+    text-align: center;
+    color: #aaa;
+    margin-top: 100px;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
 
   body .app-form h2 {
     margin: 0 0 50px 0;
@@ -552,6 +564,8 @@ body .app-form.standalone {
     padding: 15px 10px;
     text-align: center;
     cursor: pointer;
+    text-transform: uppercase;
+    font-size: 13px;
   }
 
   body .app-form select {
@@ -762,6 +776,7 @@ body .app-form.standalone {
   color: #fff;
   z-index: 2;
   background-color: #00ADE3;
+  cursor: pointer;
 }
 
 .app-menu .app-more:hover {

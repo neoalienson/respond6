@@ -29,7 +29,14 @@ class Utilities
         $name = '';
         $description = '';
         $keywords = '';
+        $layout = 'content';
+        $stylesheet = 'content';
         $url = $file;
+
+        if($url == 'index.html') {
+          $layout = 'home';
+          $stylesheet = 'home';
+        }
 
         // set full file path
         $file = app()->basePath().'/public/sites/'.$friendlyId.'/'.$file;
@@ -47,6 +54,8 @@ class Utilities
                 'Description' => $description,
                 'Keywords' => $keywords,
                 'Url' => $url,
+                'Layout' => $layout,
+                'Stylesheet' => $stylesheet,
                 'LastModifiedBy' => $userId,
                 'LastModifiedDate' => $timestamp
                 ));
@@ -73,7 +82,7 @@ class Utilities
 
       foreach($root as $value)
       {
-          if($value === '.' || $value === '..') {
+          if($value === '.' || $value === '..' || $value === '.htaccess') {
             continue;
           }
 
@@ -117,6 +126,58 @@ class Utilities
           {
               $result[]=$value;
           }
+
+      }
+
+      return $result;
+
+    }
+
+
+    /**
+     * Returns all routes
+     *
+     * @param {string} $path the recipient's email address
+     * @return {Array} list of HTML fiels
+     */
+    public static function ListRoutes($dir, $friendlyId) {
+
+      $result = array();
+
+      $restrict = array('components', 'css', 'data', 'files', 'js', 'locales', 'templates', 'themes');
+
+      $cdir = scandir($dir);
+
+      foreach ($cdir as $key => $value) {
+
+        if (!in_array($value, array(".",".."))) {
+
+           if (is_dir("$dir/$value")) {
+
+              $paths = explode('sites/'.$friendlyId.'/', "$dir/$value");
+
+              $is_restricted = FALSE;
+
+              foreach($restrict as $item) {
+
+                // TODO: MAKE SURE THE FILE DOES NOT START WITH A RESTRICTED PATH
+                if(substr($paths[1], 0, strlen($item)) === $item) {
+                  $is_restricted = TRUE;
+                }
+
+              }
+
+              if($is_restricted === FALSE){
+
+                $arr = Utilities::ListRoutes("$dir/$value", $friendlyId);
+
+                $result[] = '/'.$paths[1];
+                $result = array_merge($result, $arr);
+
+              }
+           }
+
+        }
 
       }
 

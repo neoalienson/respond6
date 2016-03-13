@@ -9,16 +9,30 @@ export class PageService {
   constructor (private http: Http, private authHttp: AuthHttp, private authConfig: AuthConfig) {}
 
   private _listUrl = 'api/pages/list';
+  private _addUrl = 'api/pages/add';
 
   /**
-   * Lists pages in the application
+   * Lists pages
    *
    */
   list () {
-
-    // LOOK AT BUG HERE: https://github.com/auth0/angular2-jwt/issues/28
-
     return this.authHttp.get(this._listUrl).map((res:Response) => res.json());
+  }
+
+  /**
+   * Adds a page
+   *
+   * @param {string} id The site id
+   * @param {string} email The user's login email
+   * @return {Observable}
+   */
+  add (url: string, title: string, description: string) {
+
+    let body = JSON.stringify({ url, title, description });
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.authHttp.post(this._addUrl, body, options);
 
   }
 

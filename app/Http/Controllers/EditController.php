@@ -74,14 +74,30 @@ class EditController extends Controller
                 $i++;
               }
 
-              // setup hashedit
-              $hashedit = '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">'.
-                          '<script src="/hashedit/js/fetch.min.js"></script>'.
-                          '<script src="/node_modules/dropzone/dist/min/dropzone.min.js"></script>'.
-                          '<link type="text/css" href="/node_modules/dropzone/dist/min/dropzone.min.css" rel="stylesheet">'.
-                          '<script src="/node_modules/sortablejs/Sortable.min.js"></script>'.
-                          '<script src="/dev/hashedit/js/hashedit.js"></script>'.
-                          '<script>hashedit.setup();</script>';
+              if(env('APP_ENV') == 'development') {
+
+                // hashedit development stack
+                $hashedit = '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">'.
+                            '<script src="/dev/hashedit/js/fetch.min.js"></script>'.
+                            '<script src="/node_modules/dropzone/dist/min/dropzone.min.js"></script>'.
+                            '<link type="text/css" href="/node_modules/dropzone/dist/min/dropzone.min.css" rel="stylesheet">'.
+                            '<script src="/node_modules/sortablejs/Sortable.min.js"></script>'.
+                            '<script src="/dev/hashedit/js/hashedit.js"></script>'.
+                            '<script>hashedit.setup();</script>';
+
+              }
+              else {
+
+                // hashedit production stack
+                $hashedit = '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">'.
+                            '<script src="/node_modules/hashedit/js/fetch.min.js"></script>'.
+                            '<script src="/node_modules/dropzone/dist/min/dropzone.min.js"></script>'.
+                            '<link type="text/css" href="/node_modules/dropzone/dist/min/dropzone.min.css" rel="stylesheet">'.
+                            '<script src="/node_modules/sortablejs/Sortable.min.js"></script>'.
+                            '<script src="/node_modules/hashedit/js/hashedit.js"></script>'.
+                            '<script>hashedit.setup();</script>';
+
+              }
 
               // load the edit library
               $doc['body']->append($hashedit);

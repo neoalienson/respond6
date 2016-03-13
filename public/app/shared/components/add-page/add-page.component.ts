@@ -2,22 +2,45 @@ import {Component, EventEmitter, Input, Output} from 'angular2/core';
 import {CanActivate} from 'angular2/router'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {PageService} from '/app/shared/services/page.service'
+import {RouteService} from '/app/shared/services/route.service'
 
 @Component({
     selector: 'respond-add-page',
     templateUrl: './app/shared/components/add-page/add-page.component.html',
-    providers: [PageService]
+    providers: [PageService, RouteService]
 })
 
 @CanActivate(() => tokenNotExpired())
 
 export class AddPageComponent {
 
+  routes;
+  errorMessage;
+
+  // model to store
+  model: {
+    path: '/',
+    url: '',
+    title: '',
+    description: ''
+  };
+
   _visible: boolean = false;
 
   @Input()
   set visible(visible: boolean){
+
+    // set visible
     this._visible = visible;
+
+    // reset model
+    this.model = {
+      path: '/',
+      url: '',
+      title: '',
+      description: ''
+    };
+
   }
 
   get visible() { return this._visible; }
@@ -25,12 +48,20 @@ export class AddPageComponent {
   @Output() onCancel = new EventEmitter<any>();
   @Output() onAdd = new EventEmitter<any>();
 
-  constructor (private _pageService: PageService) {}
+  constructor (private _pageService: PageService, private _routeService: RouteService) {}
 
   /**
    * Init pages
    */
-  ngOnInit() { }
+  ngOnInit() {
+
+    this._routeService.list()
+                     .subscribe(
+                       data => { this.routes = data; },
+                       error =>  this.errorMessage = <any>error
+                      );
+
+  }
 
   /**
    * Hides the add page modal
@@ -41,12 +72,35 @@ export class AddPageComponent {
   }
 
   /**
-   * Adds a page
+   * Submits the form
    */
-  addPage() {
-    alert('[respond] add page');
+  submit() {
+
+    // set full path
+    var fullUrl = this.model.path + '/' + this.model.url;
+
+    if(this.model.path == '/') {
+      fullUrl = '/' + this.model.url;
+    }
+
+    this._pageService.add(fullUrl, this.model.title, this.model.description)
+                     .subscribe(
+                       data => { this.success(); },
+                       error =>  this.errorMessage = <any>error
+                      );
+
+  }
+
+  /**
+   * Handles a successful add
+   */
+  success() {
+
+    alert('success');
+
     this._visible = false;
     this.onAdd.emit(null);
+
   }
 
 

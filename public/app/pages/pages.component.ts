@@ -3,12 +3,13 @@ import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
 import {PageService} from '/app/shared/services/page.service'
 import {AddPageComponent} from '/app/shared/components/add-page/add-page.component';
+import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 
 @Component({
     selector: 'respond-pages',
     templateUrl: './app/pages/pages.component.html',
     providers: [PageService],
-    directives: [AddPageComponent]
+    directives: [AddPageComponent, DrawerComponent]
 })
 
 @CanActivate(() => tokenNotExpired())
@@ -28,7 +29,8 @@ export class PagesComponent {
    */
   ngOnInit() {
 
-    this.showAddPage = false;
+    this.addPageVisible = false;
+    this.drawerVisible = false;
 
     this.list();
 
@@ -50,7 +52,8 @@ export class PagesComponent {
    * Resets an modal booleans
    */
   reset() {
-    this.showAddPage = false;
+    this.addPageVisible = false;
+    this.drawerVisible = false;
   }
 
   /**
@@ -59,14 +62,22 @@ export class PagesComponent {
    * @param {Page} page
    */
   setActive(page) {
+    this.reset();
     this.selectedPage = page;
+  }
+  
+  /**
+   * Shows the drawer
+   */
+  toggleDrawer() {
+    this.drawerVisible = !this.drawerVisible;
   }
 
   /**
    * Shows the add dialog
    */
   showAdd() {
-    this.showAddPage = true;
+    this.addPageVisible = true;
   }
 
   /**

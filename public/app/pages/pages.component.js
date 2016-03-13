@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/page.service', '/app/shared/components/add-page/add-page.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/page.service', '/app/shared/components/add-page/add-page.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, page_service_1, add_page_component_1;
+    var core_1, angular2_jwt_1, router_1, page_service_1, add_page_component_1, drawer_component_1;
     var PagesComponent;
     return {
         setters:[
@@ -28,6 +28,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             },
             function (add_page_component_1_1) {
                 add_page_component_1 = add_page_component_1_1;
+            },
+            function (drawer_component_1_1) {
+                drawer_component_1 = drawer_component_1_1;
             }],
         execute: function() {
             PagesComponent = (function () {
@@ -39,7 +42,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  *
                  */
                 PagesComponent.prototype.ngOnInit = function () {
-                    this.showAddPage = false;
+                    this.addPageVisible = false;
+                    this.drawerVisible = false;
                     this.list();
                 };
                 /**
@@ -54,7 +58,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * Resets an modal booleans
                  */
                 PagesComponent.prototype.reset = function () {
-                    this.showAddPage = false;
+                    this.addPageVisible = false;
+                    this.drawerVisible = false;
                 };
                 /**
                  * Sets the list item to active
@@ -62,13 +67,20 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * @param {Page} page
                  */
                 PagesComponent.prototype.setActive = function (page) {
+                    this.reset();
                     this.selectedPage = page;
+                };
+                /**
+                 * Shows the drawer
+                 */
+                PagesComponent.prototype.toggleDrawer = function () {
+                    this.drawerVisible = !this.drawerVisible;
                 };
                 /**
                  * Shows the add dialog
                  */
                 PagesComponent.prototype.showAdd = function () {
-                    this.showAddPage = true;
+                    this.addPageVisible = true;
                 };
                 /**
                  * Shows the remove dialog
@@ -95,7 +107,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         selector: 'respond-pages',
                         templateUrl: './app/pages/pages.component.html',
                         providers: [page_service_1.PageService],
-                        directives: [add_page_component_1.AddPageComponent]
+                        directives: [add_page_component_1.AddPageComponent, drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object])

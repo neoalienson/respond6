@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, angular2_jwt_1;
+    var core_1, http_1, angular2_jwt_1, http_2;
     var PageService;
     return {
         setters:[
@@ -19,6 +19,7 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
             },
             function (http_1_1) {
                 http_1 = http_1_1;
+                http_2 = http_1_1;
             },
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
@@ -30,14 +31,27 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
                     this.authHttp = authHttp;
                     this.authConfig = authConfig;
                     this._listUrl = 'api/pages/list';
+                    this._addUrl = 'api/pages/add';
                 }
                 /**
-                 * Lists pages in the application
+                 * Lists pages
                  *
                  */
                 PageService.prototype.list = function () {
-                    // LOOK AT BUG HERE: https://github.com/auth0/angular2-jwt/issues/28
                     return this.authHttp.get(this._listUrl).map(function (res) { return res.json(); });
+                };
+                /**
+                 * Adds a page
+                 *
+                 * @param {string} id The site id
+                 * @param {string} email The user's login email
+                 * @return {Observable}
+                 */
+                PageService.prototype.add = function (url, title, description) {
+                    var body = JSON.stringify({ url: url, title: title, description: description });
+                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
+                    var options = new http_2.RequestOptions({ headers: headers });
+                    return this.authHttp.post(this._addUrl, body, options);
                 };
                 PageService = __decorate([
                     core_1.Injectable(), 

@@ -43,3 +43,7 @@ https://github.com/mgechev/angular2-style-guide#reusable-libraries
 
 ##### Angular2 Http
 http://www.metaltoad.com/blog/angular-2-http-observables
+
+
+##### PHP Formatter
+http://beta.phpformatter.com/
