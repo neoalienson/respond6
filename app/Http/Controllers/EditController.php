@@ -41,7 +41,7 @@ class EditController extends Controller
 
               // get defaults
               $sortable = '.col, .column';
-              $editable = ['#content'];
+              $editable = ['[role="main"]'];
 
               // TODO try to load public/sites/site-name/hashedit-config.json
 
@@ -156,7 +156,7 @@ class EditController extends Controller
               }
 
               // setup editable area
-              $editable = ['#content'];
+              $editable = ['[role="main"]'];
 
               foreach($editable as $value){
                 $doc[$value]->attr('hashedit', '');

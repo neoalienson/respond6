@@ -10,7 +10,7 @@
 
 <div id="pages-list" class="app-list">
   <div class="app-list-item" *ngFor="#page of pages" (click)="setActive(page)" [class.selected]="page === selectedPage">
-    <h2><span class="primary">{{ page.Name }}</span><span class="secondary">{{ page.LastModifiedDate }}</span></h2>
+    <h2><span class="primary">{{ page.Title }}</span><span class="secondary">{{ page.LastModifiedDate }}</span></h2>
     <small>/{{ page.Url }}</small>
     <p>{{ page.Description }}</p>
     <div class="app-list-actions">
@@ -22,5 +22,9 @@
 </div>
 
 <respond-add-page [visible]="addPageVisible" (onCancel)="reset($event)" (onAdd)="list($event)"></respond-add-page>
+
+<respond-page-settings [visible]="pageSettingsVisible" [page]="page" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-page-settings>
+
+<respond-remove-page [visible]="removePageVisible" [page]="page" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-remove-page>
 
 <respond-drawer [visible]="drawerVisible" (onHide)="reset($event)"></respond-drawer>

@@ -20,6 +20,7 @@ export class LoginComponent {
 
     ngOnInit() {
         this.id = this._routeParams.get('id');
+        localStorage.setItem('respond.siteId', this.id);
     }
 
     /**

@@ -28,10 +28,11 @@ class JWTAuth
         }
 
         // merge the userId, siteId and friendlyId into the request
-        $request->merge(array('userId' => $token->UserId, 'siteId' => $token->SiteId, 'friendlyId' => $token->FriendlyId));
+        $request->merge(array('email' => $token->Email, 'siteId' => $token->SiteId));
 
         // continue
         return $next($request);
+        
     }
 }
 

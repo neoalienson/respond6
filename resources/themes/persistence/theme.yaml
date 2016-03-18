@@ -1,0 +1,57 @@
+Name: persistence
+Description: "A professional theme from Respond"
+Pages: 
+  - 
+    Description: "This is the footer used across pages for your site"
+    Layout: content
+    Source: pages/footer.html
+    Title: Footer
+    Url: component/footer
+  - 
+    Description: "Welcome to your new homepage created with Respond CMS"
+    Layout: home
+    Source: pages/home.html
+    Title: Home
+    Url: index
+  - 
+    Description: "You have successfully completed your purchase"
+    Layout: content
+    Source: pages/thank-you.html
+    Title: "Thank you"
+    Url: thank-you
+  - 
+    Description: "You have successfully cancelled your purchase"
+    Layout: content
+    Source: pages/cancel.html
+    Title: "Purchase Cancelled"
+    Url: cancel
+  - 
+    Description: "Your blog contains a list of your blog posts"
+    Layout: content
+    Source: pages/blog.html
+    Title: Blog
+    Url: blog
+  - 
+    Description: "A sample blog post to get you started"
+    Layout: content
+    Source: pages/post.html
+    Title: "Sample Blog Post"
+    Url: post/sample-blog-post
+  - 
+    Description: "A sample about page to introduce yourself or your business"
+    Layout: content
+    Source: pages/about.html
+    Title: About
+    Url: page/about
+  - 
+    Description: "A contact us form is a great way for others to get in touch"
+    Layout: content
+    Source: pages/contact.html
+    Title: Contact
+    Url: page/contact
+  - 
+    Description: "A simple error page that is displayed when content cannot be found"
+    Layout: content
+    Source: pages/error.html
+    Title: "Page Not Found"
+    Url: page/error

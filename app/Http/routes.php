@@ -75,6 +75,9 @@ $app->get('/api/sites/test', 'SiteController@test');
 // validate id
 $app->post('/api/sites/validate/id', 'SiteController@validateId');
 
+// create
+$app->post('/api/sites/create', 'SiteController@create');
+
 // login
 $app->post('/api/users/login', 'UserController@login');
 
@@ -98,3 +101,6 @@ $app -> post('/api/pages/save', ['middleware' => 'jwtauth', 'uses'=> 'PageContro
 
 // add page
 $app -> post('/api/pages/add', ['middleware' => 'jwtauth', 'uses'=> 'PageController@add']);
+
+// update page settings
+$app -> post('/api/pages/settings', ['middleware' => 'jwtauth', 'uses'=> 'PageController@settings']);

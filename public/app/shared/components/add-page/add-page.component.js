@@ -86,7 +86,6 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                  * Handles a successful add
                  */
                 AddPageComponent.prototype.success = function () {
-                    alert('success');
                     this._visible = false;
                     this.onAdd.emit(null);
                 };

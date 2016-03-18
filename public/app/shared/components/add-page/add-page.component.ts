@@ -95,9 +95,7 @@ export class AddPageComponent {
    * Handles a successful add
    */
   success() {
-
-    alert('success');
-
+  
     this._visible = false;
     this.onAdd.emit(null);
 

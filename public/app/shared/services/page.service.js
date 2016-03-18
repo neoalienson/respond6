@@ -32,6 +32,8 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
                     this.authConfig = authConfig;
                     this._listUrl = 'api/pages/list';
                     this._addUrl = 'api/pages/add';
+                    this._updateSettingsUrl = 'api/pages/settings';
+                    this._removePageUrl = 'api/pages/remove';
                 }
                 /**
                  * Lists pages
@@ -43,8 +45,9 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
                 /**
                  * Adds a page
                  *
-                 * @param {string} id The site id
-                 * @param {string} email The user's login email
+                 * @param {string} url
+                 * @param {string} title
+                 * @param {string} description
                  * @return {Observable}
                  */
                 PageService.prototype.add = function (url, title, description) {
@@ -52,6 +55,36 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
                     var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
                     var options = new http_2.RequestOptions({ headers: headers });
                     return this.authHttp.post(this._addUrl, body, options);
+                };
+                /**
+                 * Updates the settings for a page
+                 *
+                 * @param {string} url
+                 * @param {string} title
+                 * @param {string} description
+                 * @param {string} keywords
+                 * @param {string} callout
+                 * @param {string} layout
+                 * @param {string} language
+                 * @return {Observable}
+                 */
+                PageService.prototype.updateSettings = function (url, title, description, keywords, callout, layout, language) {
+                    var body = JSON.stringify({ url: url, title: title, description: description, keywords: keywords, callout: callout, layout: layout, language: language });
+                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
+                    var options = new http_2.RequestOptions({ headers: headers });
+                    return this.authHttp.post(this._updateSettingsUrl, body, options);
+                };
+                /**
+                 * Removes the page
+                 *
+                 * @param {string} url
+                 * @return {Observable}
+                 */
+                PageService.prototype.remove = function (url) {
+                    var body = JSON.stringify({ url: url });
+                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
+                    var options = new http_2.RequestOptions({ headers: headers });
+                    return this.authHttp.post(this._removePageUrl, body, options);
                 };
                 PageService = __decorate([
                     core_1.Injectable(), 

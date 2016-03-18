@@ -7,7 +7,7 @@ body {
   padding: 49px 0 0 0;
 }
 
-body h1, body h2, body h3, body h4, body h5, body label, body input, body li, body button {
+body h1, body h2, body h3, body h4, body h5, body label, body input, body li, body button, body a{
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -350,7 +350,7 @@ body .app-modal {
   }
 
   body .app-modal h2 {
-    color: #345A6F;
+    color: #888;
     margin: 0 0 25px 0;
     padding: 0;
   }
@@ -365,6 +365,15 @@ body .app-modal {
     font-size: 14px;
   }
 
+  body .app-modal .actions button {
+    color: #00ADE3;
+    background: none;
+    border: none;
+    margin-left: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
   body .app-modal .actions a {
     margin-left: 15px;
     text-transform: uppercase;
@@ -373,6 +382,30 @@ body .app-modal {
 
   body .app-modal .actions a.primary {
     font-weight: bold;
+  }
+
+  body .app-modal p {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  body .app-modal .to-be-removed {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 15px 0;
+    background-color: rgba(207,70,71,0.05);
+  }
+
+  body .app-modal .to-be-removed h3{
+    font-size: 15px;
+    color: #CF4647;
+    margin: 0 0 10px 0;
+  }
+
+  body .app-modal .to-be-removed small{
+    font-size: 12px;
+    color: #CF4647;
+    text-transform: uppercase;
   }
 
 /* app-card */
@@ -547,6 +580,7 @@ body .app-form.standalone {
     width: 100%;
     line-height: 17px;
     outline: none;
+    font-size: 14px;
   }
 
   body .app-form button {

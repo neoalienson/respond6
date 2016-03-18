@@ -1,21 +1,29 @@
 # Respond CMS
 
-### Todos
-- When adding a component to the hashedit mirror, need to add the base html to the mirror (not all the generated html)
-- A [primary-content] attribute needs to be set at publish time (backport to Respond 5.x)
-- When a menu has render=publish set, we need to include an attribute (e.g. respond-menu) along with references to its original attributes
+Respond 6 is a multi-site, flat-file CMS powered by Angular 2 and Lumen.  Sites built using Respond are front-end framework agnostic and use Polymer web components for advanced functionality.
 
+### Status
+Version: 6.0.0
+Status: Pre-Beta (experienced devs only, not all pieces functional)
+
+### Installation
+1. mkdir respond
+2. git clone https://github.com/madoublet/respond6 .
+3. npm install (note: during development only)
+4. gulp (note: during development only)
+5. cp .env.example .env
+6. update .env
+7. chown -R www-data public/sites
+8. chown -R www-data resources/sites
 
 ### Notes
-
 
 ##### Install dependency via NPM, copy to public using gulp
 npm install
 gulp
 
 ##### Run the TypeScript compiler
-npm start
-
+npm start, tsc
 
 ### Resources
 ##### Laravel + Apache

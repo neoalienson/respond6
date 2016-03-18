@@ -1,11 +1,13 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
+import {Component, EventEmitter, Input, Output} from 'angular2/core'
 import {ROUTER_DIRECTIVES, CanActivate} from 'angular2/router'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
+import {SiteService} from '/app/shared/services/site.service'
 
 @Component({
     selector: 'respond-drawer',
     templateUrl: './app/shared/components/drawer/drawer.component.html',
-    directives: [ROUTER_DIRECTIVES]
+    directives: [ROUTER_DIRECTIVES],
+    providers: [SiteService]
 })
 
 @CanActivate(() => tokenNotExpired())
@@ -36,6 +38,13 @@ export class DrawerComponent {
   hide() {
     this._visible = false;
     this.onHide.emit(null);
+  }
+  
+  /**
+   * Reload system files
+   */
+  reload() {
+    
   }
 
 }

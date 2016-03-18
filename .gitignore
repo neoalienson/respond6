@@ -6,3 +6,4 @@ composer.phar
 /public/node_modules
 /public/sites
 /public/dev
+/resources/sites

@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/site.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, angular2_jwt_1;
+    var core_1, router_1, angular2_jwt_1, site_service_1;
     var DrawerComponent;
     return {
         setters:[
@@ -22,6 +22,9 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
             },
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
+            },
+            function (site_service_1_1) {
+                site_service_1 = site_service_1_1;
             }],
         execute: function() {
             DrawerComponent = (function () {
@@ -48,6 +51,11 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     this._visible = false;
                     this.onHide.emit(null);
                 };
+                /**
+                 * Reload system files
+                 */
+                DrawerComponent.prototype.reload = function () {
+                };
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', Boolean), 
@@ -61,7 +69,8 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Component({
                         selector: 'respond-drawer',
                         templateUrl: './app/shared/components/drawer/drawer.component.html',
-                        directives: [router_1.ROUTER_DIRECTIVES]
+                        directives: [router_1.ROUTER_DIRECTIVES],
+                        providers: [site_service_1.SiteService]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [])

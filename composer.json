@@ -10,7 +10,8 @@
     "vlucas/phpdotenv": "~2.2",
     "firebase/php-jwt": "dev-master",
     "phpmailer/phpmailer": "5.2.8",
-    "electrolinux/phpquery": "0.9.6"
+    "electrolinux/phpquery": "0.9.6",
+    "symfony/yaml": "3.0.3"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",

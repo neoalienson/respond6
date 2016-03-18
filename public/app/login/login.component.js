@@ -32,6 +32,7 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
                 }
                 LoginComponent.prototype.ngOnInit = function () {
                     this.id = this._routeParams.get('id');
+                    localStorage.setItem('respond.siteId', this.id);
                 };
                 /**
                  * Login to the app

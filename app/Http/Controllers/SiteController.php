@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Respond\Database\Site;
+use App\Respond\Models\Site;
 use \Illuminate\Http\Request;
 
 class SiteController extends Controller
@@ -43,19 +43,15 @@ class SiteController extends Controller
   public function validateId(Request $request)
   {
   
-    $friendlyId = $request->input('friendlyId');
+    $id = $request->input('id');
     
-    $isFriendlyIdUnique = Site::IsFriendlyIdUnique($friendlyId);
+    $is_unique = Site::IsIdUnique($id);
     
-    // check for reserved names
-    if($friendlyId == 'app' || $friendlyId == 'sites' || $friendlyId == 'api') {
-      $isFriendlyIdUnique = false;
-    }
-    
-    if($isFriendlyIdUnique==false) {
+    if($is_unique==false) {
     
       // send conflict(409)
       return response('ID is not unique', 409);
+      
     }
     else {
     
@@ -64,6 +60,33 @@ class SiteController extends Controller
     
     }
   
+  }
+
+  /**
+   * Creates the site
+   *
+   * @return Response
+   */
+  public function create(Request $request)
+  {
+
+    // get request
+    $name = $request->json()->get('name');
+    $theme = $request->json()->get('theme');
+    $email = $request->json()->get('email');
+    $password = $request->json()->get('password');
+    $passcode = $request->json()->get('passcode');
+    
+    if($passcode == env('PASSCODE')) {
+      
+      $arr = Site::Create($name, $theme, $email, $password);
+      
+      return response()->json($arr);
+    }
+    else {
+      return response('Passcode invalid', 401);
+    }
+
   }
 
 }

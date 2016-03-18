@@ -2,1190 +2,414 @@
 
 namespace App\Respond\Libraries;
 
-class Publish
-{
+use App\Respond\Models\Site;
+use App\Respond\Models\User;
+use App\Respond\Models\Page;
+use App\Respond\Libraries\Utilities;
 
-  // publishes the entire site
-  public static function PublishSite($siteId)
-  {
+use Symfony\Component\Yaml\Parser;
 
-    // repbulish Content
-    Publish::PublishContent($siteId);
+class Publish {
 
-    // repbulish engine
-    Publish::PublishEngine($siteId);
+  /**
+   * Pubishes the theme to the site
+   *
+   * @param {Site} $site
+   */
+  public static function PublishTheme($site) {
 
-  }
+    // publish theme files
+    $src = app()->basePath().'/resources/themes/'.$site->Theme;
+    $dest = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme;
 
-  // publishes the content for the site (Pages, Current Theme CSS, Menu JSON, Sitemap, RSS)
-  public static function PublishContent($siteId)
-  {
-
-    $site = Site::GetBySiteId($siteId);
-
-    // inject site settings
-    Publish::InjectSiteSettings($site);
-
-    // publish all pages
-    Publish::PublishAllPages($site);
-
-    // publish menu JSON
-    Publish::PublishMenuJSON($site);
+    // copy the directory
+    Utilities::CopyDirectory($src, $dest);
 
     // publish CSS
-    Publish::PublishAllCSS($site);
+    Publish::PublishThemeCSS($site);
 
-    // publish sitemap
-    Publish::PublishSiteMap($site);
+    // compress CSS
+    Publish::CompressCSS($site);
 
-    // publish RSS
-    Publish::PublishRssForPageTypes($site);
+    // publish JS
+    Publish::PublishThemeJS($site);
 
-  }
-
-  // publishes the engine for the site (JS libs, CSS libs, Plugins, Locales, Htaccess)
-  public static function PublishEngine($siteId)
-  {
-
-    $site = Site::GetBySiteId($siteId);
-
-    // publish common JS (libs)
-    Publish::PublishCommonJS($site);
-
-    // publish common css (libs)
-    Publish::PublishCommonCSS($site);
-
-    // publish plugins
-    Publish::PublishPlugins($site);
-
-    // publish locales
-    Publish::PublishLocales($site);
-
-    // setup htaccess
-    Publish::SetupHtaccess($site);
-
-    // update version
-    Site::EditVersion($site['SiteId'], VERSION);
+    // publish JS
+    Publish::PublishThemeFiles($site);
 
   }
 
-  // publishes locales for the site
-  public static function PublishLocales($site)
-  {
-
-    // copy templates/respond
-    $locales_src  = APP_LOCATION . '/site/locales';
-    $locales_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/locales';
-
-    // create libs directory if it does not exist
-    if (!file_exists($locales_dest)) {
-      mkdir($locales_dest, 0755, true);
-
-      Utilities::CopyDirectory($locales_src, $locales_dest);
-    }
-
-  }
-
-  // creates .htaccess to deny access to a specific directory
-  public static function CreateDeny($dir)
-  {
-
-    // create dir if needed
-    if (!file_exists($dir)) {
-      mkdir($dir, 0755, true);
-    }
-
-    // create .htaccess to deny access
-    $deny = $dir . '.htaccess';
-
-    file_put_contents($deny, 'Deny from all'); // save to file
-
-  }
-
-  // creates .htaccess for html5 sites
-  public static function SetupHtaccess($site)
-  {
-
-    $htaccess = SITES_LOCATION . '/' . $site['FriendlyId'] . '/.htaccess';
-
-    $contents = 'Options -Indexes' . PHP_EOL . '<IfModule mod_rewrite.c>' . PHP_EOL . 'RewriteEngine On' . PHP_EOL . 'RewriteCond %{REQUEST_FILENAME} !-f' . PHP_EOL . 'RewriteRule ^([^\.]+)$ $1.html [NC,L]' . PHP_EOL . 'ErrorDocument 404 /page/error' . PHP_EOL . '</IfModule>' . PHP_EOL . '<IfModule mod_expires.c>' . PHP_EOL . 'ExpiresActive On ' . PHP_EOL . 'ExpiresDefault "access plus 1 month"' . PHP_EOL . 'ExpiresByType image/x-icon "access plus 1 year"' . PHP_EOL . 'ExpiresByType image/gif "access plus 1 month"' . PHP_EOL . 'ExpiresByType image/png "access plus 1 month"' . PHP_EOL . 'ExpiresByType image/jpg "access plus 1 month"' . PHP_EOL . 'ExpiresByType image/jpeg "access plus 1 month"' . PHP_EOL . 'ExpiresByType text/css "access 1 month"' . PHP_EOL . 'ExpiresByType application/javascript "access plus 1 year"' . PHP_EOL . '</IfModule>';
-
-    file_put_contents($htaccess, $contents); // save to file
-
-
-  }
-
-  // publishes default content for a theme
-  public static function PublishDefaultContent($site, $theme, $userId)
-  {
-
-    // read the defaults file
-    $default_json_file = APP_LOCATION . THEMES_FOLDER . '/' . $theme . '/default.json';
-
-    // set $siteId
-    $siteId = $site['SiteId'];
-
-    // check to make sure the defaults.json exists
-    if (file_exists($default_json_file)) {
-
-      // get json from the file
-      $json_text = file_get_contents($default_json_file);
-
-      // decode json
-      $json = json_decode($json_text, true);
-
-      // pagetypes
-      $pagetypes = array();
-
-      // menu counts
-      $primaryMenuCount = 0;
-      $footerMenuCount  = 0;
-
-      // clear default types
-      MenuItem::RemoveForType('primary', $siteId);
-      MenuItem::RemoveForType('footer', $siteId);
-
-      // walk through defaults array
-      foreach ($json as &$value) {
-
-        // get values from array
-        $url         = $value['url'];
-        $source      = $value['source'];
-        $name        = $value['name'];
-        $description = $value['description'];
-        $layout      = $value['layout'];
-        $stylesheet  = $value['stylesheet'];
-        $primaryMenu = $value['primaryMenu'];
-        $footerMenu  = $value['footerMenu'];
-        $includeOnly = 0;
-
-        // set includeOnly (if specified in default)
-        if (isset($value['includeOnly'])) {
-          if ($value['includeOnly'] == true) {
-            $includeOnly = 1;
-          }
-        }
-
-        // initialize PT
-        $pageType = NULL;
-
-        if (strpos($url, '/') !== false) { // the url has a pagetype
-          $arr = explode('/', $url);
-
-          // get friendly ids from $url
-          $pageTypeFriendlyId = $arr[0];
-          $pageFriendlyId     = $arr[1];
-
-          $pageTypeId = -1;
-
-          $pageType = PageType::GetByFriendlyId($pageTypeFriendlyId, $siteId);
-
-          // create a new pagetype
-          if ($pageType == NULL) {
-            $pageType = PageType::Add($pageTypeFriendlyId, $layout, $stylesheet, 0, $siteId, $userId);
-          }
-
-          // get newly minted page type
-          $pageTypeId = $pageType['PageTypeId'];
-
-        } else { // root, no pagetype
-          $pageFriendlyId = $url;
-          $pageTypeId     = -1;
-        }
-
-        // determine if page is unique
-        $isUnique = Page::IsFriendlyIdUnique($pageFriendlyId, $pageTypeId, $site['SiteId']);
-
-        // initialize page
-        $page = NULL;
-
-        // if page has not been created, create a page
-        if ($isUnique == true) {
-
-          // create a page
-          $page = Page::Add($pageFriendlyId, $name, $description, $layout, $stylesheet, $pageTypeId, $site['SiteId'], $userId);
-
-        } else {
-
-          // get the page
-          $page = Page::GetByFriendlyId($pageFriendlyId, $pageTypeId, $site['SiteId']);
-
-        }
-
-        // quick check
-        if ($page != NULL) {
-
-          // set the page to active
-          Page::SetIsActive($page['PageId'], 1);
-
-          // set include only
-          Page::SetIncludeOnly($page['PageId'], $includeOnly);
-
-          // build the content file
-          $filename = APP_LOCATION . THEMES_FOLDER . '/' . $theme . '/' . $source;
-          $content  = '';
-
-          // get the content for the page
-          if (file_exists($filename)) {
-            $content = file_get_contents($filename);
-
-            // fix images
-            $content = str_replace('{{site-dir}}', $site['Domain'], $content);
-          }
-
-          // edit the page content
-          Page::EditContent($page['PageId'], $content, $userId);
-
-          // build the primary menu
-          if ($primaryMenu == true) {
-            MenuItem::Add($name, '', 'primary', $url, $page['PageId'], $primaryMenuCount, $site['SiteId'], $userId);
-
-            $primaryMenuCount++;
-
-          }
-
-          // build the footer menu
-          if ($footerMenu == true) {
-            MenuItem::Add($name, '', 'footer', $url, $page['PageId'], $footerMenuCount, $site['SiteId'], $userId);
-
-            $footerMenuCount++;
-          }
-
-        }
-
-      }
-
-    }
-
-
-  }
-
-  // publishes a theme
-  public static function PublishTheme($site, $theme, $reset_config = true)
-  {
-
-    $theme_dir = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/';
-
-    // create theme directory
-    if (!file_exists($theme_dir)) {
-      mkdir($theme_dir, 0755, true);
-    }
-
-    // create directory for theme
-    $theme_dir .= $theme . '/';
-
-    if (!file_exists($theme_dir)) {
-      mkdir($theme_dir, 0755, true);
-    }
-
-    // create directory for layouts
-    $layouts_dir = $theme_dir . 'layouts/';
-
-    if (!file_exists($layouts_dir)) {
-      mkdir($layouts_dir, 0755, true);
-    }
-
-    // create directory for styles
-    $styles_dir = $theme_dir . 'styles/';
-
-    if (!file_exists($styles_dir)) {
-      mkdir($styles_dir, 0755, true);
-    }
-
-    // create directory for resources
-    $res_dir = $theme_dir . 'resources/';
-
-    if (!file_exists($res_dir)) {
-      mkdir($res_dir, 0755, true);
-    }
-
-    // copy layouts
-    $layouts_src = APP_LOCATION . '/' . THEMES_FOLDER . '/' . $theme . '/layouts/';
-
-    if (file_exists($layouts_src)) {
-      $layouts_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $theme . '/layouts/';
-
-      Utilities::CopyDirectory($layouts_src, $layouts_dest);
-    }
-
-
-    // copy the index from the layouts
-    $index_src  = $theme_dir . '/layouts/index.html';
-    $index_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/index.html';
-
-    if (file_exists($index_src)) {
-      copy($index_src, $index_dest);
-    }
-
-    // copy styles
-    $styles_src = APP_LOCATION . THEMES_FOLDER . '/' . $theme . '/styles/';
-
-    if (file_exists($styles_src)) {
-      $styles_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $theme . '/styles/';
-
-      Utilities::CopyDirectory($styles_src, $styles_dest);
-    }
-
-    // determine source and destination paths for the configure.json file
-    $configure_src  = APP_LOCATION . THEMES_FOLDER . '/' . $theme . '/configure.json';
-    $configure_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $theme . '/configure.json';
-
-    // If user has not checked the "reset configuration settings" checkbox, we preserve
-    // existing values from the old configuration file whenever the field name exists
-    // in the new configuration file
-    if (file_exists($configure_src) && file_exists($configure_dest) && (!$reset_config)) {
-
-      // get jsontxt from new config
-      $json = file_get_contents($configure_src);
-
-      // decode new json file
-      $newconfigs = json_decode($json, true);
-
-      // get jsontxt from old config
-      $json = file_get_contents($configure_dest);
-
-      // decode old json file
-      $oldconfigs = json_decode($json, true);
-
-      unset($json); // free up memory
-
-      // walk through new config sections
-      for ($newconfig_index = 0; $newconfig_index < count($newconfigs); ++$newconfig_index) {
-
-        for ($newcontrols_index = 0; $newcontrols_index < count($newconfigs[$newconfig_index]['controls']); ++$newcontrols_index) {
-
-          // Now loop over old config and see if we can find a
-          // section and setting with the same names as the above
-          for ($oldconfig_index = 0; $oldconfig_index < count($oldconfigs); ++$oldconfig_index) {
-
-            // Only look inside of sections that have a matching name
-            if ($oldconfigs[$oldconfig_index]['name'] === $newconfigs[$newconfig_index]['name']) {
-
-              // Loop over through old controls and look for configuration settings with the same name
-              for ($oldcontrols_index = 0; $oldcontrols_index < count($oldconfigs[$oldconfig_index]['controls']); ++$oldcontrols_index) {
-
-                if ($oldconfigs[$oldconfig_index]['controls'][$oldcontrols_index]['replace'] === $newconfigs[$newconfig_index]['controls'][$newcontrols_index]['replace']) {
-
-                  // we have a winner.  copy the value from the old config into the new one
-                  $newconfigs[$newconfig_index]['controls'][$newcontrols_index]['selected'] = $oldconfigs[$oldconfig_index]['controls'][$oldcontrols_index]['selected'];
-
-                } // end if control name matches
-
-              } // end loop over old controls  within a config section
-
-            } // end if section name matches
-
-          } // end loop over old config sections
-
-        } // end loop over new controls within a config section
-
-      } // end loop over new config sections
-
-      // Write modified JSON data into configure.json
-      $json = json_encode($newconfigs);
-
-      file_put_contents($configure_dest, $json);
-
-
-    } else {
-
-      // We are not preserving any configuration values, so simply copy the new config
-      // file on top of any existing one
-      if (file_exists($configure_src)) {
-        copy($configure_src, $configure_dest);
-      }
-    }
-
-    // copy files locally
-    $files_src = APP_LOCATION . THEMES_FOLDER . '/' . $theme . '/files/';
-
-    if (file_exists($files_src)) {
-      $files_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/files/';
-
-      Utilities::CopyDirectory($files_src, $files_dest);
-    }
-
-    // copy resources
-    $res_src = APP_LOCATION . THEMES_FOLDER . '/' . $theme . '/resources/';
-
-    if (file_exists($res_src)) {
-      $res_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $theme . '/resources/';
-
-      Utilities::CopyDirectory($res_src, $res_dest);
-    }
-
-  }
-
-  // publishes common js
-  public static function PublishCommonJS($site, $env = 'local')
-  {
-
-    $src  = APP_LOCATION . '/site/js';
-    $dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/js';
-
-    // create dir if it doesn't exist
-    if (!file_exists($dest)) {
-      mkdir($dest, 0755, true);
-    }
-
-    // copies a directory
+  /**
+   * Pubishes the theme files to the site
+   *
+   * @param {Site} $site
+   */
+  public static function PublishThemeFiles($site) {
+
+    // publish js files
+    $src = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme.'/files';
+    $dest = app()->basePath().'/public/sites/'.$site->Id.'/files';
+
+    // copy the directory
     Utilities::CopyDirectory($src, $dest);
 
-    // inject site information
-    Publish::InjectSiteSettings($site);
-
   }
 
-  // injects site information into the respond.site.js file
-  public static function InjectSiteSettings($site, $env = 'local')
-  {
+  /**
+   * Pubishes the theme JS to the site
+   *
+   * @param {Site} $site
+   */
+  public static function PublishThemeJS($site) {
 
-    // set logoUrl
-    $logoUrl = '';
+    // publish js files
+    $src = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme.'/js';
+    $dest = app()->basePath().'/public/sites/'.$site->Id.'/js';
 
-    if ($site['LogoUrl'] != '') {
-      $logoUrl = 'files/' . $site['LogoUrl'];
-    }
-
-    // set altLogoUrl
-    $altLogoUrl = '';
-
-    if ($site['AltLogoUrl'] != '' && $site['AltLogoUrl'] != NULL) {
-      $altLogoUrl = 'files/' . $site['AltLogoUrl'];
-    }
-
-    // set payPalLogoUrl
-    $payPalLogoUrl = '';
-
-    if ($site['PayPalLogoUrl'] != '' && $site['PayPalLogoUrl'] != NULL) {
-      $payPalLogoUrl = 'files/' . $site['PayPalLogoUrl'];
-    }
-
-    // set imagesURL
-    $imagesURL = $site['Domain'] . '/';
-
-    // set iconUrl
-    $iconUrl = '';
-
-    if ($site['IconUrl'] != '') {
-      $iconUrl = $imagesURL . 'files/' . $site['IconUrl'];
-    }
-
-    // set display
-    $showCart      = false;
-    $showSettings  = false;
-    $showLanguages = false;
-    $showLogin     = false;
-    $showSearch    = false;
-
-    if ($site['ShowCart'] == 1) {
-      $showCart = true;
-    }
-
-    if ($site['ShowSettings'] == 1) {
-      $showSettings = true;
-    }
-
-    if ($site['ShowLanguages'] == 1) {
-      $showLanguages = true;
-    }
-
-    if ($site['ShowLogin'] == 1) {
-      $showLogin = true;
-    }
-
-    if ($site['ShowSearch'] == 1) {
-      $showSearch = true;
-    }
-
-    // create settings
-    $settings = array(
-      'SiteId' => $site['SiteId'],
-      'Domain' => $site['Domain'],
-      'API' => API_URL,
-      'Name' => $site['Name'],
-      'ImagesUrl' => $imagesURL,
-      'LogoUrl' => $logoUrl,
-      'AltLogoUrl' => $altLogoUrl,
-      'PayPalLogoUrl' => $payPalLogoUrl,
-      'IconUrl' => $iconUrl,
-      'IconBg' => $site['IconBg'],
-      'Theme' => $site['Theme'],
-      'PrimaryEmail' => $site['PrimaryEmail'],
-      'Language' => $site['Language'],
-      'Direction' => $site['Direction'],
-      'ShowCart' => $showCart,
-      'ShowSettings' => $showSettings,
-      'ShowLanguages' => $showLanguages,
-      'ShowLogin' => $showLogin,
-      'ShowSearch' => $showSearch,
-      'Currency' => $site['Currency'],
-      'WeightUnit' => $site['WeightUnit'],
-      'ShippingCalculation' => $site['ShippingCalculation'],
-      'ShippingRate' => $site['ShippingRate'],
-      'ShippingTiers' => $site['ShippingTiers'],
-      'TaxRate' => $site['TaxRate'],
-      'PayPalId' => $site['PayPalId'],
-      'PayPalUseSandbox' => $site['PayPalUseSandbox'],
-      'FormPublicId' => $site['FormPublicId']
-    );
-
-    // settings
-    $str_settings = json_encode($settings);
-
-    // get site file
-    $file = SITES_LOCATION . '/' . $site['FriendlyId'] . '/js/respond.site.js';
-
-    if (file_exists($file)) {
-
-      // get contents
-      $content = file_get_contents($file);
-
-      $start = 'settings: {';
-      $end   = '}';
-
-      // remove { }
-      $new = str_replace('{', '', $str_settings);
-      $new = str_replace('}', '', $new);
-
-      // replace
-      $content = preg_replace('#(' . preg_quote($start) . ')(.*?)(' . preg_quote($end) . ')#si', '$1' . $new . '$3', $content);
-
-      // add settings
-      //$content = str_replace('settings: {},', 'settings: '.$str_settings.',', $content);
-
-      // publish updates
-      file_put_contents($file, $content);
-
-    }
-
-  }
-
-  // publishes plugins for the site
-  public static function PublishPlugins($site)
-  {
-
-    // copy polyfills
-    $components_src  = APP_LOCATION . '/site/components/lib/webcomponentsjs';
-    $components_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/components/lib/webcomponentsjs';
-
-    // create polyfills directory if it does not exist
-    if (!file_exists($components_dest)) {
-      mkdir($components_dest, 0755, true);
-    }
-
-    // copy polyfills directory
-    if (file_exists($components_dest)) {
-      Utilities::CopyDirectory($components_src, $components_dest);
-    }
-
-    // copy build
-    $build_src  = APP_LOCATION . '/site/components/respond-build.html';
-    $build_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/components/respond-build.html';
-
-    if (file_exists($build_src)) {
-
-      $content = file_get_contents($build_src);
-      file_put_contents($build_dest, $content);
-
-    }
-
-
-    // open plugins direcotry
-    if ($handle = opendir(APP_LOCATION . 'plugins')) {
-
-      $blacklist = array(
-        '.',
-        '..'
-      );
-
-      // walk through directories
-      while (false !== ($file = readdir($handle))) {
-
-        if (!in_array($file, $blacklist)) {
-          $dir = $file;
-
-          // source resources directory
-          $src_dir = APP_LOCATION . 'plugins/' . $dir . '/component';
-
-          // add templates
-          if (file_exists($src_dir)) {
-
-            // destination templates directory
-            $dest_dir = SITES_LOCATION . '/' . $site['FriendlyId'] . '/components';
-
-            // create destination directory
-            if (!file_exists($dest_dir)) {
-              mkdir($dest_dir, 0755, true);
-            }
-
-            // copies the directory
-            Utilities::CopyDirectory($src_dir, $dest_dir);
-          }
-
-
-        }
-
-      }
-
-      closedir($handle);
-    }
-
-
-
-  }
-
-  // publishes common css
-  public static function PublishCommonCSS($site)
-  {
-
-    $src  = APP_LOCATION . '/site/css';
-    $dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/css';
-
-    // create dir if it doesn't exist
-    if (!file_exists($dest)) {
-      mkdir($dest, 0755, true);
-    }
-
-    // copies a directory
+    // copy the directory
     Utilities::CopyDirectory($src, $dest);
-  }
-
-  // publishes all the pages in the site
-  public static function PublishAllPages($site)
-  {
-
-    // Get all pages
-    $list = Page::GetPagesForSite($site['SiteId']);
-
-    foreach ($list as $row) {
-
-      Publish::PublishPage($row['PageId'], false, false);
-    }
-  }
-
-  // publish menu
-  public static function PublishMenuJSON($site)
-  {
-
-    $types = MenuType::GetMenuTypes($site['SiteId']);
-
-    // create types for primary, footer
-    $primary = array(
-      'MenuTypeId' => -1,
-      'FriendlyId' => 'primary'
-    );
-
-    $footer = array(
-      'MenuTypeId' => -1,
-      'FriendlyId' => 'footer'
-    );
-
-    // push default types
-    array_push($types, $primary);
-    array_push($types, $footer);
-
-    // walk through types
-    foreach ($types as $type) {
-
-      // get items for type
-      $list = MenuItem::GetMenuItemsForType($site['SiteId'], $type['FriendlyId']);
-
-      // encode to json
-      $encoded = json_encode($list);
-
-      $dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/data/';
-
-      Utilities::SaveContent($dest, 'menu-' . $type['FriendlyId'] . '.json', $encoded);
-    }
 
   }
 
-  // publish rss for all page types
-  public static function PublishRssForPageTypes($site)
-  {
+  /**
+   * Injects site settings the JS to the site
+   *
+   * @param {Site} $site
+   */
+	public static function InjectSiteSettings($site){
 
-    $list = PageType::GetPageTypes($site['SiteId']);
+		// create settings
+		$settings = array(
+			'SiteId' => $site->Id,
+			'Domain' => $site->Domain,
+			'API' => env('APP_URL').'/api',
+			'ShowCart' => $site->ShowCart,
+			'ShowSearch' => $site->ShowSearch
+		);
 
-    foreach ($list as $row) {
-      Publish::PublishRssForPageType($site, $row['PageTypeId']);
-    }
-  }
+		// settings
+		$str_settings = json_encode($settings);
 
-  // publish rss for pages
-  public static function PublishRssForPageType($site, $pageTypeId)
-  {
+		// get site file
+		$file = app()->basePath().'/public/sites/'.$site->Id.'/js/respond.site.js';
 
-    $dest = SITES_LOCATION . '/' . $site['FriendlyId'];
+		if(file_exists($file)){
 
-    $pageType = PageType::GetByPageTypeId($pageTypeId);
+			// get contents
+			$content = file_get_contents($file);
 
-    // generate rss
-    $rss = Utilities::GenerateRSS($site, $pageType);
+			$start = 'settings: {';
+			$end = '}';
 
-    Utilities::SaveContent($dest . '/data/', strtolower($pageType['FriendlyId']) . '.xml', $rss);
-  }
+			// remove { }
+			$new = str_replace('{', '', $str_settings);
+			$new = str_replace('}', '', $new);
 
-  // publish sitemap
-  public static function PublishSiteMap($site)
-  {
+			// replace
+			$content = preg_replace('#('.preg_quote($start).')(.*?)('.preg_quote($end).')#si', '$1'.$new.'$3', $content);
 
-    $dest = SITES_LOCATION . '/' . $site['FriendlyId'];
+			// publish updates
+			file_put_contents($file, $content);
 
-    // generate default site map
-    $content = Utilities::GenerateSiteMap($site);
+		}
 
-    Utilities::SaveContent($dest . '/', 'sitemap.xml', $content);
-  }
+	}
 
-  // gets errors for teh less files
-  public static function GetLESSErrors($site, $name)
-  {
+	/**
+   * Injects Payment settings
+   *
+   * @param {Site} $site
+   */
+	public static function InjectPaymentSettings($site){
 
-    // get references to file
-    $lessDir = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $site['Theme'] . '/styles/';
-    $cssDir  = SITES_LOCATION . '/' . $site['FriendlyId'] . '/css/';
+	  // paypal
+	  $yaml = new Parser();
+    $file = app()->basePath().'/resources/sites/'.$id.'/paypal.yaml';
 
-    // get reference to config file
-    $configFile = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $site['Theme'] . '/configure.json';
+    if(file_exists($file)) {
 
-    $lessFile = $lessDir . $name . '.less';
-    $cssFile  = $cssDir . $name . '.css';
+      $arr = $yaml->parse(file_get_contents($file));
 
-    // create css directory (if needed)
-    if (!file_exists($cssDir)) {
-      mkdir($cssDir, 0755, true);
-    }
+      // settings
+  		$str_settings = 'paypal: {'.json_encode($settings, true).'}';
 
-    if (file_exists($lessFile)) {
-      $content = file_get_contents($lessFile);
+  		// get site file
+  		$file = app()->basePath().'/public/sites/'.$site->Id.'/js/respond.site.js';
 
-      $less = new lessc;
+  		if(file_exists($file)){
 
-      try {
+  			// get contents
+  			$content = file_get_contents($file);
 
-        $css = $content;
+  			$start = 'payment: [';
+  			$end = ']';
 
-        // set configurations
-        $css = Publish::SetConfigurations($configFile, $css);
+  			// replace
+  			$content = preg_replace('#('.preg_quote($start).')(.*?)('.preg_quote($end).')#si', '$1'.$new.'$3', $content);
 
-        // compile less to css
-        $css = $less->compile($css);
+  			// publish updates
+  			file_put_contents($file, $content);
 
-        return NULL;
-
-      }
-      catch (exception $e) {
-        return $e->getMessage();
-      }
-
-    } else {
-      return NULL;
-    }
-
-  }
-
-
-
-  // publishes a specific css file
-  public static function PublishCSS($site, $name)
-  {
-
-    // get references to file
-    $lessDir = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $site['Theme'] . '/styles/';
-    $cssDir  = SITES_LOCATION . '/' . $site['FriendlyId'] . '/css/';
-
-    // get reference to config file
-    $configFile = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $site['Theme'] . '/configure.json';
-
-    $lessFile = $lessDir . $name . '.less';
-    $cssFile  = $cssDir . $name . '.css';
-
-    // create css directory (if needed)
-    if (!file_exists($cssDir)) {
-      mkdir($cssDir, 0755, true);
-    }
-
-    if (file_exists($lessFile)) {
-      $content = file_get_contents($lessFile);
-
-      $less = new lessc;
-
-      try {
-
-        $css = $content;
-
-        // set configurations
-        $css = Publish::SetConfigurations($configFile, $css);
-
-        // compile less to css
-        $css = $less->compile($css);
-
-        // compress css, #ref: http://manas.tungare.name/software/css-compression-in-php/
-
-        // remove comments
-        $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
-
-        // Remove space after colons
-        $css = str_replace(': ', ':', $css);
-
-        // Remove whitespace
-        $css = str_replace(array(
-          "\r\n",
-          "\r",
-          "\n",
-          "\t",
-          '  ',
-          '    ',
-          '    '
-        ), '', $css);
-
-        // put css into file
-        file_put_contents($cssFile, $css);
-
-        return $css;
-
-      }
-      catch (exception $e) {
-        return NULL;
-      }
-
-    } else {
-      return NULL;
-    }
-
-  }
-
-  // publish configurations
-  public static function SetConfigurations($configFile, $css)
-  {
-
-    if (file_exists($configFile)) {
-
-      // get jsontxt
-      $json = file_get_contents($configFile);
-
-      // decode json file
-      $configs = json_decode($json, true);
-
-      // walk through configs
-      foreach ($configs as $config) {
-
-        $controls = $config['controls'];
-
-        // walk through controls
-        foreach ($controls as $control) {
-
-          $replace  = $control['replace'];
-          $selected = $control['selected'];
-          $prefix   = '';
-          $postfix  = '';
-
-          // set prefix (deprecated)
-          if (isset($control['prefix'])) {
-            $prefix = $control['prefix'];
-
-            $selected = $prefix . $selected;
-          }
-
-          // set postfix
-          if (isset($control['postfix'])) {
-            $postfix = $control['postfix'];
-
-            $selected = $selected . $postfix;
-          }
-
-          // set format
-          if (isset($control['cssFormat'])) {
-            $cssFormat = $control['cssFormat'];
-
-            $selected = str_replace('%1', $selected, $cssFormat);
-          }
-
-          // replace config with selection
-          $css = str_replace($replace, $selected, $css);
-
-        }
-
-      }
+  		}
 
     }
 
-    return $css;
+	}
 
+  /**
+   * Pubishes the css to the site
+   *
+   * @param {Site} $site
+   */
+  public static function PublishThemeCSS($site) {
+
+    // publish css files
+    $src = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme.'/css';
+    $dest = $dir = app()->basePath().'/public/sites/'.$site->Id.'/css';
+
+    // copy the directory
+    Utilities::CopyDirectory($src, $dest);
 
   }
 
-  // publishes all css
-  public static function PublishAllCSS($site)
-  {
+  /**
+   * Pubishes the menus from the theme
+   *
+   * @param {Site} $site
+   */
+  public static function PublishThemeMenus($site) {
 
-    $lessDir = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $site['Theme'] . '/styles/';
+    // publish css files
+    $src = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme.'/menus';
+    $dest = $dir = app()->basePath().'/public/sites/'.$site->Id.'/data/menus';
 
-    //get all image files with a .less ext
-    $files = glob($lessDir . "*.less");
+    // copy the directory
+    Utilities::CopyDirectory($src, $dest);
 
-    // combined css
+  }
+
+  /**
+   * Pubishes the css to the site
+   *
+   * @param {Site} $site
+   */
+  public static function CompressCSS($site) {
+
+    $dir = app()->basePath().'/public/sites/'.$site->Id.'/css';
+
+    // combine and compress css
+    $files = scandir($dir);
     $combined_css = '';
 
-    //print each file name
-    foreach ($files as $file) {
-      $f_arr    = explode("/", $file);
-      $count    = count($f_arr);
-      $filename = $f_arr[$count - 1];
-      $name     = str_replace('.less', '', $filename);
+    // walk through files and combine and minify css
+    foreach($files as $value) {
 
-      if (strpos($name, 'respond.min') === FALSE) {
-        $combined_css .= Publish::PublishCSS($site, $name);
+      if(is_file("$dir/$value")) {
+
+        $file = "$dir/$value";
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+        if($ext == 'css') {
+
+          $css = file_get_contents($file);
+
+          // compress css, #ref: http://manas.tungare.name/software/css-compression-in-php/
+          $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
+          $css = str_replace(': ', ':', $css);
+          $css = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $css);
+
+          // add to combined css
+          $combined_css .= $css;
+
+        }
+
       }
+
     }
 
-    // publish combined css
-    $css_file = SITES_LOCATION . '/' . $site['FriendlyId'] . '/css/respond.min.css';
-
-    // put combined css
-    file_put_contents($css_file, $combined_css);
+    // create combined css
+    file_put_contents(app()->basePath().'/public/sites/'.$site->Id.'/css/respond.min.css', $combined_css);
 
   }
 
-  // publishes a page
-  // live 	-> 	/site/{{site.FriendlyId}}/templates/page/{{pageType.FriendlyId}}.{{page.FriendlyId}}.html
-  // preview	->  /site/{{site.FriendlyId}}/templates/preview/{{pageType.FriendlyId}}.{{page.FriendlyId}}.html
-  public static function PublishPage($pageId, $preview = false, $remove_draft = false)
-  {
+  /**
+   * Pubishes the menus to the site
+   *
+   * @param {Site} $site
+   */
+  public static function PublishLocales($site) {
 
-    $page = Page::GetByPageId($pageId);
+    // publish theme files
+    $src = app()->basePath().'/resources/locales';
+    $dest = app()->basePath().'/public/sites/'.$site->Id.'/locales';
 
-    if ($page != null) {
-
-      $site = Site::GetBySiteId($page['SiteId']); // test for now
-
-      Publish::PublishTemplate($page, $site, $preview, $remove_draft);
-
-      // do not publish a static page for include only pages
-      if ($page['IncludeOnly'] == 0) {
-        Publish::PublishStaticPage($page, $site, $preview, $remove_draft);
-      }
-    }
+    // copy the directory
+    Utilities::CopyDirectory($src, $dest);
   }
 
-  // publishes a template for the page
-  public static function PublishTemplate($page, $site, $preview = false, $remove_draft = false)
-  {
+  /**
+   * Pubishes components
+   *
+   * @param {Site} $site
+   */
+  public static function PublishComponents($site) {
+  
+    // production
+    $dir = app()->basePath().'/node_modules';
+  
+    if(env('APP_ENV') == 'development') {
+      $dir = app()->basePath().'/public/dev';
+    }
 
-    $dest     = SITES_LOCATION . '/' . $site['FriendlyId'] . '/templates/';
+    // publish components polyfil
+    $src = $dir.'/respond-components/bower_components/webcomponentsjs';
+    $dest = app()->basePath().'/public/sites/'.$site->Id.'/components/lib';
+
+    // copy the directory
+    Utilities::CopyDirectory($src, $dest);
+
+    // paths to build file
+    $src = $dir.'/respond-components/respond-build.html';
+    $dest = app()->basePath().'/public/sites/'.$site->Id.'/components/respond-build.html';
+
+    // make directory
+    $dir = app()->basePath().'/public/sites/'.$site->Id.'/components/';
+
+    if(!file_exists($dir)){
+			mkdir($dir, 0777, true);
+		}
+
+    // copy build file
+    copy($src, $dest);
+
+  }
+
+  /**
+   * Generates default content for the site
+   *
+   * @param {Site} $site
+   */
+  public static function PublishDefaultContent($site, $user) {
+
+    $yaml = new Parser();
+
+    $file = app()->basePath().'/resources/themes/'.$site->Theme.'/theme.yaml';
+    $timestamp = gmdate('D M d Y H:i:s O', time());
+
+    if(file_exists($file)) {
+
+       $arr = $yaml->parse(file_get_contents($file));
+
+       foreach($arr['Pages'] as $page) {
+
+        $url = $page['Url'];
+        $title = $page['Title'];
+        $description = $page['Description'];
+        $source = $page['Source'];
+        $layout = $page['Layout'];
+
+        // get source
+        $source = app()->basePath().'/resources/themes/'.$site->Theme.'/'.$page['Source'];
+
+        if(file_exists($source)) {
+
+          $content = file_get_contents($source);
+
+          // add page
+          $data = array(
+            'Title' => $title,
+            'Description' => $description,
+            'Keywords' => '',
+            'Callout' => '',
+            'Url' => $url,
+            'Layout' => $layout,
+            'Language' => 'en',
+            'LastModifiedBy' => $user->Email,
+            'LastModifiedDate' => $timestamp
+          );
+
+          // add a page
+          Page::Add($data, $site, $user, $content);
+
+        }
+
+       }
+
+     }
+
+  }
+
+  /**
+   * Publishes the page
+   *
+   * @param {Site} $site
+   * @param {Page} $page
+   * @param {User} $user
+   */
+  public static function PublishPage($site, $page, $user) {
+
+    $dest = app()->basePath().'/public/sites/'.$site->Id;
+
     $imageurl = $dest . 'files/';
-    $siteurl  = $site['Domain'] . '/';
-
-    $friendlyId = $page['FriendlyId'];
+    $siteurl  = $site->Domain . '/';
 
     $url  = '';
-    $file = '';
-
-    // set full destination
-    if ($preview == true) {
-      $dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/templates/preview/';
-    } else {
-      $dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/templates/page/';
-    }
-
-    // create directory if it does not exist
-    if (!file_exists($dest)) {
-      mkdir($dest, 0755, true);
-    }
-
-    // set friendlyId
-    $file = $page['FriendlyId'] . '.html';
-
-    // initialize PT
-    $pageType = NULL;
-
-    // create a nice path to store the file
-    if ($page['PageTypeId'] != -1) {
-
-      $pageType = PageType::GetByPageTypeId($page['PageTypeId']);
-
-      // prepend the friendlyId to the fullname
-      if ($pageType != null) {
-
-        $path = str_replace('/', '.', $pageType['FriendlyId']);
-
-        $file = strtolower($path) . '.' . $file;
-      } else {
-        $file = 'uncategorized.' . $file;
-      }
-
-    }
-
-    // generate default
-    $html = '';
-
-    if ($preview == true) {
-      $html = $page['Draft'];
-    } else {
-      $html = $page['Content'];
-    }
-
-    if (!empty($html)) {
-
-      // parse the html for menus
-      $html = str_get_html($html, true, true, DEFAULT_TARGET_CHARSET, false, DEFAULT_BR_TEXT);
-
-      // generate the [render=publish] components
-      $html = Publish::GenerateRenderAtPublish($html, $site, $page);
-
-      // applies the style attributes to the $html
-      $html = Publish::ApplyStyleAttributes($html, $site);
-
-      // applies the mustache syntax
-      $html = Publish::ApplyMustacheSyntax($html, $site, $page);
-
-    } else {
-      $html = '';
-    }
-
-    // remove any drafts associated with the page
-    if ($remove_draft == true) {
-
-      // remove a draft from the page
-      Page::RemoveDraft($page['PageId']);
-
-    }
-
-    // save the content to the published file
-    Utilities::SaveContent($dest, $file, $html);
-
-    return $dest . $file;
-
-  }
-
-
-  // publishes a static version of the page
-  public static function PublishStaticPage($page, $site, $preview = false, $remove_draft = false)
-  {
-
-    $dest     = SITES_LOCATION . '/' . $site['FriendlyId'] . '/';
-    $imageurl = $dest . 'files/';
-    $siteurl  = $site['Domain'] . '/';
-
-    $friendlyId = $page['FriendlyId'];
-
-    $url  = '';
-    $file = '';
-
-    // created ctrl
-    $ctrl = ucfirst($page['FriendlyId']);
-    $ctrl = str_replace('-', '', $ctrl);
+    $file = $page->Url;
 
     // set base
     $base = '';
 
-    // create a static location for the page
-    if ($page['PageTypeId'] == -1) {
-      $url  = $page['FriendlyId'] . '.html';
-      $dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/';
-    } else {
-      $pageType = PageType::GetByPageTypeId($page['PageTypeId']);
+    // explode url by '/'
+		$parts = explode('/', $page->Url);
 
-      $dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/uncategorized/';
-
-      if ($pageType != null) {
-        $dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/' . $pageType['FriendlyId'] . '/';
-
-        // created ctrl
-        $ctrl = ucfirst($pageType['FriendlyId']) . $ctrl;
-        $ctrl = str_replace('-', '', $ctrl);
-      }
-
-      // explode friendlyid by '/'
-      $parts = explode('/', $pageType['FriendlyId']);
-
-      // set base based on the depth
-      foreach ($parts as $part) {
-        $base .= '../';
-      }
-
-    }
-
-    // create directory if it does not exist
-    if (!file_exists($dest)) {
-      mkdir($dest, 0755, true);
-    }
+		// set base based on the depth
+		if(sizeof($parts) == 1) {
+  		$base = '';
+		}
+		else {
+  		$base = str_repeat('../', sizeof($parts)-1);
+		}
 
     // generate default
     $html    = '';
     $content = '';
 
-    // get index and layout (file_get_contents)
-    $index  = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $site['Theme'] . '/layouts/index.html';
-    $layout = SITES_LOCATION . '/' . $site['FriendlyId'] . '/themes/' . $site['Theme'] . '/layouts/' . $page['Layout'] . '.html';
+    // get layout from theme
+    $layout = $dest . '/themes/' . $site->Theme . '/layouts/' . $page->Layout . '.html';
 
-    // get index html
-    if (file_exists($index)) {
-      $html = file_get_contents($index);
-    }
-
-    // get layout html
+    // get fragment html
     if (file_exists($layout)) {
-      $layout_html = file_get_contents($layout);
 
-      // set class
-      $cssClass = $page['Stylesheet'];
+      // get layout html
+      $html = file_get_contents($layout);
+
+      // apply mustache syntax to the layout
+      $html = Publish::ApplyMustacheSyntax($html, $site, $page, $user);
+
+      // get phpQuery of file
+      $doc = \phpQuery::newDocument($html);
 
       // set show-cart, show-settings, show-languages, show-login
-      if ($site['ShowCart'] == 1) {
-        $cssClass .= ' show-cart';
+      if ($site->ShowCart == 1) {
+        $doc['body']->addClass('show-cart');
       }
 
-      if ($site['ShowSettings'] == 1) {
-        $cssClass .= ' show-settings';
+      if ($site->ShowSearch == 1) {
+        $doc['body']->addClass('show-search');
       }
-
-      if ($site['ShowLanguages'] == 1) {
-        $cssClass .= ' show-languages';
-      }
-
-      if ($site['ShowLogin'] == 1) {
-        $cssClass .= ' show-login';
-      }
-
-      $html = str_replace('<body ui-view></body>', '<body page="' . $page['PageId'] . '" class="' . $cssClass . '">' . $layout_html . '</body>', $html);
-      $html = str_replace('<body></body>', '<body page="' . $page['PageId'] . '" class="' . $cssClass . '">' . $layout_html . '</body>', $html);
-    }
-
-    // get draft/content
-    if ($preview == true) {
-      $file    = $page['FriendlyId'] . '.preview.html';
-      $content = $page['Draft'];
-    } else {
-      $file    = $page['FriendlyId'] . '.html';
-      $content = $page['Content'];
-    }
-
-    // replace respond-content for layout with content
-    $html = str_replace('<respond-content id="main-content" url="{{page.Url}}"></respond-content>', $content, $html);
-
-    // remove any drafts associated with the page
-    if ($remove_draft == true) {
-
-      // remove a draft from the page
-      Page::RemoveDraft($page['PageId']);
 
     }
 
-    if ($html !== NULL) {
-
-      // parse the html for menus
-      $html = str_get_html($html, true, true, DEFAULT_TARGET_CHARSET, false, DEFAULT_BR_TEXT);
+    if ($doc !== NULL) {
 
       // generate the [render=publish] components
-      $html = Publish::GenerateRenderAtPublish($html, $site, $page);
+      $doc = Publish::GenerateRenderAtPublish($doc, $site, $page);
 
-      // applies the style attributes to the $html
-      $html = Publish::ApplyStyleAttributes($html, $site);
+      // get html
+      $html = $doc->htmlOuter();
 
       // applies the mustache syntax
-      $html = Publish::ApplyMustacheSyntax($html, $site, $page);
+      $html = Publish::ApplyMustacheSyntax($html, $site, $page, $user);
 
     } else {
       $html = '';
@@ -1194,387 +418,220 @@ class Publish
     // update base
     $html = str_replace('<base href="/">', '<base href="' . $base . '">', $html);
 
-    // save the content to the published file
-    Utilities::SaveContent($dest, $file, $html);
+    // file location
+    $location = $dest.'/'.$file.'.html';
 
-    return $dest . $file;
+    $dir = dirname($location);
+
+    // make directory
+    if(!file_exists($dir)){
+			mkdir($dir, 0777, true);
+		}
+
+    // save the publishe file
+    file_put_contents($location, $html);
+
+    return $location;
 
   }
 
-  // generate the [render=publish] components
-  public static function GenerateRenderAtPublish($html, $site, $page)
-  {
+  /**
+   * Generates the render=publish tags
+   *
+   * @param {PhpQueryDoc} $doc
+   * @param {Site} $site
+   * @param {Page} $page
+   */
+  public static function GenerateRenderAtPublish($doc, $site, $page) {
 
     // set images URL
-    $imagesURL = $site['Domain'] . '/';
+    $imagesUrl = $site->Domain . '/';
+    $yaml = new Parser();
+    $ext = '.html';
 
-    // build out the menus where render is set to publish
-    foreach ($html->find('respond-menu[render=publish]') as $el) {
-
-      // get the type
-      if ($el->type) {
-
-        $type = $el->type;
-
-        // init menu
-        $menu = '<ul';
-
-        // set class if applicable
-        if (isset($el->class)) {
-          $menu .= ' class="' . $el->class . '">';
-        } else {
-          $menu .= '>';
-        }
-
-        // get items for type
-        $menuItems   = MenuItem::GetMenuItemsForType($site['SiteId'], $type);
-        $i           = 0;
-        $parent_flag = false;
-        $new_parent  = true;
-
-        // walk through items
-        foreach ($menuItems as $menuItem) {
-          $url      = $menuItem['Url'];
-          $name     = $menuItem['Name'];
-          $css      = '';
-          $cssClass = '';
-          $active   = '';
-
-          if ($page['PageId'] == $menuItem['PageId']) {
-            $css = 'active';
-          }
-
-          $css .= ' ' . $menuItem['CssClass'];
-
-          if (trim($css) != '') {
-            $cssClass = ' class="' . $css . '"';
-          }
-
-          // check for new parent
-          if (isset($menuItems[$i + 1])) {
-            if ($menuItems[$i + 1]['IsNested'] == 1 && $new_parent == true) {
-              $parent_flag = true;
-            }
-          }
-
-          $menu_root = '/';
-
-          // check for external links
-          if (strpos($url, 'http') !== false) {
-            $menu_root = '';
-          }
-
-          if ($new_parent == true && $parent_flag == true) {
-            $menu .= '<li class="dropdown">';
-            $menu .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">' . $menuItem['Name'] . ' <span class="caret"></span></a>';
-            $menu .= '<ul class="dropdown-menu">';
-            $new_parent = false;
-          } else {
-            $menu .= '<li' . $cssClass . '>';
-            $menu .= '<a href="' . $url . '">' . $menuItem['Name'] . '</a>';
-            $menu .= '</li>';
-          }
-
-          // end parent
-          if (isset($menuItems[$i + 1])) {
-            if ($menuItems[$i + 1]['IsNested'] == 0 && $parent_flag == true) {
-              $menu .= '</ul></li>'; // end parent if next item is not nested
-              $parent_flag = false;
-              $new_parent  = true;
-            }
-          } else {
-            if ($parent_flag == true) {
-              $menu .= '</ul></li>'; // end parent if next menu item is null
-              $parent_flag = false;
-              $new_parent  = true;
-            }
-          }
-
-          $i = $i + 1;
-        }
-
-        $menu .= '</ul>';
-
-        $el->outertext = $menu;
-
-
-      }
-      /* isset */
-
+    if(env('FRIENDLY_URLS') === true) {
+      $ext = '';
     }
-    /* foreach */
+
+    foreach ($doc['respond-menu[render=publish]'] as $el) {
+
+      $type = pq($el)->attr('type');
+      $cssClass = pq($el)->attr('class');
+
+			// get the type
+			if($type != NULL) {
+
+				// get yaml for menu
+				$file = app()->basePath().'/public/sites/'.$site->Id.'/data/menus/'.$type.'.yaml';
+
+				if(file_exists($file)) {
+
+  				// init menu
+  				$menu = '<ul';
+
+  				// set class if applicable
+  				if($cssClass != ''){
+  					$menu .= ' class="'.$cssClass.'" respond-menu type="'.$type.'">';
+  				}
+  				else{
+  					$menu .= ' respond-menu type="'.$type.'">';
+  				}
+
+  				// get items for type
+  				$menuItems = $yaml->parse(file_get_contents($file));
+
+			    $i = 0;
+			    $parent_flag = false;
+			    $new_parent = true;
+
+          // walk through items
+  			  foreach($menuItems as $menuItem){
+
+            $name = $menuItem['Name'];
+            $cssClass = $menuItem['CssClass'];
+            $url = $menuItem['Url'];
+            $priority = $menuItem['Priority'];
+            $isNested = $menuItem['IsNested'];
+
+            // set active
+            if($page->Url == $url) {
+              $cssClass .= ' active';
+            }
+
+  					// check for new parent
+  					if(isset($arr[$i+1])){
+  						if($menuItems[$i+1]['IsNested'] == true && $new_parent==true){
+  							$parent_flag = true;
+  						}
+  					}
+
+  					$menu_root = '/';
+
+  					// check for external links
+  					if(strpos($url,'http') !== false) {
+  					    $menu_root = '';
+  					}
+
+  					if($new_parent == true && $parent_flag == true){
+  						$menu .= '<li class="dropdown">';
+  						$menu .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">'.$menuItem['Name'].' <span class="caret"></span></a>';
+  						$menu .= '<ul class="dropdown-menu">';
+  						$new_parent = false;
+  					}
+  					else{
+  				    	$menu .= '<li'.$cssClass.'>';
+  						$menu .= '<a href="'.$url.$ext.'">'.$menuItem['Name'].'</a>';
+  						$menu .= '</li>';
+  				    }
+
+  				    // end parent
+  				    if(isset($menuItems[$i+1])){
+  						if($menuItems[$i+1]['IsNested'] == false && $parent_flag==true){
+  							$menu .= '</ul></li>'; // end parent if next item is not nested
+  							$parent_flag = false;
+  							$new_parent = true;
+  						}
+  					}
+  					else{
+  						if($parent_flag == true){
+  							$menu .= '</ul></li>'; // end parent if next menu item is null
+  							$parent_flag = false;
+  							$new_parent = true;
+  						}
+  					}
+
+  					$i = $i+1;
+  				}
+
+  				$menu .= '</ul>';
+
+  				pq($el)->replaceWith($menu);
+
+        }
+
+
+			}
+			/* isset */
+
+		}
+		/* foreach */
 
     // replace content where render is set to publish
-    foreach ($html->find('respond-content[render=publish]') as $el) {
+    foreach ($doc['respond-content[render=publish]'] as $el) {
+
+      $url = pq($el)->attr('url');
 
       // get the url
-      if (isset($el->url)) {
-
-        $url = $el->url;
-        $url = Publish::ApplyMustacheSyntax($url, $site, $page);
+      if (isset($url)) {
 
         // replace the / with a period
         $url = str_replace('/', '.', $url);
         $url .= '.html';
+
+        // default is blank
         $content_html = '';
 
-        // get the content from the site
-        $content_dest = SITES_LOCATION . '/' . $site['FriendlyId'] . '/templates/page/' . $url;
+        // get location of content html
+        $dest = app()->basePath().'/public/sites/'.$site->Id;
+        $content_dest = $dest . '/fragments/page/' . $url;
 
+        // get contents
         if (file_exists($content_dest)) {
           $content_html = file_get_contents($content_dest);
         }
 
         // update images url
-        $content_html = str_replace('{{site.ImagesUrl}}', $imagesURL, $content_html);
-        $content_html = str_replace('{{site.ImagesURL}}', $imagesURL, $content_html);
+        $content_html = str_replace('{{site.ImagesUrl}}', $imagesUrl, $content_html);
 
         // set outer text
         if ($content_html != '') {
-          $el->outertext = $content_html;
+          pq($el)->replaceWith($content_html);
         }
+        
+    
       }
 
     }
     /* foreach */
-
-    return $html;
+    
+    // recursively call generate if needed
+    if(sizeof($doc['[render=publish]']) > 0) {
+      $doc = Publish::GenerateRenderAtPublish($doc, $site, $page);
+    }
+    
+    return $doc;
 
   }
 
-  // applies the style attributes
-  public static function ApplyStyleAttributes($html, $site)
-  {
-
-    $imagesURL = $site['Domain'] . '/';
-
-    // replace background color
-    foreach ($html->find('[backgroundcolor]') as $el) {
-
-      // set existing style
-      $style = '';
-
-      if (isset($el->style)) {
-        $style = $el->style . ' ';
-      }
-
-      // if it is nested, break
-      if (isset($el->{'data-nested'})) {
-
-        if ($el->{'data-nested'} != 'nested') {
-          $el->style = $style . 'background-color: ' . $el->backgroundcolor . ';';
-        }
-
-      } else {
-        $el->style = $style . 'background-color: ' . $el->backgroundcolor . ';';
-      }
-
-
-    }
-    /* foreach */
-
-
-    // replace background image
-    foreach ($html->find('[backgroundimage]') as $el) {
-
-      // set existing style
-      $style = '';
-
-      if (isset($el->style)) {
-        $style = $el->style . ' ';
-      }
-
-      $backgroundimage = $el->backgroundimage;
-      $backgroundstyle = 'cover';
-
-      // add site url for files that start with files
-      if (substr($backgroundimage, 0, 5) === "files") {
-        $backgroundimage = $imagesURL . $el->backgroundimage;
-      }
-
-      // set background style
-      if (isset($el->backgroundstyle)) {
-        $backgroundstyle = $el->backgroundstyle;
-      }
-
-      // if it is nested, break
-      if (isset($el->{'data-nested'})) {
-
-        if ($el->{'data-nested'} != 'nested') {
-
-          if ($backgroundstyle == 'parallax') {
-            $el->{'data-parallax'}  = 'scroll';
-            $el->{'data-image-src'} = $backgroundimage;
-          } else if ($backgroundstyle == 'repeat') {
-            $el->style = $style . 'background-image: url(' . $backgroundimage . '); background-repeat: repeat;';
-          } else {
-            $el->style = $style . 'background-image: url(' . $backgroundimage . '); background-size: cover; background-position: center center;';
-
-          }
-
-
-        }
-
-      } else {
-        if ($backgroundstyle == 'parallax') {
-          $el->{'data-parallax'}  = 'scroll';
-          $el->{'data-image-src'} = $backgroundimage;
-        } else if ($backgroundstyle == 'repeat') {
-          $el->style = $style . 'background-image: url(' . $backgroundimage . '); background-repeat: repeat;';
-        } else {
-          $el->style = $style . 'background-image: url(' . $backgroundimage . '); background-size: cover; background-position: center center;';
-
-        }
-      }
-
-
-    }
-    /* foreach */
-
-    // replace textcolor
-    foreach ($html->find('[textcolor]') as $el) {
-
-      // if it is nested, break
-      if (isset($el->style)) {
-        $el->style = $el->style . ' color: ' . $el->textcolor . ';';
-      } else {
-        $el->style = 'color: ' . $el->textcolor . ';';
-      }
-
-    }
-    /* foreach */
-
-    // replace paddingtop
-    foreach ($html->find('[paddingtop]') as $el) {
-
-      // if it is nested, break
-      if (isset($el->style)) {
-        $el->style = $el->style . ' padding-top: ' . $el->paddingtop . 'px;';
-      } else {
-        $el->style = 'padding-top: ' . $el->paddingtop . 'px;';
-      }
-
-    }
-    /* foreach */
-
-    // replace paddingright
-    foreach ($html->find('[paddingright]') as $el) {
-
-      // if it is nested, break
-      if (isset($el->style)) {
-        $el->style = $el->style . ' padding-right: ' . $el->paddingright . 'px;';
-      } else {
-        $el->style = 'padding-right: ' . $el->paddingright . 'px;';
-      }
-
-    }
-    /* foreach */
-
-    // replace paddingbottom
-    foreach ($html->find('[paddingbottom]') as $el) {
-
-      // if it is nested, break
-      if (isset($el->style)) {
-        $el->style = $el->style . ' padding-bottom: ' . $el->paddingbottom . 'px;';
-      } else {
-        $el->style = 'padding-bottom: ' . $el->paddingbottom . 'px;';
-      }
-
-    }
-    /* foreach */
-
-    // replace paddingleft
-    foreach ($html->find('[paddingleft]') as $el) {
-
-      // if it is nested, break
-      if (isset($el->style)) {
-        $el->style = $el->style . ' padding-left: ' . $el->paddingleft . 'px;';
-      } else {
-        $el->style = 'padding-left: ' . $el->paddingleft . 'px;';
-      }
-
-    }
-    /* foreach */
-
-    // replace textshadowcolor
-    foreach ($html->find('[textshadowcolor]') as $el) {
-
-
-      $color      = $el->textshadowcolor;
-      $horizontal = '1px';
-      $vertical   = '1px';
-      $blur       = '1px';
-
-      if (isset($el->textshadowhorizontal)) {
-        $horizontal = $el->textshadowhorizontal;
-      }
-
-      if (isset($el->textshadowvertical)) {
-        $vertical = $el->textshadowblur;
-      }
-
-      if (isset($el->textshadowvertical)) {
-        $blur = $el->textshadowblur;
-      }
-
-      // build shadow
-      $textshadow = $horizontal . ' ' . $vertical . ' ' . $blur . ' ' . $color . ';';
-
-
-      // if it is nested, break
-      if (isset($el->style)) {
-        $el->style = $el->style . ' text-shadow: ' . $textshadow;
-      } else {
-        $el->style = 'text-shadow: ' . $textshadow;
-      }
-
-    }
-    /* foreach */
-
-    // replace textsize
-    foreach ($html->find('[textsize]') as $el) {
-
-      $textsize = $el->textsize;
-
-      $el->innertext = '<span style="font-size:' . $textsize . '">' . $el->innertext . '</span>';
-
-    }
-    /* foreach */
-
-    return $html;
-
-  }
-
-
-  // applies the mustache syntax
-  public static function ApplyMustacheSyntax($html, $site, $page)
-  {
+  /**
+   * Generates the render=publish tags
+   *
+   * @param {string} $html
+   * @param {Site} $site
+   * @param {Page} $page
+   * @param {User} $user
+   */
+  public static function ApplyMustacheSyntax($html, $site, $page, $user) {
 
     // meta data
-    $photo            = '';
-    $firstName        = '';
-    $lastName         = '';
-    $lastModifiedDate = $page['LastModifiedDate'];
+    $photo = '';
+    $name = '';
+    $lastModifiedDate = $page->LastModifiedDate;
 
     // replace last modified
-    if ($page['LastModifiedBy'] != NULL) {
-
-      // get user
-      $user = User::GetByUserId($page['LastModifiedBy']);
+    if ($page->LastModifiedBy != NULL) {
 
       // set user infomration
       if ($user != NULL) {
-        $photo     = $user['PhotoUrl'];
-        $firstName = $user['FirstName'];
-        $lastName  = $user['LastName'];
+        $photoUrl = $site->Domain . '/files/'.$user->Photo;
+        $name = $user->Name;
       }
 
     }
 
     // set page information
-    $html = str_replace('{{page.PhotoUrl}}', $photo, $html);
-    $html = str_replace('{{page.FirstName}}', $firstName, $html);
-    $html = str_replace('{{page.LastName}}', $lastName, $html);
+    $html = str_replace('{{page.PhotoUrl}}', $photoUrl, $html);
+    $html = str_replace('{{page.Title}}', $page->Title, $html);
     $html = str_replace('{{page.LastModifiedDate}}', $lastModifiedDate, $html);
 
     // replace timestamp
@@ -1584,54 +641,46 @@ class Publish
     $html = str_replace('{{year}}', date('Y'), $html);
 
     // set images URL
-    $imagesURL = $site['Domain'] . '/';
+    $imagesUrl = 'files/';
 
     // set iconURL
-    $iconURL = '';
+    $iconUrl = '';
 
-    if ($site['IconUrl'] != '') {
-      $iconURL = $imagesURL . 'files/' . $site['IconUrl'];
+    if ($site->Icon != '') {
+      $iconUrl = 'files/' . $site->Icon;
     }
 
     // replace
     $html = str_replace('ng-src', 'src', $html);
-    $html = str_replace('{{site.ImagesUrl}}', $imagesURL, $html);
-    $html = str_replace('{{site.ImagesURL}}', $imagesURL, $html);
-    $html = str_replace('{{site.IconUrl}}', $iconURL, $html);
+    $html = str_replace('{{site.ImagesUrl}}', $imagesUrl, $html);
+    $html = str_replace('{{site.IconUrl}}', $iconUrl, $html);
 
     // set fullLogo
-    $html = str_replace('{{fullLogoUrl}}', $imagesURL . 'files/' . $site['LogoUrl'], $html);
+    $html = str_replace('{{site.LogoUrl}}', 'files/' . $site->Logo, $html);
 
     // set altLogo (defaults to full logo if not available)
-    if ($site['AltLogoUrl'] != '' && $site['AltLogoUrl'] != NULL) {
-      $html = str_replace('{{fullAltLogoUrl}}', $imagesURL . 'files/' . $site['AltLogoUrl'], $html);
-    } else {
-      $html = str_replace('{{fullAltLogoUrl}}', $imagesURL . 'files/' . $site['LogoUrl'], $html);
+    if ($site->AltLogo != '' && $site->AltLogo != NULL) {
+      $html = str_replace('{{site.AltLogoUrl}}', 'files/' . $site->AltLogo, $html);
+    } 
+    else {
+      $html = str_replace('{{site.AltLogoUrl}}', 'files/' . $site->Logo, $html);
     }
 
     // set urls
-    $relativeURL = $page['FriendlyId'];
+    $relativeURL = $page->Url;
 
-    if ($page['PageTypeId'] != -1) {
-      $pageType    = PageType::GetByPageTypeId($page['PageTypeId']);
-      $relativeURL = strtolower($pageType['FriendlyId']) . '/' . $page['FriendlyId'];
-    }
-
-    $fullURL = $site['Domain'] . '/' . $relativeURL;
-
+    $fullURL = $site->Domain . '/' . $relativeURL;
 
     // replace mustaches syntax {{page.Description}} {{site.Name}}
-    $html = str_replace('{{page.Name}}', $page['Name'], $html);
-    $html = str_replace('{{page.Description}}', $page['Description'], $html);
-    $html = str_replace('{{page.Keywords}}', $page['Keywords'], $html);
-    $html = str_replace('{{page.Callout}}', $page['Callout'], $html);
-    $html = str_replace('{{site.Name}}', $site['Name'], $html);
-    $html = str_replace('{{site.Language}}', $site['Language'], $html);
-    $html = str_replace('{{site.Direction}}', $site['Direction'], $html);
-    $html = str_replace('{{site.IconBg}}', $site['IconBg'], $html);
-    $html = str_replace('{{site.EmbeddedCodeHead}}', $site['EmbeddedCodeHead'], $html);
-    $html = str_replace('{{site.EmbeddedCodeBottom}}', $site['EmbeddedCodeBottom'], $html);
-    $html = str_replace('{{page.FullStylesheetUrl}}', 'css/' . $page['Stylesheet'] . '.css', $html);
+    $html = str_replace('{{page.Title}}', $page->Title, $html);
+    $html = str_replace('{{page.Name}}', $page->Title, $html);
+    $html = str_replace('{{page.Description}}', $page->Description, $html);
+    $html = str_replace('{{page.Keywords}}', $page->Keywords, $html);
+    $html = str_replace('{{page.Callout}}', $page->Callout, $html);
+    $html = str_replace('{{site.Name}}', $site->Name, $html);
+    $html = str_replace('{{site.Language}}', $site->Language, $html);
+    $html = str_replace('{{site.Direction}}', $site->Direction, $html);
+    $html = str_replace('{{site.IconBg}}', $site->Color, $html);
 
     // urls
     $html = str_replace('{{page.Url}}', $relativeURL, $html);
@@ -1639,16 +688,6 @@ class Publish
 
     return $html;
 
-  }
-
-  // removes a draft of the page
-  public static function RemoveDraft($pageId)
-  {
-
-    // remove a draft from the page
-    Page::RemoveDraft($pageId);
-
-    return false;
   }
 
 }

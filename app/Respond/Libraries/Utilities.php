@@ -12,10 +12,10 @@ class Utilities
      * @param {string} $path the recipient's email address
      * @return {Array} list of HTML fiels
      */
-    public static function ListPages($dir, $userId, $friendlyId) {
+    public static function ListPages($dir, $email, $siteId) {
 
       // list files
-      $files = Utilities::ListFiles($dir, $friendlyId);
+      $files = Utilities::ListFiles($dir, $siteId);
 
       // setup array to return
       $arr = array();
@@ -26,37 +26,43 @@ class Utilities
       foreach($files as $file){
 
         // defaults
-        $name = '';
+        $title = '';
         $description = '';
         $keywords = '';
+        $callout = '';
         $layout = 'content';
-        $stylesheet = 'content';
         $url = $file;
 
         if($url == 'index.html') {
           $layout = 'home';
-          $stylesheet = 'home';
         }
 
         // set full file path
-        $file = app()->basePath().'/public/sites/'.$friendlyId.'/'.$file;
+        $file = app()->basePath().'/public/sites/'.$siteId.'/'.$file;
 
         // open with phpQuery
         \phpQuery::newDocumentFileHTML($file);
 
-        $name = pq('title')->html();
+        $title = pq('title')->html();
         $description = pq('meta[name=description]')->attr('content');
         $keywords = pq('meta[name=keywords]')->attr('content');
 
+        // cleanup url
+        $url = ltrim($url, '/');
+
+        // strip any trailing .html from url
+        $url = preg_replace('/\\.[^.\\s]{3,4}$/', '', $url);
+
         // push array
         array_push($arr, array(
-                'Name' => $name,
+                'Title' => $title,
                 'Description' => $description,
                 'Keywords' => $keywords,
+                'Callout' => $callout,
                 'Url' => $url,
                 'Layout' => $layout,
-                'Stylesheet' => $stylesheet,
-                'LastModifiedBy' => $userId,
+                'Language' => 'en',
+                'LastModifiedBy' => $email,
                 'LastModifiedDate' => $timestamp
                 ));
 
@@ -72,7 +78,7 @@ class Utilities
      * @param {string} $path the recipient's email address
      * @return {Array} list of HTML fiels
      */
-    public static function ListFiles($dir, $friendlyId) {
+    public static function ListFiles($dir, $siteId) {
 
 	    $root = scandir($dir);
 
@@ -80,8 +86,8 @@ class Utilities
   	    $result = array();
 	    }
 
-      foreach($root as $value)
-      {
+      foreach($root as $value) {
+      
           if($value === '.' || $value === '..' || $value === '.htaccess') {
             continue;
           }
@@ -94,9 +100,9 @@ class Utilities
 
             //echo $ext;
             if($ext == 'html') {
-              $paths = explode('sites/'.$friendlyId.'/', "$dir/$value");
+              $paths = explode('sites/'.$siteId.'/', "$dir/$value");
 
-              $restrict = array('components/', 'css/', 'data/', 'files/', 'js/', 'locales/', 'templates/', 'themes/');
+              $restrict = array('components/', 'css/', 'data/', 'files/', 'js/', 'locales/', 'fragments/', 'themes/');
 
               $is_restricted = FALSE;
 
@@ -122,7 +128,7 @@ class Utilities
             continue;
           }
 
-          foreach(Utilities::ListFiles("$dir/$value", $friendlyId) as $value)
+          foreach(Utilities::ListFiles("$dir/$value", $siteId) as $value)
           {
               $result[]=$value;
           }
@@ -140,11 +146,11 @@ class Utilities
      * @param {string} $path the recipient's email address
      * @return {Array} list of HTML fiels
      */
-    public static function ListRoutes($dir, $friendlyId) {
+    public static function ListRoutes($dir, $siteId) {
 
       $result = array();
 
-      $restrict = array('components', 'css', 'data', 'files', 'js', 'locales', 'templates', 'themes');
+      $restrict = array('components', 'css', 'data', 'files', 'js', 'locales', 'fragments', 'themes');
 
       $cdir = scandir($dir);
 
@@ -154,7 +160,7 @@ class Utilities
 
            if (is_dir("$dir/$value")) {
 
-              $paths = explode('sites/'.$friendlyId.'/', "$dir/$value");
+              $paths = explode('sites/'.$siteId.'/', "$dir/$value");
 
               $is_restricted = FALSE;
 
@@ -169,7 +175,7 @@ class Utilities
 
               if($is_restricted === FALSE){
 
-                $arr = Utilities::ListRoutes("$dir/$value", $friendlyId);
+                $arr = Utilities::ListRoutes("$dir/$value", $siteId);
 
                 $result[] = '/'.$paths[1];
                 $result = array_merge($result, $arr);
@@ -281,13 +287,12 @@ class Utilities
      * @param {string} $siteId the id of the site
      * @return void
      */
-    public static function CreateJWTToken($userId, $siteId, $friendlyId){
+    public static function CreateJWTToken($email, $siteId){
 
 	    // create token
   		$token = array(
-  		    'UserId' => $userId,
+  		    'Email' => $email,
   		    'SiteId' => $siteId,
-  		    'FriendlyId' => $friendlyId,
   		    'Expires' => (strtotime('NOW') + (3*60*60)) // expires in an hour
   		);
 
@@ -367,5 +372,32 @@ class Utilities
   		@fwrite($fp, $content); // save the contents of output buffer to the file
   		@fclose($fp);
   	}
+  	
+  	/**
+     * Copies a directory
+     *
+     * @param {string} $src the source
+     * @param {string} $dst the destination
+     * @return void
+     */
+    public static function CopyDirectory($src, $dst){ 
+      $dir = opendir($src); 
+      
+      if(!file_exists($dst)){
+  			mkdir($dst, 0777, true);
+  		}
+      
+      while(false !== ( $file = readdir($dir)) ) { 
+        if (( $file != '.' ) && ( $file != '..' )) { 
+            if ( is_dir($src . '/' . $file) ) { 
+                Utilities::CopyDirectory($src . '/' . $file,$dst . '/' . $file); 
+            } 
+            else { 
+                copy($src . '/' . $file,$dst . '/' . $file); 
+            } 
+        } 
+      } 
+      closedir($dir); 
+    }
 
 }

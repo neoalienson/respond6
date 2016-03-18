@@ -10,6 +10,8 @@ export class PageService {
 
   private _listUrl = 'api/pages/list';
   private _addUrl = 'api/pages/add';
+  private _updateSettingsUrl = 'api/pages/settings';
+  private _removePageUrl = 'api/pages/remove';
 
   /**
    * Lists pages
@@ -22,8 +24,9 @@ export class PageService {
   /**
    * Adds a page
    *
-   * @param {string} id The site id
-   * @param {string} email The user's login email
+   * @param {string} url
+   * @param {string} title
+   * @param {string} description
    * @return {Observable}
    */
   add (url: string, title: string, description: string) {
@@ -33,6 +36,44 @@ export class PageService {
     let options = new RequestOptions({ headers: headers });
 
     return this.authHttp.post(this._addUrl, body, options);
+
+  }
+  
+  /**
+   * Updates the settings for a page 
+   *
+   * @param {string} url
+   * @param {string} title
+   * @param {string} description
+   * @param {string} keywords
+   * @param {string} callout
+   * @param {string} layout
+   * @param {string} language
+   * @return {Observable}
+   */
+  updateSettings (url: string, title: string, description: string, keywords: string, callout: string, layout: string, language: string) {
+  
+    let body = JSON.stringify({ url, title, description, keywords, callout, layout, language });
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.authHttp.post(this._updateSettingsUrl, body, options);
+
+  }
+  
+  /**
+   * Removes the page
+   *
+   * @param {string} url
+   * @return {Observable}
+   */
+  remove (url: string) {
+  
+    let body = JSON.stringify({ url });
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.authHttp.post(this._removePageUrl, body, options);
 
   }
 
