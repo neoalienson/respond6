@@ -58,7 +58,8 @@ class UserController extends Controller
         // return a subset of the user array
         $returned_user = array(
         	'Email' => $user->Email,
-        	'Name' => $user->Name,
+        	'FirstName' => $user->FirstName,
+        	'LastName' => $user->LastName,
         	'Photo' => $user->Photo,
         	'FullPhotoUrl' => $fullPhotoUrl,
         	'Language' => $user->Language,
@@ -98,22 +99,22 @@ class UserController extends Controller
 
     $email = $request->json()->get('email');
     $id = $request->json()->get('id');
-    
+
     // get site
     $site = Site::GetById($id);
-    
+
     if($site != NULL) {
-      
+
       // get user
       $user = User::GetByEmail($site->Id, $email);
-      
+
       if($user != NULL) {
-        
+
         $user->Token = uniqid();
-        
+
         // save
         $site->SaveUser($user);
-        
+
         // send email
         $to = $user->Email;
         $from = env('EMAILS_FROM');
@@ -134,11 +135,11 @@ class UserController extends Controller
         Utilities::SendEmailFromFile($to, $from, $fromName, $subject, $replace, $file);
 
         return response('OK', 200);
-        
+
       }
-      
+
     }
-    
+
     return response('Unauthorized', 401);
 
   }
@@ -154,33 +155,33 @@ class UserController extends Controller
     $token = $request->json()->get('token');
     $password = $request->json()->get('password');
     $id = $request->json()->get('id');
-    
+
     $site = Site::GetById($id);
-    
+
     if($site != NULL) {
 
       // get the user from the credentials
       $user = User::GetByToken($site->Id, $token);
-  
+
       if($user!=null){
-  
+
         // update the password
         $user->Password = password_hash($password, PASSWORD_DEFAULT);
         $user->Token = '';
-        
+
         $site->SaveUser($user);
-        
+
         // return a successful response (200)
         return response('OK', 200);
-        
+
       }
       else{
-      
+
         // return a bad request
         return response('Token invalid', 400);
-        
+
       }
-    
+
     }
     else {
       // return a bad request

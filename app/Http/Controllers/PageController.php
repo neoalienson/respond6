@@ -65,44 +65,32 @@ class PageController extends Controller
     // get request data
     $email = $request->input('email');
     $siteId = $request->input('siteId');
-    
+
     // get url & changes
     $url = $request->json()->get('url');
     $changes = $request->json()->get('changes');
-    
+
     // get site and user
     $site = Site::GetById($siteId);
     $user = User::GetByEmail($siteId, $email);
-    
+
     // remove site and .html from url
     $url = str_replace($siteId.'/', '', $url);
     $url = preg_replace('/\\.[^.\\s]{3,4}$/', '', $url);
-    
-    // content placeholder
-    $content = '';
-    
-    // get content
-    foreach($changes as $change) {
 
-      if($change['selector'] == '[role="main"]') {
-        $content = $change['html'];
-      }
-    
-    }
-    
     // edit the page
-    $success = Page::Edit($url, $content, $site, $user);
-    
+    $success = Page::Edit($url, $changes, $site, $user);
+
     // show response
     if($success == TRUE) {
       return response('OK', 200);
     }
     else {
       return response('Page not found', 400);
-    }    
+    }
 
   }
-  
+
   /**
    * Saves the page settings
    *
@@ -113,7 +101,7 @@ class PageController extends Controller
     // get request data
     $email = $request->input('email');
     $siteId = $request->input('siteId');
-    
+
     // get url & changes
     $url = $request->json()->get('url');
     $title = $request->json()->get('title');
@@ -123,7 +111,7 @@ class PageController extends Controller
     $layout = $request->json()->get('layout');
     $language = $request->json()->get('language');
     $timestamp = gmdate('D M d Y H:i:s O', time());
-    
+
     $data = array(
       'Title' => $title,
       'Description' => $description,
@@ -135,21 +123,21 @@ class PageController extends Controller
       'LastModifiedBy' => $email,
       'LastModifiedDate' => $timestamp
     );
-    
+
     // get site and user
     $site = Site::GetById($siteId);
     $user = User::GetByEmail($siteId, $email);
-    
+
     // edit the page
     $success = Page::EditSettings($data, $site, $user);
-    
+
     // show response
     if($success == TRUE) {
       return response('OK', 200);
     }
     else {
       return response('Page not found', 400);
-    }    
+    }
 
   }
 
@@ -179,7 +167,7 @@ class PageController extends Controller
 
     // strip any trailing .html from url
     $url = preg_replace('/\\.[^.\\s]{3,4}$/', '', $url);
-    
+
     // set page data
     $data = array(
       'Title' => $title,
@@ -192,10 +180,10 @@ class PageController extends Controller
       'LastModifiedBy' => $email,
       'LastModifiedDate' => $timestamp
     );
-    
+
     // add a page
     $page = Page::Add($data, $site, $user);
-    
+
     // return OK
     return response('OK, page added at = '.$page->Url, 200);
 

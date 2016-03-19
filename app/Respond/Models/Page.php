@@ -23,7 +23,7 @@ class Page {
   public $Language;
   public $LastModifiedBy;
   public $LastModifiedDate;
-  
+
   /**
    * Constructs a page from an array of data
    *
@@ -55,31 +55,31 @@ class Page {
     $dest = app()->basePath().'/public/sites/'.$site->Id;
     $name = $new_name = str_replace('/', '.', $page->Url);
     $fragment = $dest . '/fragments/page/' . $name . '.html';
-    
+
     // avoid dupes
     $x = 1;
-    
+
     while(file_exists($fragment) === TRUE) {
 
       // increment id and folder
       $new_name = $name.$x;
       $fragment = $dest . '/fragments/page/' . $new_name . '.html';
       $x++;
-    
+
     }
-    
+
     // update url
     $page->Url = str_replace('.', '/', $new_name);
     $data['Url'] = $page->Url;
-    
+
     // default html for a new page
     if($content == NULL) {
       $content = '<div class="block row"><div class="col col-md-12"><h1>'.$page->Title.'</h1><p>'.$page->Description.'</p></div></div>';
     }
-    
+
     // make directory
     $dir = $dest . '/fragments/page/';
-    
+
     if(!file_exists($dir)){
 			mkdir($dir, 0777, true);
 		}
@@ -113,7 +113,7 @@ class Page {
     return $page;
 
   }
-  
+
   /**
    * Edits a page
    *
@@ -122,34 +122,64 @@ class Page {
    * @param {user} $user object
    * @return Response
    */
-  public static function Edit($url, $content, $site, $user){
+  public static function Edit($url, $changes, $site, $user){
 
+    // get a reference to the page object
     $page = Page::GetByUrl($url, $site->Id);
-    
-    if($page != NULL) {
-    
-      // get template file from URL
+
+    // get page
+    $location = app()->basePath().'/public/sites/'.$site->Id.'/'.$url.'.html';
+
+    if($page != NULL && file_exists($location)) {
+
+      // get html
+      $html = file_get_contents($location);
+
+      // get phpQuery doc
+      $doc = \phpQuery::newDocument($html);
+
+      // content placeholder
+      $main_content = '';
+
+      // get content
+      foreach($changes as $change) {
+
+        $selector = $change['selector'];
+
+        // set main content
+        if($selector == '[role="main"]') {
+          $main_content = $change['html'];
+        }
+
+        // apply changes to the document
+        $doc[$selector]->html($change['html']);
+
+      }
+
+      echo($doc->htmlOuter());
+
+      // update the page
+      file_put_contents($location, $doc->htmlOuter());
+
+      // save the fragemnt
       $dest = app()->basePath().'/public/sites/'.$site->Id;
       $name = str_replace('/', '.', $page->Url);
       $fragment = $dest . '/fragments/page/' . $name . '.html';
-      
+
       // update template
-      file_put_contents($fragment, $content);
-      
-      // publish the page
-      Publish::PublishPage($site, $page, $user);
+      file_put_contents($fragment, $main_content);
 
       return TRUE;
-      
+
     }
     else {
-      
+
       return FALSE;
-      
+
     }
 
   }
-  
+
   /**
    * Edits the settings for a page
    *
@@ -159,30 +189,30 @@ class Page {
    * @return Response
    */
   public static function EditSettings($data, $site, $user){
-  
+
     echo($data['Url']);
-  
+
     $current_page = NULL;
-    
+
     // get pages.json
     $file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
-    
+
     if(file_exists($file)) {
-      
+
       $json = file_get_contents($file);
 
       // decode json file
       $pages = json_decode($json, true);
-      
+
       $i = 0;
-      
+
       foreach($pages as $page){
-        
+
         // update page
         if($page['Url'] == $data['Url']) {
-        
+
           echo('match');
-          
+
           $page['Title'] = $data['Title'];
           $page['Description'] = $data['Description'];
           $page['Keywords'] = $data['Keywords'];
@@ -191,42 +221,42 @@ class Page {
           $page['Language'] = $data['Language'];
           $page['LastModifiedBy'] = $data['LastModifiedBy'];
           $page['LastModifiedDate'] = $data['LastModifiedDate'];
-          
+
           // update array
           $pages[$i] = $page;
-          
+
           // create a new page
           $current_page = new Page($page);
-          
+
           $i++;
-          
+
         }
-        
+
       }
-      
+
       // save pages
       file_put_contents($file, json_encode($pages));
-      
+
     }
-    
+
     // publish
     if($current_page != NULL) {
-    
+
       // publish the page
       Publish::PublishPage($site, $current_page, $user);
 
       return TRUE;
-      
+
     }
     else {
-      
+
       return FALSE;
-      
+
     }
 
   }
-  
-  
+
+
   /**
    * Retrieves page data based on a url
    *
@@ -234,29 +264,29 @@ class Page {
    * @return Response
    */
   public static function GetByUrl($url, $id){
-  
+
     $file = app()->basePath().'/public/sites/'.$id.'/data/pages.json';
-    
+
     if(file_exists($file)) {
-      
+
       $json = file_get_contents($file);
 
       // decode json file
       $pages = json_decode($json, true);
-      
+
       foreach($pages as $page){
-        
+
         if($page['Url'] == $url) {
-          
+
           // create a new page
           return new Page($page);
-          
+
         }
-        
+
       }
-      
+
     }
-    
+
     return NULL;
 
   }
