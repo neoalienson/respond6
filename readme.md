@@ -6,6 +6,11 @@ Respond 6 is a multi-site, flat-file CMS powered by Angular 2 and Lumen.  Sites 
 Version: 6.0.0
 Status: Pre-Beta (experienced devs only, not all pieces functional)
 
+### Prerequisitie
+1. npm install -g typings gulp
+2. npm install gulp
+3. install composer https://getcomposer.org/
+
 ### Installation
 1. mkdir respond
 2. git clone https://github.com/madoublet/respond6 .
@@ -13,8 +18,11 @@ Status: Pre-Beta (experienced devs only, not all pieces functional)
 4. gulp (note: during development only)
 5. cp .env.example .env
 6. update .env
-7. chown -R www-data public/sites
-8. chown -R www-data resources/sites
+7. mkdir public/sites
+8. chown -R www-data public/sites
+9. mkdir resources/sites
+10. chown -R www-data resources/sites
+11. composer update
 
 ### Notes
 
