@@ -29,7 +29,7 @@ Status: Pre-Beta (experienced devs only, not all pieces functional)
 - YAML for theme description, combined into one file
 - No built-in LESS interpretation for themes (can be added by developer using build tools, e.g. gulp)
 - No index.html in theme, all html in layouts/*.html
-- No "magic" replacement for <body> in themes, use <respond-content url="{{page.Url}}" render="publish"></respond-content>
+- No "magic" replacement for <body> in themes, use &lt;respond-content url="{{page.Url}}" render="publish"&gt;&lt;/respond-content&gt;
 - The role="main" attribute used to describe the primary content in a document
 - Page edits applied directly to html document, fragments used for XHR requests 
 - The render=publish applied at site creation, page add.  Thematic elements not re-published on edit
