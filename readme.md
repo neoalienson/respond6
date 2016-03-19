@@ -6,7 +6,7 @@ Respond 6 is a multi-site, flat-file CMS powered by Angular 2 and Lumen.  Sites 
 Version: 6.0.0
 Status: Pre-Beta (experienced devs only, not all pieces functional)
 
-### Prerequisitie
+### Prerequisitie (note: during development only)
 1. npm install -g typings gulp
 2. npm install gulp
 3. install composer https://getcomposer.org/
@@ -22,7 +22,18 @@ Status: Pre-Beta (experienced devs only, not all pieces functional)
 8. chown -R www-data public/sites
 9. mkdir resources/sites
 10. chown -R www-data resources/sites
-11. composer update
+11. composer update (note: during development only)
+
+### Implementation differences from Respond 5.x
+- No Database, YAML used to store site, menu, user data. Site structure (e.g. paths and page types) inferred from site.
+- YAML for theme description, combined into one file
+- No built-in LESS interpretation for themes (can be added by developer using build tools, e.g. gulp)
+- No index.html in theme, all html in layouts/*.html
+- No "magic" replacement for <body> in themes, use <respond-content url="{{page.Url}}" render="publish"></respond-content>
+- The role="main" attribute used to describe the primary content in a document
+- Page edits applied directly to html document, fragments used for XHR requests 
+- The render=publish applied at site creation, page add.  Thematic elements not re-published on edit
+- No render=publish support within editable content
 
 ### Notes
 
