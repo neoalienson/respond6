@@ -253,10 +253,10 @@ class Publish {
    * @param {Site} $site
    */
   public static function PublishComponents($site) {
-  
+
     // production
     $dir = app()->basePath().'/node_modules';
-  
+
     if(env('APP_ENV') == 'development') {
       $dir = app()->basePath().'/public/dev';
     }
@@ -587,18 +587,18 @@ class Publish {
         if ($content_html != '') {
           pq($el)->replaceWith($content_html);
         }
-        
-    
+
+
       }
 
     }
     /* foreach */
-    
+
     // recursively call generate if needed
     if(sizeof($doc['[render=publish]']) > 0) {
       $doc = Publish::GenerateRenderAtPublish($doc, $site, $page);
     }
-    
+
     return $doc;
 
   }
@@ -624,7 +624,7 @@ class Publish {
       // set user infomration
       if ($user != NULL) {
         $photoUrl = $site->Domain . '/files/'.$user->Photo;
-        $name = $user->Name;
+        $name = $user->FirstName.' '. $user->LastName;
       }
 
     }
@@ -633,6 +633,7 @@ class Publish {
     $html = str_replace('{{page.PhotoUrl}}', $photoUrl, $html);
     $html = str_replace('{{page.Title}}', $page->Title, $html);
     $html = str_replace('{{page.LastModifiedDate}}', $lastModifiedDate, $html);
+    $html = str_replace('{{page.LastModifiedBy}}', $name, $html);
 
     // replace timestamp
     $html = str_replace('{{timestamp}}', time(), $html);
@@ -661,7 +662,7 @@ class Publish {
     // set altLogo (defaults to full logo if not available)
     if ($site->AltLogo != '' && $site->AltLogo != NULL) {
       $html = str_replace('{{site.AltLogoUrl}}', 'files/' . $site->AltLogo, $html);
-    } 
+    }
     else {
       $html = str_replace('{{site.AltLogoUrl}}', 'files/' . $site->Logo, $html);
     }

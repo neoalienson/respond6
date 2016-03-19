@@ -218,7 +218,8 @@ class Site {
     $user_arr = array(
       'Email' => $email,
       'Password' => password_hash($password, PASSWORD_DEFAULT),
-      'Name' => 'New User',
+      'FirstName' => 'New',
+      'LastName' => 'User',
       'Role' => 'Admin',
       'Language' => $language,
       'Photo' => '',

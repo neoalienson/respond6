@@ -13,12 +13,13 @@ class User {
 
   public $Email;
   public $Password;
-  public $Name;
+  public $FirstName;
+  public $LastName;
   public $Role;
   public $Language;
   public $Photo;
   public $Token;
-  
+
   /**
    * Constructs a page from an array of data
    *
@@ -31,7 +32,7 @@ class User {
       }
     }
   }
-  
+
   /**
    * Gets a user for a given siteid, email
    *
@@ -42,21 +43,21 @@ class User {
 	public static function GetByEmail($siteId, $email){
 
     $site = Site::GetById($siteId);
-    
+
     foreach($site->Users as $user) {
-      
+
       if($user['Email'] == $email) {
-        
+
         return new User($user);
-        
+
       }
-      
+
     }
-    
+
     return NULL;
-    
+
 	}
-	
+
 	/**
    * Gets a user for a given siteid, token
    *
@@ -67,21 +68,21 @@ class User {
 	public static function GetByToken($siteId, $token){
 
     $site = Site::GetById($siteId);
-    
+
     foreach($site->Users as $user) {
-      
+
       if($user['Token'] == $token) {
-        
+
         return new User($user);
-        
+
       }
-      
+
     }
-    
+
     return NULL;
-    
+
 	}
-	
+
 	/**
    * Gets a site for a given Id
    *
@@ -91,13 +92,13 @@ class User {
 	public static function GetByEmailPassword($siteId, $email, $password){
 
     $site = Site::GetById($siteId);
-    
+
     foreach($site->Users as $user) {
-      
+
       if($user['Email'] == $email) {
-        
+
         $user = new User($user);
-        
+
         $hash = $user->Password;
 
         if(password_verify($password, $hash)) {
@@ -106,15 +107,15 @@ class User {
         else {
             return NULL;
         }
-        
+
       }
-      
+
     }
-    
+
     return NULL;
-    
+
 	}
-	
+
 
 
 
