@@ -27,8 +27,12 @@ class PageController extends Controller
     $email = $request->input('email');
     $siteId = $request->input('siteId');
 
+    // get site and user
+    $site = Site::GetById($siteId);
+    $user = User::GetByEmail($siteId, $email);
+
     // list pages in the site
-    $arr = Page::ListAll($email, $siteId);
+    $arr = Page::ListAll($user, $site);
 
     return response()->json($arr);
 
@@ -175,9 +179,15 @@ class PageController extends Controller
       'Keywords' => '',
       'Callout' => '',
       'Url' => $url,
+      'BeginDate' => '',
+      'EndDate' => '',
+      'Location' => '',
+      'LatLong' => '',
       'Layout' => 'content',
       'Language' => 'en',
-      'LastModifiedBy' => $email,
+      'FirstName' => $user->FirstName,
+      'LastName' => $user->LastName,
+      'LastModifiedBy' => $user->Email,
       'LastModifiedDate' => $timestamp
     );
 

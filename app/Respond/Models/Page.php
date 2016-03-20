@@ -18,9 +18,14 @@ class Page {
   public $Keywords;
   public $Callout;
   public $Url;
+  public $BeginDate;
+  public $EndDate;
+  public $Location;
+  public $LatLong;
   public $Layout;
-  public $Stylesheet;
   public $Language;
+  public $FirstName;
+  public $LastName;
   public $LastModifiedBy;
   public $LastModifiedDate;
 
@@ -211,8 +216,6 @@ class Page {
         // update page
         if($page['Url'] == $data['Url']) {
 
-          echo('match');
-
           $page['Title'] = $data['Title'];
           $page['Description'] = $data['Description'];
           $page['Keywords'] = $data['Keywords'];
@@ -298,12 +301,12 @@ class Page {
    * @param {string} $siteId friendly id of site (e.g. site-name)
    * @return Response
    */
-  public static function ListAll($email, $siteId){
+  public static function ListAll($user, $site){
 
     $arr = array();
 
     // get base path for the site
-    $json = $file = app()->basePath().'/public/sites/'.$siteId.'/data/pages.json';
+    $json = $file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
 
     if(file_exists($json)) {
 
@@ -316,10 +319,10 @@ class Page {
     else{
 
       // set dir
-      $dir = app()->basePath().'/public/sites/'.$siteId;
+      $dir = app()->basePath().'/public/sites/'.$site->Id;
 
       // list pages in the site
-      $arr = Utilities::ListPages($dir, $email, $siteId);
+      $arr = Utilities::ListPages($dir, $user, $site);
 
       // encode arr
       $content = json_encode($arr);

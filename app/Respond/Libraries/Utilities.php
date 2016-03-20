@@ -12,10 +12,10 @@ class Utilities
      * @param {string} $path the recipient's email address
      * @return {Array} list of HTML fiels
      */
-    public static function ListPages($dir, $email, $siteId) {
+    public static function ListPages($dir, $user, $site) {
 
       // list files
-      $files = Utilities::ListFiles($dir, $siteId);
+      $files = Utilities::ListFiles($dir, $site->Id);
 
       // setup array to return
       $arr = array();
@@ -38,7 +38,7 @@ class Utilities
         }
 
         // set full file path
-        $file = app()->basePath().'/public/sites/'.$siteId.'/'.$file;
+        $file = app()->basePath().'/public/sites/'.$site->Id.'/'.$file;
 
         // open with phpQuery
         \phpQuery::newDocumentFileHTML($file);
@@ -53,18 +53,27 @@ class Utilities
         // strip any trailing .html from url
         $url = preg_replace('/\\.[^.\\s]{3,4}$/', '', $url);
 
+        $data = array(
+          'Title' => $title,
+          'Description' => $description,
+          'Keywords' => $keywords,
+          'Callout' => $callout,
+          'Url' => $url,
+          'BeginDate' => '',
+          'EndDate' => '',
+          'Location' => '',
+          'LatLong' => '',
+          'Layout' => 'content',
+          'Language' => 'en',
+          'FirstName' => $user->FirstName,
+          'LastName' => $user->LastName,
+          'LastModifiedBy' => $user->Email,
+          'LastModifiedDate' => $timestamp
+        );
+
+
         // push array
-        array_push($arr, array(
-                'Title' => $title,
-                'Description' => $description,
-                'Keywords' => $keywords,
-                'Callout' => $callout,
-                'Url' => $url,
-                'Layout' => $layout,
-                'Language' => 'en',
-                'LastModifiedBy' => $email,
-                'LastModifiedDate' => $timestamp
-                ));
+        array_push($arr, $data);
 
       }
 
@@ -87,7 +96,7 @@ class Utilities
 	    }
 
       foreach($root as $value) {
-      
+
           if($value === '.' || $value === '..' || $value === '.htaccess') {
             continue;
           }
@@ -372,7 +381,7 @@ class Utilities
   		@fwrite($fp, $content); // save the contents of output buffer to the file
   		@fclose($fp);
   	}
-  	
+
   	/**
      * Copies a directory
      *
@@ -380,24 +389,24 @@ class Utilities
      * @param {string} $dst the destination
      * @return void
      */
-    public static function CopyDirectory($src, $dst){ 
-      $dir = opendir($src); 
-      
+    public static function CopyDirectory($src, $dst){
+      $dir = opendir($src);
+
       if(!file_exists($dst)){
   			mkdir($dst, 0777, true);
   		}
-      
-      while(false !== ( $file = readdir($dir)) ) { 
-        if (( $file != '.' ) && ( $file != '..' )) { 
-            if ( is_dir($src . '/' . $file) ) { 
-                Utilities::CopyDirectory($src . '/' . $file,$dst . '/' . $file); 
-            } 
-            else { 
-                copy($src . '/' . $file,$dst . '/' . $file); 
-            } 
-        } 
-      } 
-      closedir($dir); 
+
+      while(false !== ( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) ) {
+                Utilities::CopyDirectory($src . '/' . $file,$dst . '/' . $file);
+            }
+            else {
+                copy($src . '/' . $file,$dst . '/' . $file);
+            }
+        }
+      }
+      closedir($dir);
     }
 
 }
