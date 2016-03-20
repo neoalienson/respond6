@@ -25,6 +25,7 @@ class Site {
   public $TimeZone;
   public $Language;
   public $Direction;
+  public $DefaultContent;
   public $ShowCart;
   public $ShowSearch;
   public $Users;
@@ -192,6 +193,17 @@ class Site {
     $language = env('DEFAULT_LANGUAGE');
     $direction = env('DEFAULT_DIRECTION');
     $domain = env('APP_URL').'/sites/'.$id;
+    $defaultContent = '<h1>{{page.Title}}</h1><p>{{page.Description}}</p>';
+
+    $yaml = new Parser();
+
+    $file = app()->basePath().'/resources/themes/'.$theme.'/theme.yaml';
+
+    // get default content from theme
+    if(file_exists($file)) {
+       $arr = $yaml->parse(file_get_contents($file));
+       $defaultContent = $arr['DefaultContent'];
+    }
 
     // create a site
     $site_arr = array(
@@ -207,6 +219,7 @@ class Site {
       'TimeZone' => $timeZone,
       'Language' => $language,
       'Direction' => $direction,
+      'DefaultContent' => $defaultContent,
       'ShowCart' => true,
       'ShowSearch' => true,
       'Users' => array()
@@ -245,6 +258,9 @@ class Site {
 
     // publish components
     Publish::PublishComponents($site);
+
+    // publish locales
+    Publish::PublishLocales($site);
 
     // return site information
     return array(

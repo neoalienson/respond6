@@ -79,7 +79,9 @@ class Page {
 
     // default html for a new page
     if($content == NULL) {
-      $content = '<div class="block row"><div class="col col-md-12"><h1>'.$page->Title.'</h1><p>'.$page->Description.'</p></div></div>';
+      $content = html_entity_decode($site->DefaultContent);
+      $content = str_replace('{{page.Title}}', $page->Title, $content);
+      $content = str_replace('{{page.Description}}', $page->Description, $content);
     }
 
     // make directory
