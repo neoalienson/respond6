@@ -86,7 +86,7 @@ export class AddPageComponent {
     this._pageService.add(fullUrl, this.model.title, this.model.description)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error => { this.errorMessage = <any>error; this.error(); }
                       );
 
   }
@@ -95,9 +95,21 @@ export class AddPageComponent {
    * Handles a successful add
    */
   success() {
-  
+
+    toast.show('success');
+
     this._visible = false;
     this.onAdd.emit(null);
+
+  }
+
+  /**
+   * Handles an error
+   */
+  error() {
+
+    console.log('[respond.error] ' + this.errorMessage);
+    toast.show('failure');
 
   }
 

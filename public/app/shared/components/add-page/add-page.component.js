@@ -80,14 +80,22 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                         fullUrl = '/' + this.model.url;
                     }
                     this._pageService.add(fullUrl, this.model.title, this.model.description)
-                        .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
                 };
                 /**
                  * Handles a successful add
                  */
                 AddPageComponent.prototype.success = function () {
+                    toast.show('success');
                     this._visible = false;
                     this.onAdd.emit(null);
+                };
+                /**
+                 * Handles an error
+                 */
+                AddPageComponent.prototype.error = function () {
+                    console.log('[respond.error] ' + this.errorMessage);
+                    toast.show('failure');
                 };
                 __decorate([
                     core_1.Input(), 

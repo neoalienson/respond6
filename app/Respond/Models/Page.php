@@ -18,10 +18,6 @@ class Page {
   public $Keywords;
   public $Callout;
   public $Url;
-  public $BeginDate;
-  public $EndDate;
-  public $Location;
-  public $LatLong;
   public $Layout;
   public $Language;
   public $FirstName;

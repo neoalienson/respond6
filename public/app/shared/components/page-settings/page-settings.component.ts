@@ -37,7 +37,7 @@ export class PageSettingsComponent {
     this._visible = visible;
 
   }
-  
+
   @Input()
   set page(page){
 
@@ -78,12 +78,12 @@ export class PageSettingsComponent {
    * Submits the form
    */
   submit() {
-  
+
 
     this._pageService.updateSettings(this.model.Url, this.model.Title, this.model.Description, this.model.Keywords, this.model.Callout, this.model.Layout, this.model.Language)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.errorMessage = <any>error; this.error() }
                       );
 
   }
@@ -92,9 +92,21 @@ export class PageSettingsComponent {
    * Handles a successful submission
    */
   success() {
-  
+
+    toast.show('success');
+
     this._visible = false;
     this.onUpdate.emit(null);
+
+  }
+
+  /**
+   * Handles an error
+   */
+  error() {
+
+    console.log('[respond.error] ' + this.errorMessage);
+    toast.show('failure');
 
   }
 

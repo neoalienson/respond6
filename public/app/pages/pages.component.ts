@@ -6,12 +6,14 @@ import {AddPageComponent} from '/app/shared/components/add-page/add-page.compone
 import {PageSettingsComponent} from '/app/shared/components/page-settings/page-settings.component';
 import {RemovePageComponent} from '/app/shared/components/remove-page/remove-page.component';
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
+import {TimeAgoPipe} from '/app/shared/pipes/time-ago.pipe';
 
 @Component({
     selector: 'respond-pages',
     templateUrl: './app/pages/pages.component.html',
     providers: [PageService],
-    directives: [AddPageComponent, PageSettingsComponent, RemovePageComponent, DrawerComponent]
+    directives: [AddPageComponent, PageSettingsComponent, RemovePageComponent, DrawerComponent],
+    pipes: [TimeAgoPipe]
 })
 
 @CanActivate(() => tokenNotExpired())
@@ -48,7 +50,7 @@ export class PagesComponent {
    * Updates the list
    */
   list() {
-  
+
     this.reset();
     this._pageService.list()
                      .subscribe(
@@ -96,7 +98,7 @@ export class PagesComponent {
    *
    * @param {Page} page
    */
-  showRemove(page) { 
+  showRemove(page) {
     this.removePageVisible = true;
     this.page = page;
   }
@@ -106,7 +108,7 @@ export class PagesComponent {
    *
    * @param {Page} page
    */
-  showSettings(page) { 
+  showSettings(page) {
     this.pageSettingsVisible = true;
     this.page = page;
   }

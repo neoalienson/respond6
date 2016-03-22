@@ -58,6 +58,9 @@ class EditController extends Controller
               // add development (for now)
               $doc['body']->attr('hashedit-dev', '');
 
+              // set active attribute
+              $doc['body']->attr('hashedit-active', '');
+
               // setup editable area
               foreach($editable as $value){
                 $doc[$value]->attr('hashedit', '');

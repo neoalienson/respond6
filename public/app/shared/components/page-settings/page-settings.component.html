@@ -3,42 +3,47 @@
   <form (ngSubmit)="submit()" #editForm="ngForm">
 
     <h2>Page Settings</h2>
-    
-    <label>Title</label>
-    <input id="hashedit-page-settings-title" type="text" maxlength="128" required
-      [(ngModel)]="model.Title"
-      ngControl="title">
 
-    <label>Description</label>
-    <input id="hashedit-page-settings-description" type="text" maxlength="128"
-      [(ngModel)]="model.Description"
-      ngControl="description">
-      
-    <label>Keywords</label>
-    <input id="hashedit-page-settings-keywords" type="text" maxlength="128"
-      [(ngModel)]="model.Keywords"
-      ngControl="keywords">
-    
-    <label>Callout</label>
-    <input id="hashedit-page-settings-callout" type="text" maxlength="128"
-      [(ngModel)]="model.Callout"
-      ngControl="callout">
-    
-    <label>Layout</label>
-    <select id="hashedit-page-settings-layout"
-      [(ngModel)]="model.Layout"
-      ngControl="layout">
-      <option value="home">Home</option>
-      <option value="content">Content</option>
-    </select>
-      
-    <label>Language</label>
-    <select id="hashedit-page-settings-language"
-      [(ngModel)]="model.Language"
-      ngControl="language">
-      <option value="en">English (en)</option>
-      <option value="es">Spanish (es)</option>
-    </select>
+    <div class="app-modal-body">
+
+      <label>Title</label>
+      <input id="hashedit-page-settings-title" type="text" maxlength="128" required
+        [(ngModel)]="model.Title"
+        ngControl="title">
+
+      <label>Description</label>
+      <input id="hashedit-page-settings-description" type="text" maxlength="128"
+        [(ngModel)]="model.Description"
+        ngControl="description">
+
+      <label>Keywords</label>
+      <input id="hashedit-page-settings-keywords" type="text" maxlength="128"
+        [(ngModel)]="model.Keywords"
+        ngControl="keywords">
+
+      <label>Callout</label>
+      <input id="hashedit-page-settings-callout" type="text" maxlength="128"
+        [(ngModel)]="model.Callout"
+        ngControl="callout">
+
+      <label>Layout</label>
+      <select id="hashedit-page-settings-layout"
+        [(ngModel)]="model.Layout"
+        ngControl="layout">
+        <option value="home">Home</option>
+        <option value="content">Content</option>
+      </select>
+
+      <label>Language</label>
+      <select id="hashedit-page-settings-language"
+        [(ngModel)]="model.Language"
+        ngControl="language">
+        <option value="en">English (en)</option>
+        <option value="es">Spanish (es)</option>
+      </select>
+
+    </div>
+    <!-- /.app-modal-body -->
 
     <div class="actions">
       <a (click)="hide()">Cancel</a>

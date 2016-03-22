@@ -76,14 +76,22 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 PageSettingsComponent.prototype.submit = function () {
                     var _this = this;
                     this._pageService.updateSettings(this.model.Url, this.model.Title, this.model.Description, this.model.Keywords, this.model.Callout, this.model.Layout, this.model.Language)
-                        .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
                 };
                 /**
                  * Handles a successful submission
                  */
                 PageSettingsComponent.prototype.success = function () {
+                    toast.show('success');
                     this._visible = false;
                     this.onUpdate.emit(null);
+                };
+                /**
+                 * Handles an error
+                 */
+                PageSettingsComponent.prototype.error = function () {
+                    console.log('[respond.error] ' + this.errorMessage);
+                    toast.show('failure');
                 };
                 __decorate([
                     core_1.Input(), 
