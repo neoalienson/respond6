@@ -60,6 +60,7 @@ class EditController extends Controller
 
               // set active attribute
               $doc['body']->attr('hashedit-active', '');
+              $doc['body']->attr('edit', '');
 
               // setup editable area
               foreach($editable as $value){
@@ -86,7 +87,9 @@ class EditController extends Controller
                             '<link type="text/css" href="/node_modules/dropzone/dist/min/dropzone.min.css" rel="stylesheet">'.
                             '<script src="/node_modules/sortablejs/Sortable.min.js"></script>'.
                             '<script src="/dev/hashedit/js/hashedit.js"></script>'.
-                            '<script>hashedit.setup();</script>';
+                            '<script src="/dev/respond-components/js/setup.js"></script>'.
+                            '<script></script>'.
+                            '<script>hashedit.menu = hashedit.menu.concat(respond.plugins); console.log(hashedit.menu); hashedit.setup();</script>';
 
               }
               else {
@@ -98,7 +101,8 @@ class EditController extends Controller
                             '<link type="text/css" href="/node_modules/dropzone/dist/min/dropzone.min.css" rel="stylesheet">'.
                             '<script src="/node_modules/sortablejs/Sortable.min.js"></script>'.
                             '<script src="/node_modules/hashedit/js/hashedit.js"></script>'.
-                            '<script>hashedit.setup();</script>';
+                            '<script src="/node_modules/respond-components/js/setup.js"></script>'.
+                            '<script>hashedit.menu = hashedit.menu.concat(respond.plugins); hashedit.setup();</script>';
 
               }
 

@@ -9,8 +9,9 @@
 </menu>
 
 <div id="pages-list" class="app-list">
-  <div class="app-list-item" *ngFor="#page of pages" (click)="setActive(page)" [class.selected]="page === selectedPage">
+  <div class="app-list-item" *ngFor="#page of pages" (click)="setActive(page)" [class.selected]="page === selectedPage" [class.image]="page.Thumb !== ''">
     <h2><span class="primary">{{ page.Title }}</span><span class="secondary">{{ page.LastModifiedDate | timeAgo }}</span></h2>
+    <img *ngIf="page.Thumb !== ''" class="image" src="sites/{{id}}/{{page.Thumb}}">
     <small>/{{ page.Url }}</small>
     <p>{{ page.Description }}</p>
     <div class="app-list-actions">

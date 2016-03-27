@@ -42,6 +42,14 @@
         <option value="es">Spanish (es)</option>
       </select>
 
+      <label>Direction</label>
+      <select id="hashedit-page-settings-direction"
+        [(ngModel)]="model.Direction"
+        ngControl="language">
+        <option value="ltr">Left-to-Right</option>
+        <option value="rtl">Right-to-Left</option>
+      </select>
+
     </div>
     <!-- /.app-modal-body -->
 

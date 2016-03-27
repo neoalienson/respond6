@@ -25,7 +25,8 @@ export class PageSettingsComponent {
     Keywords: '',
     Callout: '',
     Layout: 'content',
-    Language: 'en'
+    Language: 'en',
+    Direction: 'ltr'
   };
 
   _visible: boolean = false;
@@ -80,7 +81,7 @@ export class PageSettingsComponent {
   submit() {
 
 
-    this._pageService.updateSettings(this.model.Url, this.model.Title, this.model.Description, this.model.Keywords, this.model.Callout, this.model.Layout, this.model.Language)
+    this._pageService.updateSettings(this.model.Url, this.model.Title, this.model.Description, this.model.Keywords, this.model.Callout, this.model.Layout, this.model.Language, this.model.Direction)
                      .subscribe(
                        data => { this.success(); },
                        error =>  { this.errorMessage = <any>error; this.error() }

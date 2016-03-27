@@ -102,5 +102,14 @@ $app -> post('/api/pages/save', ['middleware' => 'jwtauth', 'uses'=> 'PageContro
 // add page
 $app -> post('/api/pages/add', ['middleware' => 'jwtauth', 'uses'=> 'PageController@add']);
 
+// remove page
+$app -> post('/api/pages/remove', ['middleware' => 'jwtauth', 'uses'=> 'PageController@remove']);
+
 // update page settings
 $app -> post('/api/pages/settings', ['middleware' => 'jwtauth', 'uses'=> 'PageController@settings']);
+
+// uploads an image
+$app -> post('/api/images/add', ['middleware' => 'jwtauth', 'uses'=> 'FileController@upload']);
+
+// uploads a file
+$app -> post('/api/files/add', ['middleware' => 'jwtauth', 'uses'=> 'FileController@upload']);

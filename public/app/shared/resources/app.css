@@ -53,10 +53,10 @@ body .logo img {
   width: 50px;
 }
 
-/* .app-list */
-body .app-list {
-  margin: 0;
-}
+/*
+  body .app-list {
+    margin: 0;
+  }
 
   body .app-list-item {
     position: relative;
@@ -67,12 +67,13 @@ body .app-list {
     min-height: 50px;
   }
 
-  body .app-list-item.selected {
+  body .app-list-item[active] {
     background-color: #fff;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, .15);
   }
 
   body .app-list-item h2 {
+    font-size: 15px;
     font-weight: bold;
     color: #111;
     margin: 0 0 2px 0;
@@ -82,11 +83,13 @@ body .app-list {
   body .app-list-item small {
     display: block;
     margin: 10px 0 5px 0;
+    font-size: 11px;
     color: #00ADE3;
     text-transform: uppercase;
   }
 
   body .app-list-item h2 span.secondary {
+    font-size: 11px;
     font-weight: normal;
     color: #888;
     text-transform: uppercase;
@@ -94,6 +97,7 @@ body .app-list {
   }
 
   body .app-list-item p {
+    font-size: 13px;
     font-weight: 400;
     color: #aaa;
     margin: 0 0 2px 0;
@@ -101,17 +105,18 @@ body .app-list {
     line-height: 18px;
   }
 
-  body .app-list-item label {
+  body  .app-list-item label {
     display: block;
     margin: 0;
     padding: 0 0 5px 0;
+    font-size: 13px;
     font-weight: normal;
     color: #aaa;
     min-width: 25%;
     text-transform: uppercase;
   }
 
-  body .app-list-item .image {
+  body  .app-list-item .image {
     position: absolute;
     top: 20px;
     left: 15px;
@@ -144,6 +149,119 @@ body .app-list {
 
   body .app-list-item .app-list-actions a {
     text-transform: uppercase;
+    font-size: 13px;
+    display: inline-block;
+    margin-left: 15px;
+    text-decoration: none;
+    padding-top: 10px;
+  }
+
+  body .app-list-item .app-list-actions a.primary {
+    font-weight: bold;
+  }
+
+  body .app-list-item[active] .app-list-actions {
+    visibility: visible;
+    height: 15px;
+  }
+  */
+
+/* .app-list */
+body .app-list {
+  margin: 0;
+}
+
+  body .app-list-item {
+    position: relative;
+  }
+
+  body .app-list-item.image {
+    padding-left: 80px;
+    min-height: 50px;
+  }
+
+  body .app-list-item.selected {
+    background-color: #fff;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, .15);
+  }
+
+  body .app-list-item h2 {
+    font-size: 15px;
+    font-weight: bold;
+    color: #111;
+    margin: 0 0 2px 0;
+    padding: 0;
+  }
+
+  body .app-list-item small {
+    display: block;
+    margin: 10px 0 5px 0;
+    font-size: 11px;
+    color: #00ADE3;
+    text-transform: uppercase;
+  }
+
+  body .app-list-item h2 span.secondary {
+    font-weight: normal;
+    color: #888;
+    text-transform: uppercase;
+    float: right;
+    font-size: 11px;
+  }
+
+  body .app-list-item p {
+    font-weight: 400;
+    color: #aaa;
+    margin: 0 0 2px 0;
+    padding: 0;
+    line-height: 18px;
+    font-size: 13px;
+  }
+
+  body .app-list-item label {
+    display: block;
+    margin: 0;
+    padding: 0 0 5px 0;
+    font-weight: normal;
+    color: #aaa;
+    min-width: 25%;
+    text-transform: uppercase;
+  }
+
+  body .app-list-item .image {
+    position: absolute;
+    top: 20px;
+    left: 15px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    float: left;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #fff;
+  }
+
+  body .app-list-item[read=true] {
+    background-color: #f8f8f8;
+  }
+
+  body .app-list-item[read=true] h2, body .app-list-item[read=true] h2 span, body .app-list-item[read=true] small, body .app-list-item[read=true] p {
+    color: #aaa;
+    font-weight: normal;
+  }
+
+  body .app-list-item .app-list-actions {
+    display: block;
+    text-align: right;
+    visibility: hidden;
+    height: 0;
+    transition: all 0.2s ease;
+  }
+
+  body .app-list-item .app-list-actions a {
+    text-transform: uppercase;
+    font-size: 13px;
     display: inline-block;
     margin-left: 15px;
     text-decoration: none;
@@ -620,117 +738,6 @@ body .app-form.standalone {
     -webkit-border-radius: 0px;
     border: 1px solid #ddd;
     text-align: center;
-  }
-
-  body .app-list {
-    margin: 0;
-  }
-
-  body .app-list-item {
-    position: relative;
-  }
-
-  body .app-list-item.app-has-image {
-    padding-left: 80px;
-    min-height: 50px;
-  }
-
-  body .app-list-item[active] {
-    background-color: #fff;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, .15);
-  }
-
-  body .app-list-item h2 {
-    font-size: 15px;
-    font-weight: bold;
-    color: #111;
-    margin: 0 0 2px 0;
-    padding: 0;
-  }
-
-  body .app-list-item small {
-    display: block;
-    margin: 10px 0 5px 0;
-    font-size: 11px;
-    color: #00ADE3;
-    text-transform: uppercase;
-  }
-
-  body .app-list-item h2 span.secondary {
-    font-size: 11px;
-    font-weight: normal;
-    color: #888;
-    text-transform: uppercase;
-    float: right;
-  }
-
-  body .app-list-item p {
-    font-size: 13px;
-    font-weight: 400;
-    color: #aaa;
-    margin: 0 0 2px 0;
-    padding: 0;
-    line-height: 18px;
-  }
-
-  body  .app-list-item label {
-    display: block;
-    margin: 0;
-    padding: 0 0 5px 0;
-    font-size: 13px;
-    font-weight: normal;
-    color: #aaa;
-    min-width: 25%;
-    text-transform: uppercase;
-  }
-
-  body  .app-list-item .image {
-    position: absolute;
-    top: 20px;
-    left: 15px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 1px solid #fff;
-    float: left;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-color: #ddd;
-  }
-
-  body .app-list-item[read=true] {
-    background-color: #f8f8f8;
-  }
-
-  body .app-list-item[read=true] h2, body .app-list-item[read=true] h2 span, body .app-list-item[read=true] small, body .app-list-item[read=true] p {
-    color: #aaa;
-    font-weight: normal;
-  }
-
-  body .app-list-item .app-list-actions {
-    display: block;
-    text-align: right;
-    visibility: hidden;
-    height: 0;
-    transition: all 0.2s ease;
-  }
-
-  body .app-list-item .app-list-actions a {
-    text-transform: uppercase;
-    font-size: 13px;
-    display: inline-block;
-    margin-left: 15px;
-    text-decoration: none;
-    padding-top: 10px;
-  }
-
-  body .app-list-item .app-list-actions a.primary {
-    font-weight: bold;
-  }
-
-  body .app-list-item[active] .app-list-actions {
-    visibility: visible;
-    height: 15px;
   }
 
 /* app-menu */

@@ -66,10 +66,11 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
                  * @param {string} callout
                  * @param {string} layout
                  * @param {string} language
+                 * @param {string} direction
                  * @return {Observable}
                  */
-                PageService.prototype.updateSettings = function (url, title, description, keywords, callout, layout, language) {
-                    var body = JSON.stringify({ url: url, title: title, description: description, keywords: keywords, callout: callout, layout: layout, language: language });
+                PageService.prototype.updateSettings = function (url, title, description, keywords, callout, layout, language, direction) {
+                    var body = JSON.stringify({ url: url, title: title, description: description, keywords: keywords, callout: callout, layout: layout, language: language, direction: direction });
                     var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
                     var options = new http_2.RequestOptions({ headers: headers });
                     return this.authHttp.post(this._updateSettingsUrl, body, options);

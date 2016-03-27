@@ -18,8 +18,11 @@ class Page {
   public $Keywords;
   public $Callout;
   public $Url;
+  public $Photo;
+  public $Thumb;
   public $Layout;
   public $Language;
+  public $Direction;
   public $FirstName;
   public $LastName;
   public $LastModifiedBy;
@@ -159,7 +162,10 @@ class Page {
 
       }
 
-      echo($doc->htmlOuter());
+      // remove data-ref attributes
+      foreach($doc['[data-ref]'] as $el) {
+        pq($el)->removeAttr('data-ref');
+      }
 
       // update the page
       file_put_contents($location, $doc->htmlOuter());
@@ -171,6 +177,9 @@ class Page {
 
       // update template
       file_put_contents($fragment, $main_content);
+
+      // saves the page
+      $page->Save($site, $user);
 
       return TRUE;
 
@@ -193,67 +202,156 @@ class Page {
    */
   public static function EditSettings($data, $site, $user){
 
-    echo($data['Url']);
+    $page = Page::GetByUrl($data['Url'], $site->Id);
 
-    $current_page = NULL;
+    $page->Title = $data['Title'];
+    $page->Description = $data['Description'];
+    $page->Keywords = $data['Keywords'];
+    $page->Callout = $data['Callout'];
+    $page->Language = $data['Language'];
+    $page->Direction = $data['Direction'];
 
-    // get pages.json
-    $file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
+    $page->Save($site, $user);
 
-    if(file_exists($file)) {
+    return TRUE;
 
-      $json = file_get_contents($file);
+  }
+
+  /**
+   * Removes a page
+   *
+   * @param {arr} $arr array containg page information
+   * @param {site} $site object
+   * @param {user} $user object
+   * @return Response
+   */
+  public function Remove($siteId){
+
+    // remove the page and fragment
+    $page = app()->basePath().'/public/sites/'.$siteId.'/'.$this->Url.'.html';
+    $name = $new_name = str_replace('/', '.', $this->Url);
+    $fragment = app()->basePath().'/public/sites/'.$siteId.'/fragments/page/'.$name.'.html';
+
+    unlink($page);
+    unlink($fragment);
+
+    // remove the page from JSON
+    $json_file = app()->basePath().'/public/sites/'.$siteId.'/data/pages.json';
+
+    if(file_exists($json_file)) {
+
+      $json = file_get_contents($json_file);
+
+      // decode json file
+      $pages = json_decode($json, true);
+      $i = 0;
+
+      foreach($pages as &$page){
+
+        // remove page
+        if($page['Url'] == $this->Url) {
+          unset($pages[$i]);
+        }
+
+        $i++;
+
+      }
+
+      // save pages
+      file_put_contents($json_file, json_encode($pages));
+
+    }
+
+    return TRUE;
+
+  }
+
+  /**
+   * Saves a page
+   *
+   * @param {string} $url url of page
+   * @return Response
+   */
+  public function Save($site, $user) {
+
+    // set full file path
+    $file = app()->basePath() . '/public/sites/' . $site->Id . '/' . $this->Url . '.html';
+
+    // open with phpQuery
+    $doc = \phpQuery::newDocument(file_get_contents($file));
+
+    // update the html
+    $doc['title']->html($this->Title);
+    $doc['meta[name=description]']->attr('content', $this->Description);
+    $doc['meta[name=keywords]']->attr('content', $this->Keywords);
+    $doc['html']->attr('lang', $this->Language);
+    $doc['html']->attr('dir', $this->Direction);
+    $doc['meta[name=keywords]']->attr('content', $this->Keywords);
+
+    // get photo and thumb
+    $photo = $doc['[role="main"] img:first']->attr('src');
+    $thumb = '';
+
+    if ($photo === NULL || $photo === '') {
+      $photo = '';
+    }
+    else {
+      if (substr($photo, 0, 4) === "http") {
+        $thumb = $photo;
+      }
+      else {
+        $thumb = str_replace('files/', 'files/thumbs/', $photo);
+      }
+
+    }
+
+    // set photo and thumb
+    $this->Photo = $photo;
+    $this->Thumb = $thumb;
+
+    // save page
+    file_put_contents($file, $doc->htmlOuter());
+
+    // set timestamp
+    $timestamp = date('Y-m-d\TH:i:s.Z\Z', time());
+
+    // edit the json file
+    $json_file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
+
+    if(file_exists($json_file)) {
+
+      $json = file_get_contents($json_file);
 
       // decode json file
       $pages = json_decode($json, true);
 
-      $i = 0;
-
-      foreach($pages as $page){
+      foreach($pages as &$page){
 
         // update page
-        if($page['Url'] == $data['Url']) {
+        if($page['Url'] == $this->Url) {
 
-          $page['Title'] = $data['Title'];
-          $page['Description'] = $data['Description'];
-          $page['Keywords'] = $data['Keywords'];
-          $page['Callout'] = $data['Callout'];
-          $page['Layout'] = $data['Layout'];
-          $page['Language'] = $data['Language'];
-          $page['LastModifiedBy'] = $data['LastModifiedBy'];
-          $page['LastModifiedDate'] = $data['LastModifiedDate'];
-
-          // update array
-          $pages[$i] = $page;
-
-          // create a new page
-          $current_page = new Page($page);
-
-          $i++;
+          $page['Title'] = $this->Title;
+          $page['Description'] = $this->Description;
+          $page['Keywords'] = $this->Keywords;
+          $page['Callout'] = $this->Callout;
+          $page['Photo'] = $this->Photo;
+          $page['Thumb'] = $this->Thumb;
+          $page['Layout'] = $this->Layout;
+          $page['Language'] = $this->Language;
+          $page['Direction'] = $this->Direction;
+          $page['LastModifiedBy'] = $user->Email;
+          $page['LastModifiedDate'] = $timestamp;
 
         }
 
       }
 
       // save pages
-      file_put_contents($file, json_encode($pages));
+      file_put_contents($json_file, json_encode($pages));
 
     }
 
-    // publish
-    if($current_page != NULL) {
 
-      // publish the page
-      Publish::PublishPage($site, $current_page, $user);
-
-      return TRUE;
-
-    }
-    else {
-
-      return FALSE;
-
-    }
 
   }
 
@@ -264,9 +362,9 @@ class Page {
    * @param {string} $url url of page
    * @return Response
    */
-  public static function GetByUrl($url, $id){
+  public static function GetByUrl($url, $siteId){
 
-    $file = app()->basePath().'/public/sites/'.$id.'/data/pages.json';
+    $file = app()->basePath().'/public/sites/'.$siteId.'/data/pages.json';
 
     if(file_exists($file)) {
 
@@ -304,11 +402,11 @@ class Page {
     $arr = array();
 
     // get base path for the site
-    $json = $file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
+    $json_file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
 
-    if(file_exists($json)) {
+    if(file_exists($json_file)) {
 
-      $json = file_get_contents($json);
+      $json = file_get_contents($json_file);
 
       // decode json file
       $arr = json_decode($json, true);
@@ -319,14 +417,111 @@ class Page {
       // set dir
       $dir = app()->basePath().'/public/sites/'.$site->Id;
 
-      // list pages in the site
-      $arr = Utilities::ListPages($dir, $user, $site);
+      // list files
+      $files = Utilities::ListFiles($dir, $site->Id,
+              array('html'),
+              array('components/',
+                    'css/',
+                    'data/',
+                    'files/',
+                    'js/',
+                    'locales/',
+                    'fragments/',
+                    'themes/'));
+
+      // setup array to return
+      $arr = array();
+
+      // setup timestamp as JS date
+      $timestamp = date('Y-m-d\TH:i:s.Z\Z', time());
+
+      foreach ($files as $file) {
+
+          // defaults
+          $title       = '';
+          $description = '';
+          $keywords    = '';
+          $callout     = '';
+          $layout      = 'content';
+          $url         = $file;
+
+          if ($url == 'index.html') {
+              $layout = 'home';
+          }
+
+          // set full file path
+          $file = app()->basePath() . '/public/sites/' . $site->Id . '/' . $file;
+
+          // open with phpQuery
+          \phpQuery::newDocumentFileHTML($file);
+
+          $title       = pq('title')->html();
+          $description = pq('meta[name=description]')->attr('content');
+          $keywords    = pq('meta[name=keywords]')->attr('content');
+
+          // get photo and thumb
+          $photo = pq('[role="main"] img:first')->attr('src');
+          $thumb = '';
+
+          if ($photo === NULL || $photo === '') {
+            $photo = '';
+          }
+          else {
+            if (substr($photo, 0, 4) === "http") {
+              $thumb = $photo;
+            }
+            else {
+              $thumb = str_replace('files/', 'files/thumbs/', $photo);
+            }
+
+          }
+
+          // get language and direction
+          $language = pq('html')->attr('lang');
+          $direction = pq('html')->attr('dir');
+
+          if ($language === NULL || $language === '') {
+            $language = 'en';
+          }
+
+          if ($direction === NULL || $direction === '') {
+            $direction = 'ltr';
+          }
+
+          // cleanup url
+          $url = ltrim($url, '/');
+
+          // strip any trailing .html from url
+          $url = preg_replace('/\\.[^.\\s]{3,4}$/', '', $url);
+
+          $data = array(
+              'Title' => $title,
+              'Description' => $description,
+              'Keywords' => $keywords,
+              'Callout' => $callout,
+              'Url' => $url,
+              'Photo' => $photo,
+              'Thumb' => $thumb,
+              'Layout' => 'content',
+              'Language' => $language,
+              'Direction' => $direction,
+              'FirstName' => $user->FirstName,
+              'LastName' => $user->LastName,
+              'LastModifiedBy' => $user->Email,
+              'LastModifiedDate' => $timestamp
+          );
+
+
+          // push array
+          array_push($arr, $data);
+
+      }
 
       // encode arr
       $content = json_encode($arr);
 
       // update content
-      file_put_contents($file, $content);
+      file_put_contents($json_file, $content);
 
     }
 

@@ -114,6 +114,7 @@ class PageController extends Controller
     $callout = $request->json()->get('callout');
     $layout = $request->json()->get('layout');
     $language = $request->json()->get('language');
+    $direction = $request->json()->get('direction');
     $timestamp = gmdate('D M d Y H:i:s O', time());
 
     $data = array(
@@ -122,8 +123,8 @@ class PageController extends Controller
       'Keywords' => $keywords,
       'Callout' => $callout,
       'Url' => $url,
-      'Layout' => 'content',
-      'Language' => 'en',
+      'Language' => $language,
+      'Direction' => $direction,
       'LastModifiedBy' => $email,
       'LastModifiedDate' => $timestamp
     );
@@ -179,8 +180,11 @@ class PageController extends Controller
       'Keywords' => '',
       'Callout' => '',
       'Url' => $url,
+      'Photo' => '',
+      'Thumb' => '',
       'Layout' => 'content',
       'Language' => 'en',
+      'Direction' => 'ltr',
       'FirstName' => $user->FirstName,
       'LastName' => $user->LastName,
       'LastModifiedBy' => $user->Email,
@@ -192,6 +196,30 @@ class PageController extends Controller
 
     // return OK
     return response('OK, page added at = '.$page->Url, 200);
+
+  }
+
+  /**
+   * Removes the page
+   *
+   * @return Response
+   */
+  public function remove(Request $request)
+  {
+    // get request data
+    $email = $request->input('email');
+    $siteId = $request->input('siteId');
+
+    // get url, title and description
+    $url = $request->json()->get('url');
+
+    // add a page
+    $page = Page::GetByUrl($url, $siteId);
+
+    $page->Remove($siteId);
+
+    // return OK
+    return response('OK, page removed at = '.$page->Url, 200);
 
   }
 
