@@ -39,6 +39,13 @@ $app->get('pages', function () {
     return file_get_contents($public);
 });
 
+// the files route should load the angular2 app
+$app->get('files', function () {
+    $public = rtrim(app()->basePath('public/index.html'), '/');
+
+    return file_get_contents($public);
+});
+
 // the login/my-site route should load the angular2 app
 $app->get('login/{id}', function ($id) {
     $public = rtrim(app()->basePath('public/index.html'), '/');
@@ -113,3 +120,9 @@ $app -> post('/api/images/add', ['middleware' => 'jwtauth', 'uses'=> 'FileContro
 
 // uploads a file
 $app -> post('/api/files/add', ['middleware' => 'jwtauth', 'uses'=> 'FileController@upload']);
+
+// lists images
+$app -> get('/api/images/list', ['middleware' => 'jwtauth', 'uses'=> 'FileController@listImages']);
+
+// lists files
+$app -> get('/api/files/list', ['middleware' => 'jwtauth', 'uses'=> 'FileController@listFiles']);

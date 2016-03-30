@@ -5,6 +5,7 @@ import {ForgotComponent} from './forgot/forgot.component';
 import {ResetComponent} from './reset/reset.component';
 import {CreateComponent} from './create/create.component';
 import {PagesComponent} from './pages/pages.component';
+import {FilesComponent} from './files/files.component';
 
 @Component({
     selector: 'respond-app',
@@ -41,6 +42,11 @@ import {PagesComponent} from './pages/pages.component';
     path: '/pages',
     name: 'Pages',
     component: PagesComponent
+  },
+  {
+    path: '/files',
+    name: 'Files',
+    component: FilesComponent
   }
 ])
 

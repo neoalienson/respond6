@@ -26,9 +26,44 @@ class File {
     }
   }
 
-  public static function ListAll() {
+  /**
+   * Lists images for the site
+   *
+   * @param {sttring} $siteId
+   */
+  public static function ListImages($siteId) {
 
+    $dir = app()->basePath().'/public/sites/'.$siteId.'/files';
 
+    // list files
+    $arr = Utilities::ListFiles($dir, $siteId,
+            array('png', 'jpg', 'gif', 'svg'),
+            array('thumb/',
+                  'thumbs/'));
+
+    return $arr;
+
+  }
+
+  /**
+   * Lists files for the site
+   *
+   * @param {string} $siteId
+   */
+  public static function ListFiles($siteId) {
+
+    $dir = app()->basePath().'/public/sites/'.$siteId.'/files';
+
+    // list allowed types
+    $exts = explode(',', env('ALLOWED_FILETYPES'));
+
+    // list files
+    $arr = Utilities::ListFiles($dir, $siteId,
+            $exts,
+            array('thumb/',
+                  'thumbs/'));
+
+    return $arr;
 
   }
 
