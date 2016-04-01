@@ -72,7 +72,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                  */
                 RemovePageComponent.prototype.submit = function () {
                     var _this = this;
-                    this._pageService.remove(this.model.Url)
+                    this._pageService.remove(this.model.url)
                         .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
                 };
                 /**

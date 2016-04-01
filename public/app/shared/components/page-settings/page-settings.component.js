@@ -75,7 +75,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                  */
                 PageSettingsComponent.prototype.submit = function () {
                     var _this = this;
-                    this._pageService.updateSettings(this.model.Url, this.model.Title, this.model.Description, this.model.Keywords, this.model.Callout, this.model.Layout, this.model.Language, this.model.Direction)
+                    this._pageService.updateSettings(this.model.url, this.model.title, this.model.description, this.model.keywords, this.model.callout, this.model.layout, this.model.language, this.model.direction)
                         .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
                 };
                 /**

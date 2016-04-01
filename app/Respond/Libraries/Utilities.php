@@ -13,7 +13,7 @@ class Utilities
      * @param {string} $path the recipient's email address
      * @return {Array} list of HTML fiels
      */
-    public static function ListFiles($dir, $siteId, $exts, $restrict = NULL)
+    public static function listFiles($dir, $id, $exts, $restrict = NULL)
     {
 
         $root = scandir($dir);
@@ -36,14 +36,14 @@ class Utilities
 
                 if (in_array($ext, $exts) === TRUE) {
 
-                    $paths = explode('sites/' . $siteId . '/', "$dir/$value");
+                    $paths = explode('sites/' . $id . '/', "$dir/$value");
 
                     $is_restricted = FALSE;
 
                     if ($restrict != NULL) {
 
                       foreach ($restrict as $item) {
-
+                      
                           // TODO: MAKE SURE THE FILE DOES NOT START WITH A RESTRICTED PATH
                           if (substr($paths[1], 0, strlen($item)) === $item) {
                               $is_restricted = TRUE;
@@ -65,7 +65,7 @@ class Utilities
                 continue;
             }
 
-            foreach (Utilities::ListFiles("$dir/$value", $siteId, $exts, $restrict) as $value) {
+            foreach (Utilities::listFiles("$dir/$value", $id, $exts, $restrict) as $value) {
                 $result[] = $value;
             }
 
@@ -82,7 +82,7 @@ class Utilities
      * @param {string} $path the recipient's email address
      * @return {Array} list of HTML fiels
      */
-    public static function ListRoutes($dir, $siteId)
+    public static function listRoutes($dir, $id)
     {
 
         $result = array();
@@ -109,7 +109,7 @@ class Utilities
 
                 if (is_dir("$dir/$value")) {
 
-                    $paths = explode('sites/' . $siteId . '/', "$dir/$value");
+                    $paths = explode('sites/' . $id . '/', "$dir/$value");
 
                     $is_restricted = FALSE;
 
@@ -124,7 +124,7 @@ class Utilities
 
                     if ($is_restricted === FALSE) {
 
-                        $arr = Utilities::ListRoutes("$dir/$value", $siteId);
+                        $arr = Utilities::listRoutes("$dir/$value", $id);
 
                         $result[] = '/' . $paths[1];
                         $result   = array_merge($result, $arr);
@@ -152,7 +152,7 @@ class Utilities
      * @param {string} $file the file to send
      * @return void
      */
-    public static function SendEmailFromFile($to, $from, $fromName, $subject, $replace, $file)
+    public static function sendEmailFromFile($to, $from, $fromName, $subject, $replace, $file)
     {
 
         if (file_exists($file)) {
@@ -168,7 +168,7 @@ class Utilities
             }
 
             // send email
-            Utilities::SendEmail($to, $from, $fromName, $subject, $content);
+            Utilities::sendEmail($to, $from, $fromName, $subject, $content);
 
             return true;
 
@@ -190,7 +190,7 @@ class Utilities
      * @param {string} $content the content of the email
      * @return void
      */
-    public static function SendEmail($to, $from, $fromName, $subject, $content)
+    public static function sendEmail($to, $from, $fromName, $subject, $content)
     {
 
         $mail = new \PHPMailer;
@@ -234,17 +234,17 @@ class Utilities
      * #ref: https://github.com/firebase/php-jwt, https://auth0.com/blog/2014/01/07/angularjs-authentication-with-cookies-vs-token/
      *
      * @param {string} $userId the id of the user
-     * @param {string} $siteId the id of the site
+     * @param {string} $id the id of the site
      * @return void
      */
-    public static function CreateJWTToken($email, $siteId)
+    public static function createJWTToken($email, $id)
     {
 
         // create token
         $token = array(
-            'Email' => $email,
-            'SiteId' => $siteId,
-            'Expires' => (strtotime('NOW') + (3 * 60 * 60)) // expires in an hour
+            'email' => $email,
+            'id' => $id,
+            'expires' => (strtotime('NOW') + (3 * 60 * 60)) // expires in an hour
         );
 
         // create JWT token, #ref: https://github.com/firebase/php-jwt
@@ -258,11 +258,10 @@ class Utilities
      * Validates a JWT token,
      * #ref: https://github.com/firebase/php-jwt, https://auth0.com/blog/2014/01/07/angularjs-authentication-with-cookies-vs-token/
      *
-     * @param {string} $userId the id of the user
-     * @param {string} $siteId the id of the site
+     * @param {array} $auth the id of the user
      * @return void
      */
-    public static function ValidateJWTToken($auth)
+    public static function validateJWTToken($auth)
     {
 
         // locate token
@@ -280,7 +279,7 @@ class Utilities
                 if ($jwt_decoded != NULL) {
 
                     // check to make sure the token has not expired
-                    if (strtotime('NOW') < $jwt_decoded->Expires) {
+                    if (strtotime('NOW') < $jwt_decoded->expires) {
                         return $jwt_decoded;
                     } else {
                         return NULL;
@@ -312,7 +311,7 @@ class Utilities
      * @param {string} $content the content of the new file
      * @return void
      */
-    public static function SaveContent($dir, $filename, $content)
+    public static function saveContent($dir, $filename, $content)
     {
         $full = $dir . $filename;
 
@@ -332,7 +331,7 @@ class Utilities
      * @param {string} $dst the destination
      * @return void
      */
-    public static function CopyDirectory($src, $dst)
+    public static function copyDirectory($src, $dst)
     {
         $dir = opendir($src);
 
@@ -343,7 +342,7 @@ class Utilities
         while (false !== ($file = readdir($dir))) {
             if (($file != '.') && ($file != '..')) {
                 if (is_dir($src . '/' . $file)) {
-                    Utilities::CopyDirectory($src . '/' . $file, $dst . '/' . $file);
+                    Utilities::copyDirectory($src . '/' . $file, $dst . '/' . $file);
                 } else {
                     copy($src . '/' . $file, $dst . '/' . $file);
                 }
@@ -361,10 +360,10 @@ class Utilities
      * @param {string} $image path to the image
      * @return {array}
      */
-    public static function CreateThumb($site, $image, $filename)
+    public static function createThumb($site, $image, $filename)
     {
 
-        $dir = app()->basePath().'/public/sites/'.$site->Id.'/files/thumbs';
+        $dir = app()->basePath().'/public/sites/'.$site->id.'/files/thumbs';
 
         // set thumb size
         $target_w = env('THUMB_MAX_WIDTH');

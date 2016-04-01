@@ -7,19 +7,19 @@ import {SiteService} from '/app/shared/services/site.service'
     providers: [SiteService]
 })
 
-export class CreateComponent { 
-  
+export class CreateComponent {
+
   model;
   site;
   errorMessage;
-  
+
   constructor (private _siteService: SiteService) {}
-  
+
   /**
    * Init pages
    */
   ngOnInit() {
-  
+
     this.model = {
       name: '',
       theme: '',
@@ -27,7 +27,7 @@ export class CreateComponent {
       password: '',
       passcode: ''
     };
-  
+
   }
 
   /**
@@ -35,7 +35,7 @@ export class CreateComponent {
    *
    */
   submit() {
-  
+
       this._siteService.create(this.model.name, this.model.theme, this.model.email, this.model.password, this.model.passcode)
                    .subscribe(
                      data => { this.site = data; this.success(); },
@@ -43,17 +43,17 @@ export class CreateComponent {
                     );
 
   }
-  
+
   /**
    * Handles a successful create
    *
    */
   success() {
-  
+
     console.log(this.site);
-  
-    alert('success! site=' + this.site.Domain);
-  
+
+    alert('success! site=' + this.site.id);
+
     // clear model
     this.model = {
       name: '',
@@ -62,9 +62,9 @@ export class CreateComponent {
       password: '',
       passcode: ''
     };
-    
-    
-    
+
+
+
   }
-  
+
 }

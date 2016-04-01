@@ -20,12 +20,15 @@ import {TimeAgoPipe} from '/app/shared/pipes/time-ago.pipe';
 
 export class PagesComponent {
 
+  id;
   page;
   pages;
   errorMessage;
   selectedPage;
-  addPageVisible: boolean;
-  removePageVisible: boolean;
+  addVisible: boolean;
+  removeVisible: boolean;
+  drawerVisible: boolean;
+  settingsVisible: boolean;
 
   constructor (private _pageService: PageService) {}
 
@@ -36,9 +39,9 @@ export class PagesComponent {
   ngOnInit() {
 
     this.id = localStorage.getItem('respond.siteId');
-    this.addPageVisible = false;
-    this.removePageVisible = false;
-    this.pageSettingsVisible = false;
+    this.addVisible = false;
+    this.removeVisible = false;
+    this.settingsVisible = false;
     this.drawerVisible = false;
     this.page = {};
 
@@ -63,9 +66,9 @@ export class PagesComponent {
    * Resets an modal booleans
    */
   reset() {
-    this.removePageVisible = false;
-    this.addPageVisible = false;
-    this.pageSettingsVisible = false;
+    this.removeVisible = false;
+    this.addVisible = false;
+    this.settingsVisible = false;
     this.drawerVisible = false;
     this.page = {};
   }
@@ -90,7 +93,7 @@ export class PagesComponent {
    * Shows the add dialog
    */
   showAdd() {
-    this.addPageVisible = true;
+    this.addVisible = true;
   }
 
   /**
@@ -99,7 +102,7 @@ export class PagesComponent {
    * @param {Page} page
    */
   showRemove(page) {
-    this.removePageVisible = true;
+    this.removeVisible = true;
     this.page = page;
   }
 
@@ -109,7 +112,7 @@ export class PagesComponent {
    * @param {Page} page
    */
   showSettings(page) {
-    this.pageSettingsVisible = true;
+    this.settingsVisible = true;
     this.page = page;
   }
 
@@ -119,7 +122,7 @@ export class PagesComponent {
    * @param {Page} page
    */
   edit(page) {
-    window.location = '/edit?q=' + this.id + '/' + page.Url + '.html';
+    window.location = '/edit?q=' + this.id + '/' + page.url + '.html';
   }
 
 

@@ -39,8 +39,22 @@ $app->get('pages', function () {
     return file_get_contents($public);
 });
 
+// the users route should load the angular2 app
+$app->get('users', function () {
+    $public = rtrim(app()->basePath('public/index.html'), '/');
+
+    return file_get_contents($public);
+});
+
 // the files route should load the angular2 app
 $app->get('files', function () {
+    $public = rtrim(app()->basePath('public/index.html'), '/');
+
+    return file_get_contents($public);
+});
+
+// the menus route should load the angular2 app
+$app->get('menus', function () {
     $public = rtrim(app()->basePath('public/index.html'), '/');
 
     return file_get_contents($public);
@@ -87,42 +101,32 @@ $app->post('/api/sites/create', 'SiteController@create');
 
 // login
 $app->post('/api/users/login', 'UserController@login');
-
-// forgot
 $app->post('/api/users/forgot', 'UserController@forgot');
-
-// reset
 $app->post('/api/users/reset', 'UserController@reset');
 
-// list pages
+// users
+$app -> get('/api/users/list', ['middleware' => 'jwtauth', 'uses'=> 'UserController@listAll']);
+$app -> post('/api/users/edit', ['middleware' => 'jwtauth', 'uses'=> 'UserController@edit']);
+$app -> post('/api/users/add', ['middleware' => 'jwtauth', 'uses'=> 'UserController@add']);
+$app -> post('/api/users/remove', ['middleware' => 'jwtauth', 'uses'=> 'UserController@remove']);
+
+// pages
 $app -> get('/api/pages/list', ['middleware' => 'jwtauth', 'uses'=> 'PageController@listAll']);
-
-// add page
 $app -> post('/api/pages/add', ['middleware' => 'jwtauth', 'uses'=> 'PageController@add']);
-
-// list routes
 $app -> get('/api/routes/list', ['middleware' => 'jwtauth', 'uses'=> 'PageController@listRoutes']);
-
-// save page
 $app -> post('/api/pages/save', ['middleware' => 'jwtauth', 'uses'=> 'PageController@save']);
-
-// add page
 $app -> post('/api/pages/add', ['middleware' => 'jwtauth', 'uses'=> 'PageController@add']);
-
-// remove page
 $app -> post('/api/pages/remove', ['middleware' => 'jwtauth', 'uses'=> 'PageController@remove']);
-
-// update page settings
 $app -> post('/api/pages/settings', ['middleware' => 'jwtauth', 'uses'=> 'PageController@settings']);
 
-// uploads an image
+// files
 $app -> post('/api/images/add', ['middleware' => 'jwtauth', 'uses'=> 'FileController@upload']);
-
-// uploads a file
 $app -> post('/api/files/add', ['middleware' => 'jwtauth', 'uses'=> 'FileController@upload']);
-
-// lists images
 $app -> get('/api/images/list', ['middleware' => 'jwtauth', 'uses'=> 'FileController@listImages']);
-
-// lists files
 $app -> get('/api/files/list', ['middleware' => 'jwtauth', 'uses'=> 'FileController@listFiles']);
+$app -> post('/api/files/remove', ['middleware' => 'jwtauth', 'uses'=> 'FileController@remove']);
+
+// menus
+$app -> get('/api/menus/list', ['middleware' => 'jwtauth', 'uses'=> 'MenuController@listAll']);
+$app -> post('/api/menus/add', ['middleware' => 'jwtauth', 'uses'=> 'MenuController@add']);
+$app -> post('/api/menus/remove', ['middleware' => 'jwtauth', 'uses'=> 'MenuController@remove']);

@@ -24,8 +24,8 @@ class ImageController extends Controller
   {
 
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
 
     $arr = array();
 

@@ -19,8 +19,8 @@ export class RemoveFileComponent {
 
   // model to store
   model: {
-    Name: '',
-    Url: ''
+    name: '',
+    url: ''
   };
 
   _visible: boolean = false;
@@ -68,7 +68,7 @@ export class RemoveFileComponent {
    */
   submit() {
 
-    this._fileService.remove(this.model.Name)
+    this._fileService.remove(this.model.name)
                      .subscribe(
                        data => { this.success(); },
                        error =>  this.errorMessage = <any>error

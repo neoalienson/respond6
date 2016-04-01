@@ -16,11 +16,13 @@ import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 
 export class FilesComponent {
 
+  id;
   file;
   files;
   errorMessage;
   selectedFile;
-  removeFileVisible: boolean;
+  removeVisible: boolean;
+  drawerVisible: boolean;
 
   constructor (private _fileService: FileService) {}
 
@@ -31,7 +33,7 @@ export class FilesComponent {
   ngOnInit() {
 
     this.id = localStorage.getItem('respond.siteId');
-    this.removeFileVisible = false;
+    this.removeVisible = false;
     this.drawerVisible = false;
     this.file = {};
 
@@ -56,7 +58,7 @@ export class FilesComponent {
    * Resets an modal booleans
    */
   reset() {
-    this.removeFileVisible = false;
+    this.removeVisible = false;
     this.drawerVisible = false;
     this.file = {};
   }
@@ -83,7 +85,7 @@ export class FilesComponent {
    * @param {File} file
    */
   showRemove(file) {
-    this.removeFileVisible = true;
+    this.removeVisible = true;
     this.file = file;
   }
 

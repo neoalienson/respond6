@@ -30,15 +30,15 @@ class UserController extends Controller
 
     $email = $request->json()->get('email');
     $password = $request->json()->get('password');
-    $siteId = $request->json()->get('id');
+    $id = $request->json()->get('id');
 
     // get site by its friendly id
-    $site = Site::GetById($siteId);
+    $site = Site::getById($id);
 
     if ($site != NULL) {
 
       // get the user from the credentials
-      $user = User::GetByEmailPassword($site->Id, $email, $password);
+      $user = User::getByEmailPassword($email, $password, $site->id);
 
       if($user != NULL) {
 
@@ -46,31 +46,31 @@ class UserController extends Controller
         $fullPhotoUrl = '';
 
       	// set photo url
-      	if($user->Photo != '' && $user->Photo != NULL){
+      	if($user->photo != '' && $user->photo != NULL){
 
       		// set images URL
-          $imagesURL = $site->Domain;
+          $imagesURL = $site->domain;
 
-        	$fullPhotoUrl = $imagesURL.'/files/thumbs/'.$user->Photo;
+        	$fullPhotoUrl = $imagesURL.'/files/thumbs/'.$user->photo;
 
       	}
 
         // return a subset of the user array
         $returned_user = array(
-        	'Email' => $user->Email,
-        	'FirstName' => $user->FirstName,
-        	'LastName' => $user->LastName,
-        	'Photo' => $user->Photo,
-        	'FullPhotoUrl' => $fullPhotoUrl,
-        	'Language' => $user->Language,
-        	'Role' => $user->Role,
-        	'SiteId' => $site->Id
+        	'email' => $user->email,
+        	'firstName' => $user->firstName,
+        	'lastName' => $user->lastName,
+        	'photo' => $user->photo,
+        	'fullPhotoUrl' => $fullPhotoUrl,
+        	'language' => $user->language,
+        	'role' => $user->role,
+        	'siteId' => $site->id
         );
 
         // send token
         $params = array(
         	'user' => $returned_user,
-        	'token' => Utilities::CreateJWTToken($user->Email, $site->Id)
+        	'token' => Utilities::createJWTToken($user->email, $site->id)
         );
 
         // return a json response
@@ -101,29 +101,29 @@ class UserController extends Controller
     $id = $request->json()->get('id');
 
     // get site
-    $site = Site::GetById($id);
+    $site = Site::getById($id);
 
     if($site != NULL) {
 
       // get user
-      $user = User::GetByEmail($site->Id, $email);
+      $user = User::getByEmail($email, $site->id);
 
       if($user != NULL) {
 
-        $user->Token = uniqid();
+        $user->token = uniqid();
 
         // save
-        $site->SaveUser($user);
+        $site->saveUser($user);
 
         // send email
-        $to = $user->Email;
+        $to = $user->email;
         $from = env('EMAILS_FROM');
         $fromName = env('EMAILS_FROM_NAME');
         $subject = env('BRAND').': Reset Password';
         $file = app()->basePath().'/resources/emails/reset-password.html';
 
         // create strings to replace
-        $resetUrl = env('APP_URL').'/reset/'.$site->Id.'/'.$user->Token;
+        $resetUrl = env('APP_URL').'/reset/'.$site->id.'/'.$user->token;
 
         $replace = array(
           '{{brand}}' => env('BRAND'),
@@ -132,7 +132,7 @@ class UserController extends Controller
         );
 
         // send email from file
-        Utilities::SendEmailFromFile($to, $from, $fromName, $subject, $replace, $file);
+        Utilities::sendEmailFromFile($to, $from, $fromName, $subject, $replace, $file);
 
         return response('OK', 200);
 
@@ -156,20 +156,20 @@ class UserController extends Controller
     $password = $request->json()->get('password');
     $id = $request->json()->get('id');
 
-    $site = Site::GetById($id);
+    $site = Site::getById($id);
 
     if($site != NULL) {
 
       // get the user from the credentials
-      $user = User::GetByToken($site->Id, $token);
+      $user = User::getByToken($token, $site->id);
 
       if($user!=null){
 
         // update the password
-        $user->Password = password_hash($password, PASSWORD_DEFAULT);
-        $user->Token = '';
+        $user->password = password_hash($password, PASSWORD_DEFAULT);
+        $user->token = '';
 
-        $site->SaveUser($user);
+        $user->save($site->id);
 
         // return a successful response (200)
         return response('OK', 200);
@@ -187,6 +187,143 @@ class UserController extends Controller
       // return a bad request
       return response('Token invalid', 400);
     }
+
+  }
+
+  /**
+   * Edits the user
+   *
+   * @return Response
+   */
+  public function edit(Request $request)
+  {
+
+    // get request data
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
+
+    // get url & changes
+    $email = $request->json()->get('email');
+    $firstName = $request->json()->get('firstName');
+    $lastName = $request->json()->get('lastName');
+    $role = $request->json()->get('role');
+    $password = $request->json()->get('password');
+    $language = $request->json()->get('language');
+
+    $user = User::getByEmail($email, $id);
+
+    if($user != NULL) {
+
+      $user->firstName = $firstName;
+      $user->lastName = $lastName;
+      $user->role = $role;
+      $user->language = $language;
+
+      if($password !== 'currentpassword') {
+        $user->password = password_hash($password, PASSWORD_DEFAULT);
+      }
+
+      $user->save($id);
+
+      // return a successful response (200)
+      return response('OK', 200);
+
+    }
+    else {
+      // return a bad request
+      return response('Token invalid', 400);
+    }
+
+  }
+
+  /**
+   * Adds the user
+   *
+   * @return Response
+   */
+  public function add(Request $request)
+  {
+    // get request data
+    $id = $request->input('auth-id');
+
+    // get url & changes
+    $email = $request->json()->get('email');
+    $firstName = $request->json()->get('firstName');
+    $lastName = $request->json()->get('lastName');
+    $role = $request->json()->get('role');
+    $password = $request->json()->get('password');
+    $language = $request->json()->get('language');
+
+    $user = User::getByEmail($email, $id);
+
+    // make sure the email doesn't exist already
+    if($user === NULL) {
+
+      // create the user
+      $user = new User(array(
+          'email' => $email,
+          'password' => password_hash($password, PASSWORD_DEFAULT),
+          'firstName' => $firstName,
+          'lastName' => $lastName,
+          'role' => $role,
+          'language' => $language,
+          'photo' => '',
+          'token' => ''
+        ));
+
+      // save the user
+      $user->save($id);
+
+      // return a successful response (200)
+      return response('OK', 200);
+
+    }
+    else {
+      // return a bad request
+      return response('Duplicate user', 400);
+    }
+
+  }
+
+  /**
+   * Removes a user
+   *
+   * @return Response
+   */
+  public function remove(Request $request)
+  {
+    // get request data
+    $id = $request->input('auth-id');
+
+    // get url, title and description
+    $email = $request->json()->get('email');
+
+    $user = User::getByEmail($email, $id);
+
+    $user->remove($id);
+
+    // return OK
+    return response('OK, user removed at = '.$user->email, 200);
+
+  }
+
+
+  /**
+   * Lists all users for a site
+   *
+   * @return Response
+   */
+  public function listAll(Request $request)
+  {
+
+    // get request data
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
+
+    // list pages in the site
+    $arr = User::listAll($id);
+
+    return response()->json($arr);
 
   }
 

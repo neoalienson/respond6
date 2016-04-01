@@ -24,10 +24,10 @@ class FileController extends Controller
   {
 
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
 
-    $arr = File::ListImages($siteId);
+    $arr = File::listImages($id);
 
     return response()->json($arr);
 
@@ -42,14 +42,14 @@ class FileController extends Controller
   {
 
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
 
     // get a reference to the site
-    $site = Site::GetById($siteId);
+    $site = Site::getById($id);
 
     // list files
-    $arr = File::ListFiles($siteId);
+    $arr = File::listFiles($id);
 
     // set image extensions
     $image_exts = array('gif', 'png', 'jpg', 'svg');
@@ -60,7 +60,7 @@ class FileController extends Controller
 
       $filename = str_replace('files/', '', $file);
 
-      $path = app()->basePath().'/public/sites/'.$siteId.'/files/'.$filename;
+      $path = app()->basePath().'/public/sites/'.$id.'/files/'.$filename;
 
       // get extension
       $parts = explode(".", $filename);
@@ -83,23 +83,23 @@ class FileController extends Controller
         catch(Exception $e){}
 
         // set url, thumb
-        $url = $thumb = $site->Domain.'/files/'.$filename;
+        $url = $thumb = 'sites/'.$site->id.'/files/'.$filename;
 
         // check for thumb
-        if(file_exists(app()->basePath().'/public/sites/'.$siteId.'/files/thumbs/'.$filename)) {
-          $thumb = $site->Domain.'/files/thumbs/'.$filename;
+        if(file_exists(app()->basePath().'/public/sites/'.$id.'/files/thumbs/'.$filename)) {
+          $thumb = 'sites/'.$site->id.'/files/thumbs/'.$filename;
         }
 
         // push file to the array
         array_push($files, array(
-          'Name' => $filename,
-          'Url' => $url,
-          'Thumb' => $thumb,
-          'Extension' => $ext,
-          'IsImage' => $is_image,
-          'Width' => $width,
-          'Height' => $height,
-          'Zize' => number_format($size / 1048576, 2)
+          'name' => $filename,
+          'url' => $url,
+          'thumb' => $thumb,
+          'extension' => $ext,
+          'isImage' => $is_image,
+          'width' => $width,
+          'height' => $height,
+          'size' => number_format($size / 1048576, 2)
         ));
 
       }
@@ -107,14 +107,14 @@ class FileController extends Controller
 
         // push file to the array
         array_push($files, array(
-          'Name' => $filename,
-          'Url' => $site->Domain.'/files/'.$filename,
-          'Thumb' => '',
-          'Extension' => $ext,
-          'IsImage' => $is_image,
-          'Width' => NULL,
-          'Height' => NULL,
-          'Size' => number_format($size / 1048576, 2)
+          'name' => $filename,
+          'url' => 'files/'.$filename,
+          'thumb' => '',
+          'extension' => $ext,
+          'isImage' => $is_image,
+          'width' => NULL,
+          'height' => NULL,
+          'size' => number_format($size / 1048576, 2)
         ));
 
       }
@@ -135,11 +135,11 @@ class FileController extends Controller
   public function upload(Request $request)
   {
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
 
     // get site
-    $site = Site::GetById($siteId);
+    $site = Site::getById($id);
 
     // get file
     $file = $request->file('file');
@@ -160,7 +160,7 @@ class FileController extends Controller
 		$allowed = array_map('strtolower', $allowed);
 
 		// directory to save
-    $directory = app()->basePath().'/public/sites/'.$site->Id.'/files';
+    $directory = app()->basePath().'/public/sites/'.$site->id.'/files';
 
 		// save image
     if($ext=='png' || $ext=='jpg' || $ext=='gif' || $ext == 'svg'){ // upload image
@@ -171,16 +171,16 @@ class FileController extends Controller
       // set path
       $path = $directory.'/'.$filename;
 
-      $arr = Utilities::CreateThumb($site, $path, $filename);
+      $arr = Utilities::createThumb($site, $path, $filename);
 
       // set local URL
-      $url = 	$site->Domain;
+      $url = 	$site->domain;
 
       // create array
       $arr = array(
         'filename' => $filename,
         'fullUrl' => $url.'/files/'.$filename,
-        'thumbUrl' => $site->Domain.'/files/thumbs/'.$filename,
+        'thumbUrl' => $site->domain.'/files/thumbs/'.$filename,
         'extension' => $ext,
         'isImage' => true,
         'width' => $arr['width'],
@@ -194,7 +194,7 @@ class FileController extends Controller
       $file->move($directory, $filename);
 
       // set url
-      $url = 	$site->Domain;
+      $url = 	$site->domain;
 
       $arr = array(
         'filename' => $filename,
@@ -214,6 +214,28 @@ class FileController extends Controller
 
     // return OK
     return response()->json($arr);
+
+  }
+
+  /**
+   * Removes the file
+   *
+   * @return Response
+   */
+  public function remove(Request $request)
+  {
+    // get request data
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
+
+    // get url, title and description
+    $name = $request->json()->get('name');
+
+    // remove the file
+    File::remove($name, $id);
+
+    // return OK
+    return response('OK', 200);
 
   }
 

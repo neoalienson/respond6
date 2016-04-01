@@ -19,13 +19,13 @@ export class RemovePageComponent {
 
   // model to store
   model: {
-    Url: '',
-    Title: '',
-    Description: '',
-    Keywords: '',
-    Callout: '',
-    Layout: 'content',
-    Language: 'en'
+    url: '',
+    title: '',
+    description: '',
+    keywords: '',
+    callout: '',
+    layout: 'content',
+    language: 'en'
   };
 
   _visible: boolean = false;
@@ -73,7 +73,7 @@ export class RemovePageComponent {
    */
   submit() {
 
-    this._pageService.remove(this.model.Url)
+    this._pageService.remove(this.model.url)
                      .subscribe(
                        data => { this.success(); },
                        error =>  this.errorMessage = <any>error

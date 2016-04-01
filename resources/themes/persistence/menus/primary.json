@@ -1,0 +1,30 @@
+[
+  {
+    "cssClass": "",
+    "isNested": false,
+    "name": "Home",
+    "priority": 0,
+    "url": "index"
+  },
+  {
+    "cssClass": "",
+    "isNested": false,
+    "name": "Blog",
+    "priority": 1,
+    "url": "blog"
+  },
+  {
+    "cssClass": "",
+    "isNested": false,
+    "name": "About",
+    "priority": 2,
+    "url": "page/about"
+  },
+  {
+    "cssClass": "",
+    "isNested": false,
+    "name": "Contact",
+    "priority": 3,
+    "url": "page/contact"
+  }
+]

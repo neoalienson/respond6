@@ -7,8 +7,6 @@ use App\Respond\Models\User;
 use App\Respond\Models\Page;
 use App\Respond\Libraries\Utilities;
 
-use Symfony\Component\Yaml\Parser;
-
 class Publish {
 
   /**
@@ -16,26 +14,26 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function PublishTheme($site) {
+  public static function publishTheme($site) {
 
     // publish theme files
-    $src = app()->basePath().'/resources/themes/'.$site->Theme;
-    $dest = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme;
+    $src = app()->basePath().'/resources/themes/'.$site->theme;
+    $dest = app()->basePath().'/public/sites/'.$site->id.'/themes/'.$site->theme;
 
     // copy the directory
-    Utilities::CopyDirectory($src, $dest);
+    Utilities::copyDirectory($src, $dest);
 
     // publish CSS
-    Publish::PublishThemeCSS($site);
+    Publish::publishThemeCSS($site);
 
     // compress CSS
-    Publish::CompressCSS($site);
+    Publish::compressCSS($site);
 
     // publish JS
-    Publish::PublishThemeJS($site);
+    Publish::publishThemeJS($site);
 
     // publish JS
-    Publish::PublishThemeFiles($site);
+    Publish::publishThemeFiles($site);
 
   }
 
@@ -44,14 +42,14 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function PublishThemeFiles($site) {
+  public static function publishThemeFiles($site) {
 
     // publish js files
-    $src = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme.'/files';
-    $dest = app()->basePath().'/public/sites/'.$site->Id.'/files';
+    $src = app()->basePath().'/public/sites/'.$site->id.'/themes/'.$site->theme.'/files';
+    $dest = app()->basePath().'/public/sites/'.$site->id.'/files';
 
     // copy the directory
-    Utilities::CopyDirectory($src, $dest);
+    Utilities::copyDirectory($src, $dest);
 
   }
 
@@ -60,14 +58,14 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function PublishThemeJS($site) {
+  public static function publishThemeJS($site) {
 
     // publish js files
-    $src = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme.'/js';
-    $dest = app()->basePath().'/public/sites/'.$site->Id.'/js';
+    $src = app()->basePath().'/public/sites/'.$site->id.'/themes/'.$site->theme.'/js';
+    $dest = app()->basePath().'/public/sites/'.$site->id.'/js';
 
     // copy the directory
-    Utilities::CopyDirectory($src, $dest);
+    Utilities::copyDirectory($src, $dest);
 
   }
 
@@ -76,22 +74,21 @@ class Publish {
    *
    * @param {Site} $site
    */
-	public static function InjectSiteSettings($site){
+	public static function injectSiteSettings($site){
 
 		// create settings
 		$settings = array(
-			'SiteId' => $site->Id,
-			'Domain' => $site->Domain,
-			'API' => env('APP_URL').'/api',
-			'ShowCart' => $site->ShowCart,
-			'ShowSearch' => $site->ShowSearch
+			'id' => $site->id,
+			'api' => env('APP_URL').'/api',
+			'showCart' => $site->showCart,
+			'showSearch' => $site->showSearch
 		);
 
 		// settings
 		$str_settings = json_encode($settings);
 
 		// get site file
-		$file = app()->basePath().'/public/sites/'.$site->Id.'/js/respond.site.js';
+		$file = app()->basePath().'/public/sites/'.$site->id.'/js/respond.site.js';
 
 		if(file_exists($file)){
 
@@ -120,21 +117,20 @@ class Publish {
    *
    * @param {Site} $site
    */
-	public static function InjectPaymentSettings($site){
+	public static function injectPaymentSettings($site){
 
 	  // paypal
-	  $yaml = new Parser();
-    $file = app()->basePath().'/resources/sites/'.$id.'/paypal.yaml';
+    $file = app()->basePath().'/resources/sites/'.$id.'/paypal.json';
 
     if(file_exists($file)) {
 
-      $arr = $yaml->parse(file_get_contents($file));
+      $arr = json_decode(file_get_contents($file));
 
       // settings
   		$str_settings = 'paypal: {'.json_encode($settings, true).'}';
 
   		// get site file
-  		$file = app()->basePath().'/public/sites/'.$site->Id.'/js/respond.site.js';
+  		$file = app()->basePath().'/public/sites/'.$site->id.'/js/respond.site.js';
 
   		if(file_exists($file)){
 
@@ -161,14 +157,14 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function PublishThemeCSS($site) {
+  public static function publishThemeCSS($site) {
 
     // publish css files
-    $src = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme.'/css';
-    $dest = $dir = app()->basePath().'/public/sites/'.$site->Id.'/css';
+    $src = app()->basePath().'/public/sites/'.$site->id.'/themes/'.$site->theme.'/css';
+    $dest = $dir = app()->basePath().'/public/sites/'.$site->id.'/css';
 
     // copy the directory
-    Utilities::CopyDirectory($src, $dest);
+    Utilities::copyDirectory($src, $dest);
 
   }
 
@@ -177,14 +173,14 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function PublishThemeMenus($site) {
+  public static function publishThemeMenus($site) {
 
     // publish css files
-    $src = app()->basePath().'/public/sites/'.$site->Id.'/themes/'.$site->Theme.'/menus';
-    $dest = $dir = app()->basePath().'/public/sites/'.$site->Id.'/data/menus';
+    $src = app()->basePath().'/public/sites/'.$site->id.'/themes/'.$site->theme.'/menus';
+    $dest = $dir = app()->basePath().'/public/sites/'.$site->id.'/data/menus';
 
     // copy the directory
-    Utilities::CopyDirectory($src, $dest);
+    Utilities::copyDirectory($src, $dest);
 
   }
 
@@ -193,9 +189,9 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function CompressCSS($site) {
+  public static function compressCSS($site) {
 
-    $dir = app()->basePath().'/public/sites/'.$site->Id.'/css';
+    $dir = app()->basePath().'/public/sites/'.$site->id.'/css';
 
     // combine and compress css
     $files = scandir($dir);
@@ -228,7 +224,7 @@ class Publish {
     }
 
     // create combined css
-    file_put_contents(app()->basePath().'/public/sites/'.$site->Id.'/css/respond.min.css', $combined_css);
+    file_put_contents(app()->basePath().'/public/sites/'.$site->id.'/css/respond.min.css', $combined_css);
 
   }
 
@@ -237,14 +233,14 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function PublishLocales($site) {
+  public static function publishLocales($site) {
 
     // publish theme files
     $src = app()->basePath().'/resources/locales';
-    $dest = app()->basePath().'/public/sites/'.$site->Id.'/locales';
+    $dest = app()->basePath().'/public/sites/'.$site->id.'/locales';
 
     // copy the directory
-    Utilities::CopyDirectory($src, $dest);
+    Utilities::copyDirectory($src, $dest);
   }
 
   /**
@@ -252,7 +248,7 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function PublishComponents($site) {
+  public static function publishComponents($site) {
 
     // production
     $dir = app()->basePath().'/node_modules';
@@ -263,17 +259,17 @@ class Publish {
 
     // publish components polyfil
     $src = $dir.'/respond-components/bower_components/webcomponentsjs';
-    $dest = app()->basePath().'/public/sites/'.$site->Id.'/components/lib';
+    $dest = app()->basePath().'/public/sites/'.$site->id.'/components/lib';
 
     // copy the directory
-    Utilities::CopyDirectory($src, $dest);
+    Utilities::copyDirectory($src, $dest);
 
     // paths to build file
     $src = $dir.'/respond-components/respond-build.html';
-    $dest = app()->basePath().'/public/sites/'.$site->Id.'/components/respond-build.html';
+    $dest = app()->basePath().'/public/sites/'.$site->id.'/components/respond-build.html';
 
     // make directory
-    $dir = app()->basePath().'/public/sites/'.$site->Id.'/components/';
+    $dir = app()->basePath().'/public/sites/'.$site->id.'/components/';
 
     if(!file_exists($dir)){
 			mkdir($dir, 0777, true);
@@ -289,27 +285,25 @@ class Publish {
    *
    * @param {Site} $site
    */
-  public static function PublishDefaultContent($site, $user) {
+  public static function publishDefaultContent($site, $user) {
 
-    $yaml = new Parser();
-
-    $file = app()->basePath().'/resources/themes/'.$site->Theme.'/theme.yaml';
+    $file = app()->basePath().'/resources/themes/'.$site->theme.'/theme.json';
     $timestamp = gmdate('D M d Y H:i:s O', time());
 
     if(file_exists($file)) {
 
-       $arr = $yaml->parse(file_get_contents($file));
+       $arr = json_decode(file_get_contents($file), true);
 
-       foreach($arr['Pages'] as $page) {
+       foreach($arr['pages'] as $page) {
 
-        $url = $page['Url'];
-        $title = $page['Title'];
-        $description = $page['Description'];
-        $source = $page['Source'];
-        $layout = $page['Layout'];
+        $url = $page['url'];
+        $title = $page['title'];
+        $description = $page['description'];
+        $source = $page['source'];
+        $layout = $page['layout'];
 
         // get source
-        $source = app()->basePath().'/resources/themes/'.$site->Theme.'/'.$page['Source'];
+        $source = app()->basePath().'/resources/themes/'.$site->theme.'/'.$page['source'];
 
         if(file_exists($source)) {
 
@@ -317,19 +311,19 @@ class Publish {
 
           // add page
           $data = array(
-            'Title' => $title,
-            'Description' => $description,
-            'Keywords' => '',
-            'Callout' => '',
-            'Url' => $url,
-            'Layout' => $layout,
-            'Language' => 'en',
-            'LastModifiedBy' => $user->Email,
-            'LastModifiedDate' => $timestamp
+            'title' => $title,
+            'description' => $description,
+            'keywords' => '',
+            'callout' => '',
+            'url' => $url,
+            'layout' => $layout,
+            'language' => 'en',
+            'lastModifiedBy' => $user->email,
+            'lastModifiedDate' => $timestamp
           );
 
           // add a page
-          Page::Add($data, $site, $user, $content);
+          Page::add($data, $site, $user, $content);
 
         }
 
@@ -346,21 +340,20 @@ class Publish {
    * @param {Page} $page
    * @param {User} $user
    */
-  public static function PublishPage($site, $page, $user) {
+  public static function publishPage($site, $page, $user) {
 
-    $dest = app()->basePath().'/public/sites/'.$site->Id;
+    $dest = app()->basePath().'/public/sites/'.$site->id;
 
     $imageurl = $dest . 'files/';
-    $siteurl  = $site->Domain . '/';
 
     $url  = '';
-    $file = $page->Url;
+    $file = $page->url;
 
     // set base
     $base = '';
 
     // explode url by '/'
-		$parts = explode('/', $page->Url);
+		$parts = explode('/', $page->url);
 
 		// set base based on the depth
 		if(sizeof($parts) == 1) {
@@ -375,7 +368,7 @@ class Publish {
     $content = '';
 
     // get layout from theme
-    $layout = $dest . '/themes/' . $site->Theme . '/layouts/' . $page->Layout . '.html';
+    $layout = $dest . '/themes/' . $site->theme . '/layouts/' . $page->layout . '.html';
 
     // get fragment html
     if (file_exists($layout)) {
@@ -384,17 +377,17 @@ class Publish {
       $html = file_get_contents($layout);
 
       // apply mustache syntax to the layout
-      $html = Publish::ApplyMustacheSyntax($html, $site, $page, $user);
+      $html = Publish::applyMustacheSyntax($html, $site, $page, $user);
 
       // get phpQuery of file
       $doc = \phpQuery::newDocument($html);
 
       // set show-cart, show-settings, show-languages, show-login
-      if ($site->ShowCart == 1) {
+      if ($site->showCart == 1) {
         $doc['body']->addClass('show-cart');
       }
 
-      if ($site->ShowSearch == 1) {
+      if ($site->showSearch == 1) {
         $doc['body']->addClass('show-search');
       }
 
@@ -403,13 +396,13 @@ class Publish {
     if ($doc !== NULL) {
 
       // generate the [render=publish] components
-      $doc = Publish::GenerateRenderAtPublish($doc, $site, $page);
+      $doc = Publish::generateRenderAtPublish($doc, $site, $page);
 
       // get html
       $html = $doc->htmlOuter();
 
       // applies the mustache syntax
-      $html = Publish::ApplyMustacheSyntax($html, $site, $page, $user);
+      $html = Publish::applyMustacheSyntax($html, $site, $page, $user);
 
     } else {
       $html = '';
@@ -442,11 +435,9 @@ class Publish {
    * @param {Site} $site
    * @param {Page} $page
    */
-  public static function GenerateRenderAtPublish($doc, $site, $page) {
+  public static function generateRenderAtPublish($doc, $site, $page) {
 
     // set images URL
-    $imagesUrl = $site->Domain . '/';
-    $yaml = new Parser();
     $ext = '.html';
 
     if(env('FRIENDLY_URLS') === true) {
@@ -461,8 +452,8 @@ class Publish {
 			// get the type
 			if($type != NULL) {
 
-				// get yaml for menu
-				$file = app()->basePath().'/public/sites/'.$site->Id.'/data/menus/'.$type.'.yaml';
+				// get json for menu
+				$file = app()->basePath().'/public/sites/'.$site->id.'/data/menus/'.$type.'.json';
 
 				if(file_exists($file)) {
 
@@ -478,7 +469,7 @@ class Publish {
   				}
 
   				// get items for type
-  				$menuItems = $yaml->parse(file_get_contents($file));
+  				$menuItems = json_decode(file_get_contents($file), true);
 
 			    $i = 0;
 			    $parent_flag = false;
@@ -487,20 +478,20 @@ class Publish {
           // walk through items
   			  foreach($menuItems as $menuItem){
 
-            $name = $menuItem['Name'];
-            $cssClass = $menuItem['CssClass'];
-            $url = $menuItem['Url'];
-            $priority = $menuItem['Priority'];
-            $isNested = $menuItem['IsNested'];
+            $name = $menuItem['name'];
+            $cssClass = $menuItem['cssClass'];
+            $url = $menuItem['url'];
+            $priority = $menuItem['priority'];
+            $isNested = $menuItem['isNested'];
 
             // set active
-            if($page->Url == $url) {
+            if($page->url === $url) {
               $cssClass .= ' active';
             }
 
   					// check for new parent
   					if(isset($arr[$i+1])){
-  						if($menuItems[$i+1]['IsNested'] == true && $new_parent==true){
+  						if($menuItems[$i+1]['isNested'] == true && $new_parent==true){
   							$parent_flag = true;
   						}
   					}
@@ -514,19 +505,19 @@ class Publish {
 
   					if($new_parent == true && $parent_flag == true){
   						$menu .= '<li class="dropdown">';
-  						$menu .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">'.$menuItem['Name'].' <span class="caret"></span></a>';
+  						$menu .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">'.$menuItem['name'].' <span class="caret"></span></a>';
   						$menu .= '<ul class="dropdown-menu">';
   						$new_parent = false;
   					}
   					else{
   				    	$menu .= '<li'.$cssClass.'>';
-  						$menu .= '<a href="'.$url.$ext.'">'.$menuItem['Name'].'</a>';
+  						$menu .= '<a href="'.$url.$ext.'">'.$menuItem['name'].'</a>';
   						$menu .= '</li>';
   				    }
 
   				    // end parent
   				    if(isset($menuItems[$i+1])){
-  						if($menuItems[$i+1]['IsNested'] == false && $parent_flag==true){
+  						if($menuItems[$i+1]['isNested'] == false && $parent_flag==true){
   							$menu .= '</ul></li>'; // end parent if next item is not nested
   							$parent_flag = false;
   							$new_parent = true;
@@ -572,16 +563,13 @@ class Publish {
         $content_html = '';
 
         // get location of content html
-        $dest = app()->basePath().'/public/sites/'.$site->Id;
+        $dest = app()->basePath().'/public/sites/'.$site->id;
         $content_dest = $dest . '/fragments/page/' . $url;
 
         // get contents
         if (file_exists($content_dest)) {
           $content_html = file_get_contents($content_dest);
         }
-
-        // update images url
-        $content_html = str_replace('{{site.ImagesUrl}}', $imagesUrl, $content_html);
 
         // set outer text
         if ($content_html != '') {
@@ -596,7 +584,7 @@ class Publish {
 
     // recursively call generate if needed
     if(sizeof($doc['[render=publish]']) > 0) {
-      $doc = Publish::GenerateRenderAtPublish($doc, $site, $page);
+      $doc = Publish::generateRenderAtPublish($doc, $site, $page);
     }
 
     return $doc;
@@ -611,29 +599,33 @@ class Publish {
    * @param {Page} $page
    * @param {User} $user
    */
-  public static function ApplyMustacheSyntax($html, $site, $page, $user) {
+  public static function applyMustacheSyntax($html, $site, $page, $user) {
 
     // meta data
     $photo = '';
     $name = '';
-    $lastModifiedDate = $page->LastModifiedDate;
+    $lastModifiedDate = $page->lastModifiedDate;
 
     // replace last modified
-    if ($page->LastModifiedBy != NULL) {
+    if ($page->lastModifiedBy != NULL) {
 
       // set user infomration
       if ($user != NULL) {
-        $photoUrl = $site->Domain . '/files/'.$user->Photo;
-        $name = $user->FirstName.' '. $user->LastName;
+        $photoUrl = 'files/'.$user->photo;
+        $name = $user->firstName.' '. $user->lastName;
       }
 
     }
 
     // set page information
     $html = str_replace('{{page.PhotoUrl}}', $photoUrl, $html);
-    $html = str_replace('{{page.Title}}', $page->Title, $html);
+    $html = str_replace('{{page.photoUrl}}', $photoUrl, $html);
+    $html = str_replace('{{page.Title}}', $page->title, $html);
+    $html = str_replace('{{page.title}}', $page->title, $html);
     $html = str_replace('{{page.LastModifiedDate}}', $lastModifiedDate, $html);
+    $html = str_replace('{{page.lastModifiedDate}}', $lastModifiedDate, $html);
     $html = str_replace('{{page.LastModifiedBy}}', $name, $html);
+    $html = str_replace('{{page.lastModifiedBy}}', $name, $html);
 
     // replace timestamp
     $html = str_replace('{{timestamp}}', time(), $html);
@@ -647,45 +639,57 @@ class Publish {
     // set iconURL
     $iconUrl = '';
 
-    if ($site->Icon != '') {
-      $iconUrl = 'files/' . $site->Icon;
+    if ($site->icon != '') {
+      $iconUrl = 'files/' . $site->icon;
     }
 
     // replace
     $html = str_replace('ng-src', 'src', $html);
     $html = str_replace('{{site.ImagesUrl}}', $imagesUrl, $html);
+    $html = str_replace('{{site.imagesUrl}}', $imagesUrl, $html);
     $html = str_replace('{{site.IconUrl}}', $iconUrl, $html);
+    $html = str_replace('{{site.iconUrl}}', $iconUrl, $html);
 
     // set fullLogo
-    $html = str_replace('{{site.LogoUrl}}', 'files/' . $site->Logo, $html);
+    $html = str_replace('{{site.LogoUrl}}', 'files/' . $site->logo, $html);
+    $html = str_replace('{{site.logoUrl}}', 'files/' . $site->logo, $html);
 
     // set altLogo (defaults to full logo if not available)
-    if ($site->AltLogo != '' && $site->AltLogo != NULL) {
-      $html = str_replace('{{site.AltLogoUrl}}', 'files/' . $site->AltLogo, $html);
+    if ($site->altLogo != '' && $site->altLogo != NULL) {
+      $html = str_replace('{{site.AltLogoUrl}}', 'files/' . $site->altLogo, $html);
+      $html = str_replace('{{site.altLogoUrl}}', 'files/' . $site->altLogo, $html);
     }
     else {
-      $html = str_replace('{{site.AltLogoUrl}}', 'files/' . $site->Logo, $html);
+      $html = str_replace('{{site.AltLogoUrl}}', 'files/' . $site->logo, $html);
+      $html = str_replace('{{site.altLogoUrl}}', 'files/' . $site->logo, $html);
     }
 
     // set urls
-    $relativeURL = $page->Url;
+    $relativeURL = $page->url;
 
-    $fullURL = $site->Domain . '/' . $relativeURL;
-
-    // replace mustaches syntax {{page.Description}} {{site.Name}}
-    $html = str_replace('{{page.Title}}', $page->Title, $html);
-    $html = str_replace('{{page.Name}}', $page->Title, $html);
-    $html = str_replace('{{page.Description}}', $page->Description, $html);
-    $html = str_replace('{{page.Keywords}}', $page->Keywords, $html);
-    $html = str_replace('{{page.Callout}}', $page->Callout, $html);
-    $html = str_replace('{{site.Name}}', $site->Name, $html);
-    $html = str_replace('{{site.Language}}', $site->Language, $html);
-    $html = str_replace('{{site.Direction}}', $site->Direction, $html);
-    $html = str_replace('{{site.IconBg}}', $site->Color, $html);
+    // replace mustaches syntax {{page.description}} {{site.name}}
+    $html = str_replace('{{page.Title}}', $page->title, $html);
+    $html = str_replace('{{page.title}}', $page->title, $html);
+    $html = str_replace('{{page.Name}}', $page->title, $html);
+    $html = str_replace('{{page.name}}', $page->title, $html);
+    $html = str_replace('{{page.Description}}', $page->description, $html);
+    $html = str_replace('{{page.description}}', $page->description, $html);
+    $html = str_replace('{{page.Keywords}}', $page->keywords, $html);
+    $html = str_replace('{{page.keywords}}', $page->keywords, $html);
+    $html = str_replace('{{page.Callout}}', $page->callout, $html);
+    $html = str_replace('{{page.callout}}', $page->callout, $html);
+    $html = str_replace('{{site.Name}}', $site->name, $html);
+    $html = str_replace('{{site.name}}', $site->name, $html);
+    $html = str_replace('{{site.Language}}', $site->language, $html);
+    $html = str_replace('{{site.language}}', $site->language, $html);
+    $html = str_replace('{{site.Direction}}', $site->direction, $html);
+    $html = str_replace('{{site.direction}}', $site->direction, $html);
+    $html = str_replace('{{site.IconBg}}', $site->color, $html);
+    $html = str_replace('{{site.iconBg}}', $site->color, $html);
 
     // urls
     $html = str_replace('{{page.Url}}', $relativeURL, $html);
-    $html = str_replace('{{page.FullUrl}}', $fullURL, $html);
+    $html = str_replace('{{page.url}}', $relativeURL, $html);
 
     return $html;
 

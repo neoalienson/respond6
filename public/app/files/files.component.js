@@ -43,7 +43,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  */
                 FilesComponent.prototype.ngOnInit = function () {
                     this.id = localStorage.getItem('respond.siteId');
-                    this.removeFileVisible = false;
+                    this.removeVisible = false;
                     this.drawerVisible = false;
                     this.file = {};
                     this.list();
@@ -61,7 +61,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * Resets an modal booleans
                  */
                 FilesComponent.prototype.reset = function () {
-                    this.removeFileVisible = false;
+                    this.removeVisible = false;
                     this.drawerVisible = false;
                     this.file = {};
                 };
@@ -85,7 +85,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * @param {File} file
                  */
                 FilesComponent.prototype.showRemove = function (file) {
-                    this.removeFileVisible = true;
+                    this.removeVisible = true;
                     this.file = file;
                 };
                 FilesComponent = __decorate([

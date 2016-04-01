@@ -445,6 +445,11 @@ body .app-modal {
     width: 100%;
     font-size: 14px;
   }
+  
+  body .app-modal input[disabled] {
+    border: none;
+    padding: 10px 0 10px 0;
+  }
 
   body .app-modal input[type=submit] {
     background-color: #f0f0f0;

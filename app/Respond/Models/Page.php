@@ -13,20 +13,20 @@ use App\Respond\Models\User;
  */
 class Page {
 
-  public $Title;
-  public $Description;
-  public $Keywords;
-  public $Callout;
-  public $Url;
-  public $Photo;
-  public $Thumb;
-  public $Layout;
-  public $Language;
-  public $Direction;
-  public $FirstName;
-  public $LastName;
-  public $LastModifiedBy;
-  public $LastModifiedDate;
+  public $title;
+  public $description;
+  public $keywords;
+  public $callout;
+  public $url;
+  public $photo;
+  public $thumb;
+  public $layout;
+  public $language;
+  public $direction;
+  public $firstName;
+  public $lastName;
+  public $lastModifiedBy;
+  public $lastModifiedDate;
 
   /**
    * Constructs a page from an array of data
@@ -50,14 +50,14 @@ class Page {
    * @param {user} $user object
    * @return Response
    */
-  public static function Add($data, $site, $user, $content = NULL){
+  public static function add($data, $site, $user, $content = NULL){
 
     // create a new page
     $page = new Page($data);
 
     // create a new snippet for the page
-    $dest = app()->basePath().'/public/sites/'.$site->Id;
-    $name = $new_name = str_replace('/', '.', $page->Url);
+    $dest = app()->basePath().'/public/sites/'.$site->id;
+    $name = $new_name = str_replace('/', '.', $page->url);
     $fragment = $dest . '/fragments/page/' . $name . '.html';
 
     // avoid dupes
@@ -73,14 +73,16 @@ class Page {
     }
 
     // update url
-    $page->Url = str_replace('.', '/', $new_name);
-    $data['Url'] = $page->Url;
+    $page->url = str_replace('.', '/', $new_name);
+    $data['url'] = $page->url;
 
     // default html for a new page
     if($content == NULL) {
-      $content = html_entity_decode($site->DefaultContent);
-      $content = str_replace('{{page.Title}}', $page->Title, $content);
-      $content = str_replace('{{page.Description}}', $page->Description, $content);
+      $content = html_entity_decode($site->defaultContent);
+      $content = str_replace('{{page.Title}}', $page->title, $content);
+      $content = str_replace('{{page.title}}', $page->title, $content);
+      $content = str_replace('{{page.Description}}', $page->description, $content);
+      $content = str_replace('{{page.description}}', $page->description, $content);
     }
 
     // make directory
@@ -94,10 +96,10 @@ class Page {
     file_put_contents($fragment, $content);
 
     // publish the page
-    $location = Publish::PublishPage($site, $page, $user);
+    $location = Publish::publishPage($site, $page, $user);
 
     // get base path for the site
-    $json = $file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
+    $json = $file = app()->basePath().'/public/sites/'.$site->id.'/data/pages.json';
 
     // open json
     if(file_exists($json)) {
@@ -128,13 +130,13 @@ class Page {
    * @param {user} $user object
    * @return Response
    */
-  public static function Edit($url, $changes, $site, $user){
+  public static function edit($url, $changes, $site, $user){
 
     // get a reference to the page object
-    $page = Page::GetByUrl($url, $site->Id);
+    $page = Page::GetByUrl($url, $site->id);
 
     // get page
-    $location = app()->basePath().'/public/sites/'.$site->Id.'/'.$url.'.html';
+    $location = app()->basePath().'/public/sites/'.$site->id.'/'.$url.'.html';
 
     if($page != NULL && file_exists($location)) {
 
@@ -171,15 +173,15 @@ class Page {
       file_put_contents($location, $doc->htmlOuter());
 
       // save the fragemnt
-      $dest = app()->basePath().'/public/sites/'.$site->Id;
-      $name = str_replace('/', '.', $page->Url);
+      $dest = app()->basePath().'/public/sites/'.$site->id;
+      $name = str_replace('/', '.', $page->url);
       $fragment = $dest . '/fragments/page/' . $name . '.html';
 
       // update template
       file_put_contents($fragment, $main_content);
 
       // saves the page
-      $page->Save($site, $user);
+      $page->save($site, $user);
 
       return TRUE;
 
@@ -200,18 +202,18 @@ class Page {
    * @param {user} $user object
    * @return Response
    */
-  public static function EditSettings($data, $site, $user){
+  public static function editSettings($data, $site, $user){
 
-    $page = Page::GetByUrl($data['Url'], $site->Id);
+    $page = Page::getByUrl($data['url'], $site->id);
 
-    $page->Title = $data['Title'];
-    $page->Description = $data['Description'];
-    $page->Keywords = $data['Keywords'];
-    $page->Callout = $data['Callout'];
-    $page->Language = $data['Language'];
-    $page->Direction = $data['Direction'];
+    $page->title = $data['title'];
+    $page->description = $data['description'];
+    $page->keywords = $data['keywords'];
+    $page->callout = $data['callout'];
+    $page->language = $data['language'];
+    $page->direction = $data['direction'];
 
-    $page->Save($site, $user);
+    $page->save($site, $user);
 
     return TRUE;
 
@@ -220,23 +222,21 @@ class Page {
   /**
    * Removes a page
    *
-   * @param {arr} $arr array containg page information
-   * @param {site} $site object
-   * @param {user} $user object
+   * @param {id} $id 
    * @return Response
    */
-  public function Remove($siteId){
+  public function remove($id){
 
     // remove the page and fragment
-    $page = app()->basePath().'/public/sites/'.$siteId.'/'.$this->Url.'.html';
-    $name = $new_name = str_replace('/', '.', $this->Url);
-    $fragment = app()->basePath().'/public/sites/'.$siteId.'/fragments/page/'.$name.'.html';
+    $page = app()->basePath().'/public/sites/'.$id.'/'.$this->url.'.html';
+    $name = $new_name = str_replace('/', '.', $this->url);
+    $fragment = app()->basePath().'/public/sites/'.$id.'/fragments/page/'.$name.'.html';
 
     unlink($page);
     unlink($fragment);
 
     // remove the page from JSON
-    $json_file = app()->basePath().'/public/sites/'.$siteId.'/data/pages.json';
+    $json_file = app()->basePath().'/public/sites/'.$id.'/data/pages.json';
 
     if(file_exists($json_file)) {
 
@@ -249,7 +249,7 @@ class Page {
       foreach($pages as &$page){
 
         // remove page
-        if($page['Url'] == $this->Url) {
+        if($page['url'] == $this->url) {
           unset($pages[$i]);
         }
 
@@ -272,21 +272,21 @@ class Page {
    * @param {string} $url url of page
    * @return Response
    */
-  public function Save($site, $user) {
+  public function save($site, $user) {
 
     // set full file path
-    $file = app()->basePath() . '/public/sites/' . $site->Id . '/' . $this->Url . '.html';
+    $file = app()->basePath() . '/public/sites/' . $site->id . '/' . $this->url . '.html';
 
     // open with phpQuery
     $doc = \phpQuery::newDocument(file_get_contents($file));
 
     // update the html
-    $doc['title']->html($this->Title);
-    $doc['meta[name=description]']->attr('content', $this->Description);
-    $doc['meta[name=keywords]']->attr('content', $this->Keywords);
-    $doc['html']->attr('lang', $this->Language);
-    $doc['html']->attr('dir', $this->Direction);
-    $doc['meta[name=keywords]']->attr('content', $this->Keywords);
+    $doc['title']->html($this->title);
+    $doc['meta[name=description]']->attr('content', $this->description);
+    $doc['meta[name=keywords]']->attr('content', $this->keywords);
+    $doc['html']->attr('lang', $this->language);
+    $doc['html']->attr('dir', $this->direction);
+    $doc['meta[name=keywords]']->attr('content', $this->keywords);
 
     // get photo and thumb
     $photo = $doc['[role="main"] img:first']->attr('src');
@@ -306,8 +306,8 @@ class Page {
     }
 
     // set photo and thumb
-    $this->Photo = $photo;
-    $this->Thumb = $thumb;
+    $this->photo = $photo;
+    $this->thumb = $thumb;
 
     // save page
     file_put_contents($file, $doc->htmlOuter());
@@ -316,7 +316,7 @@ class Page {
     $timestamp = date('Y-m-d\TH:i:s.Z\Z', time());
 
     // edit the json file
-    $json_file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
+    $json_file = app()->basePath().'/public/sites/'.$site->id.'/data/pages.json';
 
     if(file_exists($json_file)) {
 
@@ -328,19 +328,19 @@ class Page {
       foreach($pages as &$page){
 
         // update page
-        if($page['Url'] == $this->Url) {
+        if($page['url'] == $this->url) {
 
-          $page['Title'] = $this->Title;
-          $page['Description'] = $this->Description;
-          $page['Keywords'] = $this->Keywords;
-          $page['Callout'] = $this->Callout;
-          $page['Photo'] = $this->Photo;
-          $page['Thumb'] = $this->Thumb;
-          $page['Layout'] = $this->Layout;
-          $page['Language'] = $this->Language;
-          $page['Direction'] = $this->Direction;
-          $page['LastModifiedBy'] = $user->Email;
-          $page['LastModifiedDate'] = $timestamp;
+          $page['title'] = $this->title;
+          $page['description'] = $this->description;
+          $page['keywords'] = $this->keywords;
+          $page['callout'] = $this->callout;
+          $page['photo'] = $this->photo;
+          $page['thumb'] = $this->thumb;
+          $page['layout'] = $this->layout;
+          $page['language'] = $this->language;
+          $page['direction'] = $this->direction;
+          $page['lastModifiedBy'] = $user->email;
+          $page['lastModifiedDate'] = $timestamp;
 
         }
 
@@ -362,9 +362,9 @@ class Page {
    * @param {string} $url url of page
    * @return Response
    */
-  public static function GetByUrl($url, $siteId){
+  public static function getByUrl($url, $id){
 
-    $file = app()->basePath().'/public/sites/'.$siteId.'/data/pages.json';
+    $file = app()->basePath().'/public/sites/'.$id.'/data/pages.json';
 
     if(file_exists($file)) {
 
@@ -375,7 +375,7 @@ class Page {
 
       foreach($pages as $page){
 
-        if($page['Url'] == $url) {
+        if($page['url'] == $url) {
 
           // create a new page
           return new Page($page);
@@ -393,16 +393,16 @@ class Page {
   /**
    * Lists pages
    *
-   * @param {string} $userId
-   * @param {string} $siteId friendly id of site (e.g. site-name)
+   * @param {User} $user
+   * @param {string} $id friendly id of site (e.g. site-name)
    * @return Response
    */
-  public static function ListAll($user, $site){
+  public static function listAll($user, $site){
 
     $arr = array();
 
     // get base path for the site
-    $json_file = app()->basePath().'/public/sites/'.$site->Id.'/data/pages.json';
+    $json_file = app()->basePath().'/public/sites/'.$site->id.'/data/pages.json';
 
     if(file_exists($json_file)) {
 
@@ -415,10 +415,10 @@ class Page {
     else{
 
       // set dir
-      $dir = app()->basePath().'/public/sites/'.$site->Id;
+      $dir = app()->basePath().'/public/sites/'.$site->id;
 
       // list files
-      $files = Utilities::ListFiles($dir, $site->Id,
+      $files = Utilities::ListFiles($dir, $site->id,
               array('html'),
               array('components/',
                     'css/',
@@ -450,7 +450,7 @@ class Page {
           }
 
           // set full file path
-          $file = app()->basePath() . '/public/sites/' . $site->Id . '/' . $file;
+          $file = app()->basePath() . '/public/sites/' . $site->id . '/' . $file;
 
           // open with phpQuery
           \phpQuery::newDocumentFileHTML($file);
@@ -495,20 +495,20 @@ class Page {
           $url = preg_replace('/\\.[^.\\s]{3,4}$/', '', $url);
 
           $data = array(
-              'Title' => $title,
-              'Description' => $description,
-              'Keywords' => $keywords,
-              'Callout' => $callout,
-              'Url' => $url,
-              'Photo' => $photo,
-              'Thumb' => $thumb,
-              'Layout' => 'content',
-              'Language' => $language,
-              'Direction' => $direction,
-              'FirstName' => $user->FirstName,
-              'LastName' => $user->LastName,
-              'LastModifiedBy' => $user->Email,
-              'LastModifiedDate' => $timestamp
+              'title' => $title,
+              'description' => $description,
+              'keywords' => $keywords,
+              'callout' => $callout,
+              'url' => $url,
+              'photo' => $photo,
+              'thumb' => $thumb,
+              'layout' => 'content',
+              'language' => $language,
+              'direction' => $direction,
+              'firstName' => $user->firstName,
+              'lastName' => $user->lastName,
+              'lastModifiedBy' => $user->email,
+              'lastModifiedDate' => $timestamp
           );
 
 

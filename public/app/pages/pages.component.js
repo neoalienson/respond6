@@ -52,9 +52,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  */
                 PagesComponent.prototype.ngOnInit = function () {
                     this.id = localStorage.getItem('respond.siteId');
-                    this.addPageVisible = false;
-                    this.removePageVisible = false;
-                    this.pageSettingsVisible = false;
+                    this.addVisible = false;
+                    this.removeVisible = false;
+                    this.settingsVisible = false;
                     this.drawerVisible = false;
                     this.page = {};
                     this.list();
@@ -72,9 +72,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * Resets an modal booleans
                  */
                 PagesComponent.prototype.reset = function () {
-                    this.removePageVisible = false;
-                    this.addPageVisible = false;
-                    this.pageSettingsVisible = false;
+                    this.removeVisible = false;
+                    this.addVisible = false;
+                    this.settingsVisible = false;
                     this.drawerVisible = false;
                     this.page = {};
                 };
@@ -96,7 +96,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * Shows the add dialog
                  */
                 PagesComponent.prototype.showAdd = function () {
-                    this.addPageVisible = true;
+                    this.addVisible = true;
                 };
                 /**
                  * Shows the remove dialog
@@ -104,7 +104,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * @param {Page} page
                  */
                 PagesComponent.prototype.showRemove = function (page) {
-                    this.removePageVisible = true;
+                    this.removeVisible = true;
                     this.page = page;
                 };
                 /**
@@ -113,7 +113,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * @param {Page} page
                  */
                 PagesComponent.prototype.showSettings = function (page) {
-                    this.pageSettingsVisible = true;
+                    this.settingsVisible = true;
                     this.page = page;
                 };
                 /**
@@ -122,7 +122,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * @param {Page} page
                  */
                 PagesComponent.prototype.edit = function (page) {
-                    window.location = '/edit?q=' + this.id + '/' + page.Url + '.html';
+                    window.location = '/edit?q=' + this.id + '/' + page.url + '.html';
                 };
                 PagesComponent = __decorate([
                     core_1.Component({

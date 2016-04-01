@@ -19,14 +19,14 @@ export class PageSettingsComponent {
 
   // model to store
   model: {
-    Url: '',
-    Title: '',
-    Description: '',
-    Keywords: '',
-    Callout: '',
-    Layout: 'content',
-    Language: 'en',
-    Direction: 'ltr'
+    url: '',
+    title: '',
+    description: '',
+    keywords: '',
+    callout: '',
+    layout: 'content',
+    language: 'en',
+    direction: 'ltr'
   };
 
   _visible: boolean = false;
@@ -81,7 +81,7 @@ export class PageSettingsComponent {
   submit() {
 
 
-    this._pageService.updateSettings(this.model.Url, this.model.Title, this.model.Description, this.model.Keywords, this.model.Callout, this.model.Layout, this.model.Language, this.model.Direction)
+    this._pageService.updateSettings(this.model.url, this.model.title, this.model.description, this.model.keywords, this.model.callout, this.model.layout, this.model.language, this.model.direction)
                      .subscribe(
                        data => { this.success(); },
                        error =>  { this.errorMessage = <any>error; this.error() }

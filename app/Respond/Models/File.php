@@ -11,7 +11,7 @@ use App\Respond\Libraries\Publish;
  */
 class File {
 
-  public $FileName;
+  public $name;
 
   /**
    * Constructs a page from an array of data
@@ -29,17 +29,17 @@ class File {
   /**
    * Lists images for the site
    *
-   * @param {sttring} $siteId
+   * @param {sttring} $id
    */
-  public static function ListImages($siteId) {
+  public static function ListImages($id) {
 
-    $dir = app()->basePath().'/public/sites/'.$siteId.'/files';
+    $dir = app()->basePath().'/public/sites/'.$id.'/files';
 
     // list files
-    $arr = Utilities::ListFiles($dir, $siteId,
+    $arr = Utilities::ListFiles($dir, $id,
             array('png', 'jpg', 'gif', 'svg'),
-            array('thumb/',
-                  'thumbs/'));
+            array('files/thumb/',
+                  'files/thumbs/'));
 
     return $arr;
 
@@ -48,22 +48,46 @@ class File {
   /**
    * Lists files for the site
    *
-   * @param {string} $siteId
+   * @param {string} $id
    */
-  public static function ListFiles($siteId) {
+  public static function ListFiles($id) {
 
-    $dir = app()->basePath().'/public/sites/'.$siteId.'/files';
+    $dir = app()->basePath().'/public/sites/'.$id.'/files';
 
     // list allowed types
     $exts = explode(',', env('ALLOWED_FILETYPES'));
 
     // list files
-    $arr = Utilities::ListFiles($dir, $siteId,
+    $arr = Utilities::ListFiles($dir, $id,
             $exts,
-            array('thumb/',
-                  'thumbs/'));
+            array('files/thumb/',
+                  'files/thumbs/'));
 
     return $arr;
+
+  }
+  
+  /**
+   * Removes a file
+   *
+   * @param {string} $fileName
+   * @return Response
+   */
+  public static function Remove($name, $id) {
+
+    // remove the page and fragment
+    $file = app()->basePath().'/public/sites/'.$id.'/files/'.$name;
+    $thumb = app()->basePath().'/public/sites/'.$id.'/files/thumbs/'.$name;
+
+    if(file_exists($file)) {
+      unlink($file);
+    }
+    
+    if(file_exists($thumb)) {
+      unlink($thumb);
+    }
+    
+    return TRUE;
 
   }
 

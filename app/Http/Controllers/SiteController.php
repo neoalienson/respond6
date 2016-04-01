@@ -45,7 +45,7 @@ class SiteController extends Controller
   
     $id = $request->input('id');
     
-    $is_unique = Site::IsIdUnique($id);
+    $is_unique = Site::isIdUnique($id);
     
     if($is_unique==false) {
     
@@ -79,7 +79,7 @@ class SiteController extends Controller
     
     if($passcode == env('PASSCODE')) {
       
-      $arr = Site::Create($name, $theme, $email, $password);
+      $arr = Site::create($name, $theme, $email, $password);
       
       return response()->json($arr);
     }

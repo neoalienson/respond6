@@ -52,7 +52,7 @@ System.register(['angular2/core', '/app/shared/services/site.service'], function
                  */
                 CreateComponent.prototype.success = function () {
                     console.log(this.site);
-                    alert('success! site=' + this.site.Domain);
+                    alert('success! site=' + this.site.id);
                     // clear model
                     this.model = {
                         name: '',
