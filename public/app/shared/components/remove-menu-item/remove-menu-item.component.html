@@ -2,13 +2,13 @@
 
   <form (ngSubmit)="submit()" #removeForm="ngForm">
 
-    <h2>Remove Menu</h2>
+    <h2>Remove Menu Item</h2>
 
     <p>Confirm you want to remove:</p>
 
     <div class="to-be-removed">
-      <h3>{{model.name}}</h3>
-      <p>{{model.id}}</p>
+      <h3>{{model.html}}</h3>
+      <p>{{model.url}}</p>
     </div>
 
     <div class="actions">

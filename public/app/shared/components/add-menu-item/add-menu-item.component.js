@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/menu.service'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/menu-item.service', '/app/shared/services/page.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,8 +10,8 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, angular2_jwt_1, menu_service_1;
-    var AddMenuComponent;
+    var core_1, router_1, angular2_jwt_1, menu_item_service_1, page_service_1;
+    var AddMenuItemComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -23,25 +23,41 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
             },
-            function (menu_service_1_1) {
-                menu_service_1 = menu_service_1_1;
+            function (menu_item_service_1_1) {
+                menu_item_service_1 = menu_item_service_1_1;
+            },
+            function (page_service_1_1) {
+                page_service_1 = page_service_1_1;
             }],
         execute: function() {
-            AddMenuComponent = (function () {
-                function AddMenuComponent(_menuService) {
-                    this._menuService = _menuService;
+            AddMenuItemComponent = (function () {
+                function AddMenuItemComponent(_menuItemService, _pageService) {
+                    this._menuItemService = _menuItemService;
+                    this._pageService = _pageService;
+                    // model to store
+                    this.model = {
+                        html: '',
+                        cssClass: '',
+                        isNested: false,
+                        url: ''
+                    };
+                    // visible input
                     this._visible = false;
+                    // outputs
                     this.onCancel = new core_1.EventEmitter();
                     this.onAdd = new core_1.EventEmitter();
                 }
-                Object.defineProperty(AddMenuComponent.prototype, "visible", {
+                Object.defineProperty(AddMenuItemComponent.prototype, "visible", {
                     get: function () { return this._visible; },
                     set: function (visible) {
                         // set visible
                         this._visible = visible;
                         // reset model
                         this.model = {
-                            name: ''
+                            html: '',
+                            cssClass: '',
+                            isNested: false,
+                            url: ''
                         };
                     },
                     enumerable: true,
@@ -50,27 +66,31 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 /**
                  * Init
                  */
-                AddMenuComponent.prototype.ngOnInit = function () {
+                AddMenuItemComponent.prototype.ngOnInit = function () {
+                    var _this = this;
+                    // list pages
+                    this._pageService.list()
+                        .subscribe(function (data) { _this.pages = data; }, function (error) { return _this.errorMessage = error; });
                 };
                 /**
                  * Hides the add modal
                  */
-                AddMenuComponent.prototype.hide = function () {
+                AddMenuItemComponent.prototype.hide = function () {
                     this._visible = false;
                     this.onCancel.emit(null);
                 };
                 /**
                  * Submits the form
                  */
-                AddMenuComponent.prototype.submit = function () {
+                AddMenuItemComponent.prototype.submit = function () {
                     var _this = this;
-                    this._menuService.add(this.model.name)
+                    this._menuItemService.add(this.menu.id, this.model.html, this.model.cssClass, this.model.isNested, this.model.url)
                         .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
                 };
                 /**
                  * Handles a successful add
                  */
-                AddMenuComponent.prototype.success = function () {
+                AddMenuItemComponent.prototype.success = function () {
                     toast.show('success');
                     this._visible = false;
                     this.onAdd.emit(null);
@@ -78,7 +98,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 /**
                  * Handles an error
                  */
-                AddMenuComponent.prototype.error = function () {
+                AddMenuItemComponent.prototype.error = function () {
                     console.log('[respond.error] ' + this.errorMessage);
                     toast.show('failure');
                 };
@@ -86,29 +106,33 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Input(), 
                     __metadata('design:type', Boolean), 
                     __metadata('design:paramtypes', [Boolean])
-                ], AddMenuComponent.prototype, "visible", null);
+                ], AddMenuItemComponent.prototype, "visible", null);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Object)
+                ], AddMenuItemComponent.prototype, "menu", void 0);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
-                ], AddMenuComponent.prototype, "onCancel", void 0);
+                ], AddMenuItemComponent.prototype, "onCancel", void 0);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
-                ], AddMenuComponent.prototype, "onAdd", void 0);
-                AddMenuComponent = __decorate([
+                ], AddMenuItemComponent.prototype, "onAdd", void 0);
+                AddMenuItemComponent = __decorate([
                     core_1.Component({
-                        selector: 'respond-add-menu',
-                        templateUrl: './app/shared/components/add-menu/add-menu.component.html',
-                        providers: [menu_service_1.MenuService]
+                        selector: 'respond-add-menu-item',
+                        templateUrl: './app/shared/components/add-menu-item/add-menu-item.component.html',
+                        providers: [menu_item_service_1.MenuItemService, page_service_1.PageService]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof menu_service_1.MenuService !== 'undefined' && menu_service_1.MenuService) === 'function' && _a) || Object])
-                ], AddMenuComponent);
-                return AddMenuComponent;
-                var _a;
+                    __metadata('design:paramtypes', [(typeof (_a = typeof menu_item_service_1.MenuItemService !== 'undefined' && menu_item_service_1.MenuItemService) === 'function' && _a) || Object, (typeof (_b = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _b) || Object])
+                ], AddMenuItemComponent);
+                return AddMenuItemComponent;
+                var _a, _b;
             }());
-            exports_1("AddMenuComponent", AddMenuComponent);
+            exports_1("AddMenuItemComponent", AddMenuItemComponent);
         }
     }
 });
-//# sourceMappingURL=add-menu.component.js.map
+//# sourceMappingURL=add-menu-item.component.js.map

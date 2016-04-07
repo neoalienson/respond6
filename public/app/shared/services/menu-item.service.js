@@ -11,7 +11,7 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, http_1, angular2_jwt_1, http_2;
-    var MenuService;
+    var MenuItemService;
     return {
         setters:[
             function (core_1_1) {
@@ -25,68 +25,94 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
                 angular2_jwt_1 = angular2_jwt_1_1;
             }],
         execute: function() {
-            MenuService = (function () {
-                function MenuService(http, authHttp, authConfig) {
+            MenuItemService = (function () {
+                function MenuItemService(http, authHttp, authConfig) {
                     this.http = http;
                     this.authHttp = authHttp;
                     this.authConfig = authConfig;
-                    this._listUrl = 'api/menus/list';
-                    this._listItemsUrl = 'api/menus/items/list';
-                    this._addUrl = 'api/menus/add';
-                    this._editUrl = 'api/menus/edit';
-                    this._removeUrl = 'api/menus/remove';
+                    this._listUrl = 'api/menus/items/list';
+                    this._addUrl = 'api/menus/items/add';
+                    this._editUrl = 'api/menus/items/edit';
+                    this._removeUrl = 'api/menus/items/remove';
+                    this._updateOrderUrl = 'api/menus/items/order';
                 }
                 /**
-                 * Lists menus
+                 * Lists items
                  *
                  */
-                MenuService.prototype.list = function () {
-                    return this.authHttp.get(this._listUrl).map(function (res) { return res.json(); });
+                MenuItemService.prototype.list = function (id) {
+                    var url = this._listUrl + '/' + encodeURI(id);
+                    return this.authHttp.get(url).map(function (res) { return res.json(); });
                 };
                 /**
-                 * Adds a menu
+                 * Adds a menu item
                  *
-                 * @param {string} name
+                 * @param {string} id
+                 * @param {string} html
+                 * @param {string} cssClass
+                 * @param {string} isNested
+                 * @param {string} priority
+                 * @param {string} url
                  * @return {Observable}
                  */
-                MenuService.prototype.add = function (name) {
-                    var body = JSON.stringify({ name: name });
+                MenuItemService.prototype.add = function (id, html, cssClass, isNested, url) {
+                    var body = JSON.stringify({ id: id, html: html, cssClass: cssClass, isNested: isNested, url: url });
                     var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
                     var options = new http_2.RequestOptions({ headers: headers });
                     return this.authHttp.post(this._addUrl, body, options);
                 };
                 /**
-                 * Edits a menu
+                 * Edits a menu item
                  *
-                 * @param {string} name
+                 * @param {string} id
+                 * @param {string} index
+                 * @param {string} html
+                 * @param {string} cssClass
+                 * @param {string} isNested
+                 * @param {string} priority
+                 * @param {string} url
                  * @return {Observable}
                  */
-                MenuService.prototype.edit = function (id, name) {
-                    var body = JSON.stringify({ id: id, name: name });
+                MenuItemService.prototype.edit = function (id, index, html, cssClass, isNested, url) {
+                    var body = JSON.stringify({ id: id, index: index, html: html, cssClass: cssClass, isNested: isNested, url: url });
                     var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
                     var options = new http_2.RequestOptions({ headers: headers });
                     return this.authHttp.post(this._editUrl, body, options);
                 };
                 /**
-                 * Removes a menu
+                 * Removes a menu item
                  *
-                 * @param {string} id
+                 * @param {string} name
+                 * @param {string} index
                  * @return {Observable}
                  */
-                MenuService.prototype.remove = function (id) {
-                    var body = JSON.stringify({ id: id });
+                MenuItemService.prototype.remove = function (id, index) {
+                    var body = JSON.stringify({ id: id, index: index });
                     var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
                     var options = new http_2.RequestOptions({ headers: headers });
                     return this.authHttp.post(this._removeUrl, body, options);
                 };
-                MenuService = __decorate([
+                /**
+                 * Updates the order of a list
+                 *
+                 * @param {string} name
+                 * @param {string} priority
+                 * @return {Observable}
+                 */
+                MenuItemService.prototype.updateOrder = function (id, items) {
+                    var body = JSON.stringify({ id: id, items: items });
+                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
+                    var options = new http_2.RequestOptions({ headers: headers });
+                    return this.authHttp.post(this._updateOrderUrl, body, options);
+                };
+                MenuItemService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http, angular2_jwt_1.AuthHttp, angular2_jwt_1.AuthConfig])
-                ], MenuService);
-                return MenuService;
+                ], MenuItemService);
+                return MenuItemService;
             }());
-            exports_1("MenuService", MenuService);
+            exports_1("MenuItemService", MenuItemService);
         }
     }
 });
-//# sourceMappingURL=menu.service.js.map
+//# sourceMappingURL=menu-item.service.js.map

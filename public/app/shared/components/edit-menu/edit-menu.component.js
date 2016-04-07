@@ -11,7 +11,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, router_1, angular2_jwt_1, menu_service_1;
-    var AddMenuComponent;
+    var EditMenuComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -27,22 +27,26 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 menu_service_1 = menu_service_1_1;
             }],
         execute: function() {
-            AddMenuComponent = (function () {
-                function AddMenuComponent(_menuService) {
+            EditMenuComponent = (function () {
+                function EditMenuComponent(_menuService) {
                     this._menuService = _menuService;
                     this._visible = false;
                     this.onCancel = new core_1.EventEmitter();
-                    this.onAdd = new core_1.EventEmitter();
+                    this.onUpdate = new core_1.EventEmitter();
                 }
-                Object.defineProperty(AddMenuComponent.prototype, "visible", {
+                Object.defineProperty(EditMenuComponent.prototype, "visible", {
                     get: function () { return this._visible; },
                     set: function (visible) {
                         // set visible
                         this._visible = visible;
-                        // reset model
-                        this.model = {
-                            name: ''
-                        };
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(EditMenuComponent.prototype, "menu", {
+                    set: function (menu) {
+                        // set visible
+                        this.model = menu;
                     },
                     enumerable: true,
                     configurable: true
@@ -50,35 +54,39 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 /**
                  * Init
                  */
-                AddMenuComponent.prototype.ngOnInit = function () {
+                EditMenuComponent.prototype.ngOnInit = function () {
+                    this.model = {
+                        id: '',
+                        name: ''
+                    };
                 };
                 /**
-                 * Hides the add modal
+                 * Hides the modal
                  */
-                AddMenuComponent.prototype.hide = function () {
+                EditMenuComponent.prototype.hide = function () {
                     this._visible = false;
                     this.onCancel.emit(null);
                 };
                 /**
                  * Submits the form
                  */
-                AddMenuComponent.prototype.submit = function () {
+                EditMenuComponent.prototype.submit = function () {
                     var _this = this;
-                    this._menuService.add(this.model.name)
+                    this._menuService.edit(this.model.id, this.model.name)
                         .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
                 };
                 /**
-                 * Handles a successful add
+                 * Handles a successful edit
                  */
-                AddMenuComponent.prototype.success = function () {
+                EditMenuComponent.prototype.success = function () {
                     toast.show('success');
                     this._visible = false;
-                    this.onAdd.emit(null);
+                    this.onUpdate.emit(null);
                 };
                 /**
                  * Handles an error
                  */
-                AddMenuComponent.prototype.error = function () {
+                EditMenuComponent.prototype.error = function () {
                     console.log('[respond.error] ' + this.errorMessage);
                     toast.show('failure');
                 };
@@ -86,29 +94,34 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Input(), 
                     __metadata('design:type', Boolean), 
                     __metadata('design:paramtypes', [Boolean])
-                ], AddMenuComponent.prototype, "visible", null);
+                ], EditMenuComponent.prototype, "visible", null);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Object), 
+                    __metadata('design:paramtypes', [Object])
+                ], EditMenuComponent.prototype, "menu", null);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
-                ], AddMenuComponent.prototype, "onCancel", void 0);
+                ], EditMenuComponent.prototype, "onCancel", void 0);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
-                ], AddMenuComponent.prototype, "onAdd", void 0);
-                AddMenuComponent = __decorate([
+                ], EditMenuComponent.prototype, "onUpdate", void 0);
+                EditMenuComponent = __decorate([
                     core_1.Component({
-                        selector: 'respond-add-menu',
-                        templateUrl: './app/shared/components/add-menu/add-menu.component.html',
+                        selector: 'respond-edit-menu',
+                        templateUrl: './app/shared/components/edit-menu/edit-menu.component.html',
                         providers: [menu_service_1.MenuService]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [(typeof (_a = typeof menu_service_1.MenuService !== 'undefined' && menu_service_1.MenuService) === 'function' && _a) || Object])
-                ], AddMenuComponent);
-                return AddMenuComponent;
+                ], EditMenuComponent);
+                return EditMenuComponent;
                 var _a;
             }());
-            exports_1("AddMenuComponent", AddMenuComponent);
+            exports_1("EditMenuComponent", EditMenuComponent);
         }
     }
 });
-//# sourceMappingURL=add-menu.component.js.map
+//# sourceMappingURL=edit-menu.component.js.map

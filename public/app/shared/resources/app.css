@@ -36,7 +36,7 @@ a, a:visited {
 
 /* containers */
 .app-menu, .app-toast, app-drawer, .app-config, .app-modal,
-.app-menu *, .app-toast *, app-drawer *, .app-config * , .app-modal * {
+.app-menu *, .app-toast *, .app-drawer *, .app-overflow *, .app-config * , .app-modal * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -53,118 +53,30 @@ body .logo img {
   width: 50px;
 }
 
-/*
-  body .app-list {
-    margin: 0;
-  }
+body .app-selector ul {
+  display: block;
+  list-style: none;
+  background-color: #f0f0f0;
+  padding: 5px;
+}
 
-  body .app-list-item {
-    position: relative;
-  }
+body .app-selector li {
+  display: inline-block;
+}
 
-  body .app-list-item.app-has-image {
-    padding-left: 80px;
-    min-height: 50px;
-  }
+body .app-selector li a {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
 
-  body .app-list-item[active] {
-    background-color: #fff;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, .15);
-  }
-
-  body .app-list-item h2 {
-    font-size: 15px;
-    font-weight: bold;
-    color: #111;
-    margin: 0 0 2px 0;
-    padding: 0;
-  }
-
-  body .app-list-item small {
-    display: block;
-    margin: 10px 0 5px 0;
-    font-size: 11px;
-    color: #00ADE3;
-    text-transform: uppercase;
-  }
-
-  body .app-list-item h2 span.secondary {
-    font-size: 11px;
-    font-weight: normal;
-    color: #888;
-    text-transform: uppercase;
-    float: right;
-  }
-
-  body .app-list-item p {
-    font-size: 13px;
-    font-weight: 400;
-    color: #aaa;
-    margin: 0 0 2px 0;
-    padding: 0;
-    line-height: 18px;
-  }
-
-  body  .app-list-item label {
-    display: block;
-    margin: 0;
-    padding: 0 0 5px 0;
-    font-size: 13px;
-    font-weight: normal;
-    color: #aaa;
-    min-width: 25%;
-    text-transform: uppercase;
-  }
-
-  body  .app-list-item .image {
-    position: absolute;
-    top: 20px;
-    left: 15px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 1px solid #fff;
-    float: left;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-color: #ddd;
-  }
-
-  body .app-list-item[read=true] {
-    background-color: #f8f8f8;
-  }
-
-  body .app-list-item[read=true] h2, body .app-list-item[read=true] h2 span, body .app-list-item[read=true] small, body .app-list-item[read=true] p {
-    color: #aaa;
-    font-weight: normal;
-  }
-
-  body .app-list-item .app-list-actions {
-    display: block;
-    text-align: right;
-    visibility: hidden;
-    height: 0;
-    transition: all 0.2s ease;
-  }
-
-  body .app-list-item .app-list-actions a {
-    text-transform: uppercase;
-    font-size: 13px;
-    display: inline-block;
-    margin-left: 15px;
-    text-decoration: none;
-    padding-top: 10px;
-  }
-
-  body .app-list-item .app-list-actions a.primary {
-    font-weight: bold;
-  }
-
-  body .app-list-item[active] .app-list-actions {
-    visibility: visible;
-    height: 15px;
-  }
-  */
+body .app-selector li.selected a {
+  font-weight: bold;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
 
 /* .app-list */
 body .app-list {
@@ -258,6 +170,10 @@ body .app-list {
     height: 0;
     transition: all 0.2s ease;
   }
+  
+  body .app-list-item .app-list-alternate-actions{
+    margin-right: 25px;
+  }
 
   body .app-list-item .app-list-actions a {
     text-transform: uppercase;
@@ -277,8 +193,8 @@ body .app-list {
     height: 15px;
   }
 
-/* app-drawer */
-.app-drawer {
+/* app-overflow */
+.app-drawer, .app-overflow {
   font-family: 'Helvetica', 'Arial', 'sans-serif';
   position: fixed;
   z-index: 1002;
@@ -297,11 +213,22 @@ body .app-list {
   font-size: 13px;
 }
 
+  .app-overflow{
+    left: auto;
+    right: -275px;
+    border-right: none;
+    border-left: 1px solid #DDD;
+  }
+
   .app-drawer[visible], .app-drawer.visible {
     left: 0;
   }
+  
+  .app-overflow[visible], .app-overflow.visible {
+    right: 0;
+  }
 
-  .app-drawer a {
+  .app-drawer a, .app-overflow a {
     text-decoration: none;
     cursor: pointer;
     color: #00ADE3;
@@ -316,7 +243,7 @@ body .app-list {
     border-bottom: 1px solid #ddd;
   }
 
-  .app-drawer li {
+  .app-drawer li, .app-overflow li {
     list-style: none;
     margin: 0;
     display: block;
@@ -326,7 +253,7 @@ body .app-list {
     cursor: pointer;
   }
 
-  .app-drawer li.app-drawer-title {
+  .app-drawer li.app-drawer-title, .app-overflow li.app-overflow-title {
     margin-top: 5px;
     height: 40px;
     line-height: 40px;
@@ -336,18 +263,16 @@ body .app-list {
     border-top: 1px solid #ddd;
   }
 
-  .app-drawer li.app-drawer-title:first-child {
+  .app-drawer li.app-drawer-title:first-child, .app-overflow li.app-overflow-title:first-child {
     border: none;
   }
 
-  .app-drawer .app-drawer ul {}
-
-  .app-drawer li.app-drawer-title span {
+  .app-drawer li.app-drawer-title span, .app-overflow li.app-overflow-title span {
     display: inline-block;
     padding: 0 10px;
   }
 
-  .app-drawer li:hover, .app-element-drawer li:hover {
+  .app-drawer li:hover, .app-overflow li:hover {
     background-color: #f8f8f8;
   }
 
@@ -431,7 +356,7 @@ body .app-modal {
     margin: 0;
     padding: 0 0 5px 0;
   }
-
+ 
   body .app-modal label a {
     float: right;
     cursor: pointer;
@@ -446,6 +371,14 @@ body .app-modal {
     font-size: 14px;
   }
   
+  body .app-modal small {
+    font-weight: normal;
+    font-size: 12px;
+    display: block;
+    margin: -8px;
+    padding: 0 0 15px 10px;
+  }
+
   body .app-modal input[disabled] {
     border: none;
     padding: 10px 0 10px 0;
@@ -790,7 +723,7 @@ body .app-form.standalone {
   }
 
 /* save */
-.app-menu .app-save, .app-menu .app-add {
+.app-menu .app-save, .app-menu .app-add, .app-menu .app-overflow {
   position: fixed;
   top: 0;
   right: 0;
@@ -806,7 +739,11 @@ body .app-form.standalone {
   cursor: pointer;
 }
 
-.app-menu .app-save svg, .app-menu .app-add svg {
+.app-menu .app-add.position-2{
+  right: 50px;
+}
+
+.app-menu .app-save svg, .app-menu .app-add svg, .app-menu .app-overflow svg {
   fill: currentColor;
   height: 24px;
   margin: 0 auto 0 auto;

@@ -129,4 +129,12 @@ $app -> post('/api/files/remove', ['middleware' => 'jwtauth', 'uses'=> 'FileCont
 // menus
 $app -> get('/api/menus/list', ['middleware' => 'jwtauth', 'uses'=> 'MenuController@listAll']);
 $app -> post('/api/menus/add', ['middleware' => 'jwtauth', 'uses'=> 'MenuController@add']);
+$app -> post('/api/menus/edit', ['middleware' => 'jwtauth', 'uses'=> 'MenuController@edit']);
 $app -> post('/api/menus/remove', ['middleware' => 'jwtauth', 'uses'=> 'MenuController@remove']);
+
+// menu items
+$app -> get('/api/menus/items/list/{id}', ['middleware' => 'jwtauth', 'uses'=> 'MenuItemController@listAll']);
+$app -> post('/api/menus/items/add', ['middleware' => 'jwtauth', 'uses'=> 'MenuItemController@add']);
+$app -> post('/api/menus/items/edit', ['middleware' => 'jwtauth', 'uses'=> 'MenuItemController@edit']);
+$app -> post('/api/menus/items/remove', ['middleware' => 'jwtauth', 'uses'=> 'MenuItemController@remove']);
+$app -> post('/api/menus/items/order', ['middleware' => 'jwtauth', 'uses'=> 'MenuItemController@updateOrder']);

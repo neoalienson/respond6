@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/menu.service'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/menu-item.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,8 +10,8 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, angular2_jwt_1, menu_service_1;
-    var RemoveMenuComponent;
+    var core_1, router_1, angular2_jwt_1, menu_item_service_1;
+    var RemoveMenuItemComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -23,19 +23,19 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
             },
-            function (menu_service_1_1) {
-                menu_service_1 = menu_service_1_1;
+            function (menu_item_service_1_1) {
+                menu_item_service_1 = menu_item_service_1_1;
             }],
         execute: function() {
-            RemoveMenuComponent = (function () {
-                function RemoveMenuComponent(_menuService) {
-                    this._menuService = _menuService;
+            RemoveMenuItemComponent = (function () {
+                function RemoveMenuItemComponent(_menuItemService) {
+                    this._menuItemService = _menuItemService;
                     this._visible = false;
                     // outputs
                     this.onCancel = new core_1.EventEmitter();
                     this.onUpdate = new core_1.EventEmitter();
                 }
-                Object.defineProperty(RemoveMenuComponent.prototype, "visible", {
+                Object.defineProperty(RemoveMenuItemComponent.prototype, "visible", {
                     get: function () { return this._visible; },
                     // visible input
                     set: function (visible) {
@@ -45,11 +45,11 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(RemoveMenuComponent.prototype, "menu", {
+                Object.defineProperty(RemoveMenuItemComponent.prototype, "item", {
                     // menu input
-                    set: function (menu) {
+                    set: function (item) {
                         // set visible
-                        this.model = menu;
+                        this.model = item;
                     },
                     enumerable: true,
                     configurable: true
@@ -57,31 +57,31 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 /**
                  * Init
                  */
-                RemoveMenuComponent.prototype.ngOnInit = function () {
+                RemoveMenuItemComponent.prototype.ngOnInit = function () {
                     this.model = {
-                        id: '',
-                        name: ''
+                        html: '',
+                        url: ''
                     };
                 };
                 /**
                  * Hides the modal
                  */
-                RemoveMenuComponent.prototype.hide = function () {
+                RemoveMenuItemComponent.prototype.hide = function () {
                     this._visible = false;
                     this.onCancel.emit(null);
                 };
                 /**
                  * Submits the form
                  */
-                RemoveMenuComponent.prototype.submit = function () {
+                RemoveMenuItemComponent.prototype.submit = function () {
                     var _this = this;
-                    this._menuService.remove(this.model.id)
+                    this._menuItemService.remove(this.menu.id, this.index)
                         .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
                 };
                 /**
                  * Handles a successful submission
                  */
-                RemoveMenuComponent.prototype.success = function () {
+                RemoveMenuItemComponent.prototype.success = function () {
                     this._visible = false;
                     this.onUpdate.emit(null);
                 };
@@ -89,34 +89,42 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Input(), 
                     __metadata('design:type', Boolean), 
                     __metadata('design:paramtypes', [Boolean])
-                ], RemoveMenuComponent.prototype, "visible", null);
+                ], RemoveMenuItemComponent.prototype, "visible", null);
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', Object), 
                     __metadata('design:paramtypes', [Object])
-                ], RemoveMenuComponent.prototype, "menu", null);
+                ], RemoveMenuItemComponent.prototype, "item", null);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Object)
+                ], RemoveMenuItemComponent.prototype, "menu", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Object)
+                ], RemoveMenuItemComponent.prototype, "index", void 0);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
-                ], RemoveMenuComponent.prototype, "onCancel", void 0);
+                ], RemoveMenuItemComponent.prototype, "onCancel", void 0);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
-                ], RemoveMenuComponent.prototype, "onUpdate", void 0);
-                RemoveMenuComponent = __decorate([
+                ], RemoveMenuItemComponent.prototype, "onUpdate", void 0);
+                RemoveMenuItemComponent = __decorate([
                     core_1.Component({
-                        selector: 'respond-remove-menu',
-                        templateUrl: './app/shared/components/remove-menu/remove-menu.component.html',
-                        providers: [menu_service_1.MenuService]
+                        selector: 'respond-remove-menu-item',
+                        templateUrl: './app/shared/components/remove-menu-item/remove-menu-item.component.html',
+                        providers: [menu_item_service_1.MenuItemService]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof menu_service_1.MenuService !== 'undefined' && menu_service_1.MenuService) === 'function' && _a) || Object])
-                ], RemoveMenuComponent);
-                return RemoveMenuComponent;
+                    __metadata('design:paramtypes', [(typeof (_a = typeof menu_item_service_1.MenuItemService !== 'undefined' && menu_item_service_1.MenuItemService) === 'function' && _a) || Object])
+                ], RemoveMenuItemComponent);
+                return RemoveMenuItemComponent;
                 var _a;
             }());
-            exports_1("RemoveMenuComponent", RemoveMenuComponent);
+            exports_1("RemoveMenuItemComponent", RemoveMenuItemComponent);
         }
     }
 });
-//# sourceMappingURL=remove-menu.component.js.map
+//# sourceMappingURL=remove-menu-item.component.js.map

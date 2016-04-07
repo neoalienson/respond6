@@ -113,7 +113,7 @@ class Page {
       array_push($pages, $data);
 
       // save array
-      file_put_contents($file, json_encode($pages));
+      file_put_contents($file, json_encode($pages, JSON_PRETTY_PRINT));
 
     }
 
@@ -258,7 +258,7 @@ class Page {
       }
 
       // save pages
-      file_put_contents($json_file, json_encode($pages));
+      file_put_contents($json_file, json_encode($pages, JSON_PRETTY_PRINT));
 
     }
 
@@ -347,7 +347,7 @@ class Page {
       }
 
       // save pages
-      file_put_contents($json_file, json_encode($pages));
+      file_put_contents($json_file, json_encode($pages, JSON_PRETTY_PRINT));
 
     }
 
@@ -518,7 +518,7 @@ class Page {
       }
 
       // encode arr
-      $content = json_encode($arr);
+      $content = json_encode($arr, JSON_PRETTY_PRINT);
 
       // update content
       file_put_contents($json_file, $content);

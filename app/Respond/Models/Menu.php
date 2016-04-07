@@ -13,7 +13,9 @@ use App\Respond\Models\User;
  */
 class Menu {
 
+  public $id;
   public $name;
+  public $items;
 
   /**
    * Constructs a page from an array of data
@@ -34,21 +36,32 @@ class Menu {
    * @param {files} $data
    * @return {array}
    */
-  public static function listAll($id) {
+  public static function listAll($siteId) {
 
-    $dir = app()->basePath().'/public/sites/'.$id.'/data/menus/';
+    $dir = app()->basePath().'/public/sites/'.$siteId.'/data/menus/';
     $exts = array('json');
 
-    $files = Utilities::listFiles($dir, $id, $exts);
+    $files = Utilities::listFiles($dir, $siteId, $exts);
     $arr = array();
 
     foreach($files as $file) {
+  
+      $path = app()->basePath().'/public/sites/'.$siteId.'/'.$file;
+    
+      if(file_exists($path)) { 
+      
+        $json = json_decode(file_get_contents($path), true);
 
-      $name = str_replace('.json', '', $file);
-      $name = str_replace('data/menus/', '', $name);
-      $name = str_replace('/', '', $name);
-
-      array_push($arr, array('name'=>$name));
+        $id = str_replace('.json', '', $file);
+        $id = str_replace('data/menus/', '', $id);
+        $id = str_replace('/', '', $id);
+  
+        array_push($arr, array(
+          'id' => $id,
+          'name' => $json['name']
+          ));
+        
+      }
 
     }
 
@@ -58,23 +71,23 @@ class Menu {
 
 
   /**
-   * Gets by name
+   * Gets by id
    *
    * @param {string} $name
-   * @param {string} $id site id
+   * @param {string} $siteId site id
    * @return Response
    */
-  public static function getByName($name, $id){
+  public static function getById($id, $siteId) {
 
-    $file = app()->basePath().'/public/sites/'.$id.'/data/menus/'.$name.'.json';
+    $file = app()->basePath().'/public/sites/'.$siteId.'/data/menus/'.$id.'.json';
 
     $items = array();
-
-    if(!file_exists($dest)) {
-
-      return new Menu(array(
-        'name' => $name
-      ));;
+    
+    if(file_exists($file)) {
+    
+      $json = json_decode(file_get_contents($file), true);
+    
+      return new Menu($json);
 
     }
 
@@ -86,22 +99,78 @@ class Menu {
    * Adds a menu
    *
    * @param {string} $name
-   * @param {string} $id site id
+   * @param {string} $siteId site id
    * @return Response
    */
-  public static function add($name, $id){
+  public static function add($name, $siteId) {
+  
+    // build a name
+	  $id = strtolower($name);
 
-    $file = app()->basePath().'/public/sites/'.$id.'/data/menus/'.$name.'.json';
+    // replaces all spaces with hyphens
+    $id = str_replace(' ', '-', $id);
 
+    // replaces all spaces with hyphens
+    $id = $new_id =  preg_replace('/[^A-Za-z0-9\-]/', '', $id);
+    
+    // find a unique $id (e.g. myid, myid1, myid2, etc.)
+    $x = 1;
+    $folder = app()->basePath().'/public/sites/'.$siteId.'/data/menus/'.$id.'.json';
+
+    while(file_exists($folder) === TRUE) {
+
+      // increment id and folder
+      $new_id = $id.$x;
+      $folder = app()->basePath().'/public/sites/'.$siteId.'/data/menus/'.$new_id.'.json';
+      $x++;
+
+    }
+
+    // set id to new_id
+    $id = $new_id;
+    
+    // get file
+    $file = app()->basePath().'/public/sites/'.$siteId.'/data/menus/'.$new_id.'.json';
+    
     $items = array();
 
-    if(!file_exists($dest)) {
+    if(!file_exists($file)) {
 
-      file_put_contents($file, json_encode($items));
+      // get menu
+      $menu = new Menu(array(
+        'id' => $new_id,
+        'name' => $name,
+        'items' => array()
+      ));
+      
+      file_put_contents($file, json_encode($menu, JSON_PRETTY_PRINT));
+      
+      return $menu;
 
-      return new Menu(array(
-        'name' => $name
-      ));;
+    }
+
+    return NULL;
+
+  }
+  
+  /**
+   * Saves a menu
+   *
+   * @param {string} $name
+   * @param {string} $siteId site id
+   * @return Response
+   */
+  public function save($siteId) {
+
+    // get file
+    $file = app()->basePath().'/public/sites/'.$siteId.'/data/menus/'.$this->id.'.json';
+    
+    if(file_exists($file)) {
+
+      file_put_contents($file, json_encode($this, JSON_PRETTY_PRINT));
+      
+      
+      return TRUE;
 
     }
 
@@ -116,9 +185,9 @@ class Menu {
    * @param {name} $name
    * @return Response
    */
-  public function remove($id){
+  public function remove($siteId) {
 
-    $file = app()->basePath().'/public/sites/'.$site->id.'/data/menus/'.$this->name.'.json';
+    $file = app()->basePath().'/public/sites/'.$siteId.'/data/menus/'.$this->id.'.json';
 
     if(file_exists($file)) {
       unlink($file);

@@ -9,8 +9,9 @@ export class MenuService {
   constructor (private http: Http, private authHttp: AuthHttp, private authConfig: AuthConfig) {}
 
   private _listUrl = 'api/menus/list';
-  private _listItemsUrl = 'api/menus/list/items';
+  private _listItemsUrl = 'api/menus/items/list';
   private _addUrl = 'api/menus/add';
+  private _editUrl = 'api/menus/edit';
   private _removeUrl = 'api/menus/remove';
 
   /**
@@ -19,17 +20,6 @@ export class MenuService {
    */
   list () {
     return this.authHttp.get(this._listUrl).map((res:Response) => res.json());
-  }
-
-  /**
-   * Lists items
-   *
-   */
-  listItems (menu) {
-
-    var url = this._listItemsUrl + '/' + encodeURI(menu);
-
-    return this.authHttp.get(url).map((res:Response) => res.json());
   }
 
   /**
@@ -47,16 +37,32 @@ export class MenuService {
     return this.authHttp.post(this._addUrl, body, options);
 
   }
-
+  
   /**
-   * Removes a menu
+   * Edits a menu
    *
    * @param {string} name
    * @return {Observable}
    */
-  remove (name: string) {
+  edit (id: string, name: string) {
 
-    let body = JSON.stringify({ name });
+    let body = JSON.stringify({ id, name });
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.authHttp.post(this._editUrl, body, options);
+
+  }
+
+  /**
+   * Removes a menu
+   *
+   * @param {string} id
+   * @return {Observable}
+   */
+  remove (id: string) {
+
+    let body = JSON.stringify({ id });
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 

@@ -1,17 +1,17 @@
 import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router'
-import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
-import {MenuService} from '/app/shared/services/menu.service'
+import {CanActivate} from 'angular2/router';
+import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
+import {MenuItemService} from '/app/shared/services/menu-item.service';
 
 @Component({
-    selector: 'respond-remove-menu',
-    templateUrl: './app/shared/components/remove-menu/remove-menu.component.html',
-    providers: [MenuService]
+    selector: 'respond-remove-menu-item',
+    templateUrl: './app/shared/components/remove-menu-item/remove-menu-item.component.html',
+    providers: [MenuItemService]
 })
 
 @CanActivate(() => tokenNotExpired())
 
-export class RemoveMenuComponent {
+export class RemoveMenuItemComponent {
 
   routes;
   errorMessage;
@@ -34,18 +34,24 @@ export class RemoveMenuComponent {
 
   // menu input
   @Input()
-  set menu(menu){
+  set item(item){
 
     // set visible
-    this.model = menu;
+    this.model = item;
 
   }
+  
+  // menu input
+  @Input() menu;
+  
+  // index
+  @Input() index
 
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
 
-  constructor (private _menuService: MenuService) {}
+  constructor (private _menuItemService: MenuItemService) {}
 
   /**
    * Init
@@ -53,8 +59,8 @@ export class RemoveMenuComponent {
   ngOnInit() {
 
     this.model = {
-      id: '',
-      name: ''
+      html: '',
+      url: ''
     };
 
   }
@@ -72,7 +78,7 @@ export class RemoveMenuComponent {
    */
   submit() {
 
-    this._menuService.remove(this.model.id)
+    this._menuItemService.remove(this.menu.id, this.index)
                      .subscribe(
                        data => { this.success(); },
                        error =>  this.errorMessage = <any>error

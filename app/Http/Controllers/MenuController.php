@@ -25,10 +25,10 @@ class MenuController extends Controller
 
     // get request data
     $email = $request->input('auth-email');
-    $id = $request->input('auth-id');
+    $siteId = $request->input('auth-id');
 
     // list pages in the site
-    $arr = Menu::listAll($id);
+    $arr = Menu::listAll($siteId);
 
     return response()->json($arr);
 
@@ -43,13 +43,13 @@ class MenuController extends Controller
   {
     // get request data
     $email = $request->input('auth-email');
-    $id = $request->input('auth-id');
+    $siteId = $request->input('auth-id');
 
     // get url, title and description
     $name = $request->json()->get('name');
 
     // add a menu
-    $menu = Menu::add($name, $id);
+    $menu = Menu::add($name, $siteId);
 
     if($menu !== NULL) {
      // return OK
@@ -57,6 +57,36 @@ class MenuController extends Controller
     }
 
     return response('Menu already exists', 400);
+
+  }
+  
+  /**
+   * Edits the menu item
+   *
+   * @return Response
+   */
+  public function edit(Request $request)
+  {
+    // get request data
+    $email = $request->input('auth-email');
+    $siteId = $request->input('auth-id');
+
+    // get url, title and description
+    $id = $request->json()->get('id');
+    $name = $request->json()->get('name');
+    
+    // update order in file
+    $menu = Menu::getById($id, $siteId);
+    
+    if($menu != NULL) {
+      $menu->name = $name;
+      $menu->save($siteId);
+      
+      return response('Ok', 200);
+    }
+    
+    // return error
+    return response('Error', 400);
 
   }
 
@@ -69,18 +99,18 @@ class MenuController extends Controller
   {
     // get request data
     $email = $request->input('auth-email');
-    $id = $request->input('auth-id');
+    $siteId = $request->input('auth-id');
 
-    // get name
-    $name = $request->json()->get('name');
+    // get id
+    $id = $request->json()->get('id');
 
-    $menu = Menu::getByName($name, $id);
+    $menu = Menu::getById($id, $siteId);
 
     if($menu !== NULL) {
-      $menu->remove($id);
+      $menu->remove($siteId);
 
       // return OK
-      return response('OK, menu removed at = '.$page->name, 200);
+      return response('OK, menu removed at = '.$menu->id, 200);
     }
 
     return response('Menu not found', 400);

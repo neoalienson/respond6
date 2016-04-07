@@ -1,30 +1,30 @@
-[
-  {
-    "cssClass": "",
-    "isNested": false,
-    "name": "Home",
-    "priority": 0,
-    "url": "index"
-  },
-  {
-    "cssClass": "",
-    "isNested": false,
-    "name": "Blog",
-    "priority": 1,
-    "url": "blog"
-  },
-  {
-    "cssClass": "",
-    "isNested": false,
-    "name": "About",
-    "priority": 2,
-    "url": "page/about"
-  },
-  {
-    "cssClass": "",
-    "isNested": false,
-    "name": "Contact",
-    "priority": 3,
-    "url": "page/contact"
-  }
-]
+{
+  "id": "primary",
+  "name": "Primary",
+  "items": [
+      {
+        "cssClass": "",
+        "isNested": false,
+        "html": "Home",
+        "url": "index"
+      },
+      {
+        "cssClass": "",
+        "isNested": false,
+        "html": "Blog",
+        "url": "blog"
+      },
+      {
+        "cssClass": "",
+        "isNested": false,
+        "html": "About",
+        "url": "page/about"
+      },
+      {
+        "cssClass": "",
+        "isNested": false,
+        "html": "Contact",
+        "url": "page/contact"
+      }
+  ]
+}

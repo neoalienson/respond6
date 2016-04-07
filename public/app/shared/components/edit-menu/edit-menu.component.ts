@@ -4,14 +4,14 @@ import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {MenuService} from '/app/shared/services/menu.service'
 
 @Component({
-    selector: 'respond-remove-menu',
-    templateUrl: './app/shared/components/remove-menu/remove-menu.component.html',
+    selector: 'respond-edit-menu',
+    templateUrl: './app/shared/components/edit-menu/edit-menu.component.html',
     providers: [MenuService]
 })
 
 @CanActivate(() => tokenNotExpired())
 
-export class RemoveMenuComponent {
+export class EditMenuComponent {
 
   routes;
   errorMessage;
@@ -21,7 +21,6 @@ export class RemoveMenuComponent {
 
   _visible: boolean = false;
 
-  // visible input
   @Input()
   set visible(visible: boolean){
 
@@ -29,10 +28,9 @@ export class RemoveMenuComponent {
     this._visible = visible;
 
   }
-  
-  get visible() { return this._visible; }
 
-  // menu input
+  get visible() { return this._visible; }
+  
   @Input()
   set menu(menu){
 
@@ -41,7 +39,6 @@ export class RemoveMenuComponent {
 
   }
 
-  // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
 
@@ -51,12 +48,10 @@ export class RemoveMenuComponent {
    * Init
    */
   ngOnInit() {
-
     this.model = {
       id: '',
       name: ''
     };
-
   }
 
   /**
@@ -71,22 +66,34 @@ export class RemoveMenuComponent {
    * Submits the form
    */
   submit() {
-
-    this._menuService.remove(this.model.id)
+  
+    this._menuService.edit(this.model.id, this.model.name)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error => { this.errorMessage = <any>error; this.error(); }
                       );
 
   }
 
   /**
-   * Handles a successful submission
+   * Handles a successful edit
    */
   success() {
 
+    toast.show('success');
+
     this._visible = false;
     this.onUpdate.emit(null);
+
+  }
+
+  /**
+   * Handles an error
+   */
+  error() {
+
+    console.log('[respond.error] ' + this.errorMessage);
+    toast.show('failure');
 
   }
 

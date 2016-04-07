@@ -1,26 +1,32 @@
 import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router'
-import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
-import {MenuService} from '/app/shared/services/menu.service'
+import {CanActivate} from 'angular2/router';
+import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
+import {MenuItemService} from '/app/shared/services/menu-item.service';
+import {PageService} from '/app/shared/services/page.service';
 
 @Component({
-    selector: 'respond-add-menu',
-    templateUrl: './app/shared/components/add-menu/add-menu.component.html',
-    providers: [MenuService]
+    selector: 'respond-add-menu-item',
+    templateUrl: './app/shared/components/add-menu-item/add-menu-item.component.html',
+    providers: [MenuItemService, PageService]
 })
 
 @CanActivate(() => tokenNotExpired())
 
-export class AddMenuComponent {
+export class AddMenuItemComponent {
 
-  routes;
+  menu;
+  pages;
   errorMessage;
 
   // model to store
-  model: {
-    name: ''
+  model = {
+    html: '',
+    cssClass: '',
+    isNested: false,
+    url: ''
   };
 
+  // visible input
   _visible: boolean = false;
 
   @Input()
@@ -31,22 +37,36 @@ export class AddMenuComponent {
 
     // reset model
     this.model = {
-      name: ''
+      html: '',
+      cssClass: '',
+      isNested: false,
+      url: ''
     };
 
   }
 
   get visible() { return this._visible; }
+  
+  // menu input
+  @Input() menu;
 
+  // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onAdd = new EventEmitter<any>();
 
-  constructor (private _menuService: MenuService) {}
+  constructor (private _menuItemService: MenuItemService, private _pageService: PageService) {}
 
   /**
    * Init
    */
   ngOnInit() {
+  
+    // list pages
+    this._pageService.list()
+                     .subscribe(
+                       data => { this.pages = data; },
+                       error =>  this.errorMessage = <any>error
+                      );
 
   }
 
@@ -63,7 +83,7 @@ export class AddMenuComponent {
    */
   submit() {
   
-    this._menuService.add(this.model.name)
+    this._menuItemService.add(this.menu.id, this.model.html, this.model.cssClass, this.model.isNested, this.model.url)
                      .subscribe(
                        data => { this.success(); },
                        error => { this.errorMessage = <any>error; this.error(); }
