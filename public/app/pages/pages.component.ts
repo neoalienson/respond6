@@ -2,9 +2,9 @@ import {Component} from 'angular2/core'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
 import {PageService} from '/app/shared/services/page.service'
-import {AddPageComponent} from '/app/shared/components/add-page/add-page.component';
-import {PageSettingsComponent} from '/app/shared/components/page-settings/page-settings.component';
-import {RemovePageComponent} from '/app/shared/components/remove-page/remove-page.component';
+import {AddPageComponent} from '/app/shared/components/pages/add-page/add-page.component';
+import {PageSettingsComponent} from '/app/shared/components/pages/page-settings/page-settings.component';
+import {RemovePageComponent} from '/app/shared/components/pages/remove-page/remove-page.component';
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 import {TimeAgoPipe} from '/app/shared/pipes/time-ago.pipe';
 

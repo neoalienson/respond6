@@ -2,9 +2,9 @@ import {Component} from 'angular2/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
 import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
 import {UserService} from '/app/shared/services/user.service';
-import {AddUserComponent} from '/app/shared/components/add-user/add-user.component';
-import {EditUserComponent} from '/app/shared/components/edit-user/edit-user.component';
-import {RemoveUserComponent} from '/app/shared/components/remove-user/remove-user.component';
+import {AddUserComponent} from '/app/shared/components/users/add-user/add-user.component';
+import {EditUserComponent} from '/app/shared/components/users/edit-user/edit-user.component';
+import {RemoveUserComponent} from '/app/shared/components/users/remove-user/remove-user.component';
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 
 @Component({

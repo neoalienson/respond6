@@ -2,7 +2,7 @@ import {Component} from 'angular2/core'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
 import {FileService} from '/app/shared/services/file.service'
-import {RemoveFileComponent} from '/app/shared/components/remove-file/remove-file.component';
+import {RemoveFileComponent} from '/app/shared/components/files/remove-file/remove-file.component';
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 
 @Component({

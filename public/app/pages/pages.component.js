@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/page.service', '/app/shared/components/add-page/add-page.component', '/app/shared/components/page-settings/page-settings.component', '/app/shared/components/remove-page/remove-page.component', '/app/shared/components/drawer/drawer.component', '/app/shared/pipes/time-ago.pipe'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/page.service', '/app/shared/components/pages/add-page/add-page.component', '/app/shared/components/pages/page-settings/page-settings.component', '/app/shared/components/pages/remove-page/remove-page.component', '/app/shared/components/drawer/drawer.component', '/app/shared/pipes/time-ago.pipe'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {

@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/user.service', '/app/shared/components/add-user/add-user.component', '/app/shared/components/edit-user/edit-user.component', '/app/shared/components/remove-user/remove-user.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/user.service', '/app/shared/components/users/add-user/add-user.component', '/app/shared/components/users/edit-user/edit-user.component', '/app/shared/components/users/remove-user/remove-user.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {

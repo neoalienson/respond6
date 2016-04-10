@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/file.service', '/app/shared/components/remove-file/remove-file.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/file.service', '/app/shared/components/files/remove-file/remove-file.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
