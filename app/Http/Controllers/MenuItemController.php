@@ -54,7 +54,7 @@ class MenuItemController extends Controller
 
     // menu
     $menuId = $request->json()->get('id');
-    
+
     // item
     $html = $request->json()->get('html');
     $cssClass = $request->json()->get('cssClass');
@@ -63,13 +63,13 @@ class MenuItemController extends Controller
 
     // add a menu
     $item = MenuItem::add($html, $cssClass, $isNested, $url, $menuId, $siteId);
-    
+
     // get site and user
     $site = Site::getById($siteId);
     $user = User::getByEmail($email, $siteId);
-    
-    // re-publish site
-    Publish::publishAllPages($site, $user);
+
+    // re-publish components
+    Publish::republishComponents($site, $user);
 
     if($item !== NULL) {
      return response('OK, menu item added', 200);
@@ -97,40 +97,40 @@ class MenuItemController extends Controller
     $cssClass = $request->json()->get('cssClass');
     $isNested = $request->json()->get('isNested');
     $url = $request->json()->get('url');
-    
+
     // update order in file
     $menu = Menu::getById($menuId, $siteId);
-    
+
     if($menu != NULL) {
-      
+
       // update the item at the index
       if($menu->items[$index] != NULL) {
-        
+
         $menu->items[$index]['html'] = $html;
         $menu->items[$index]['cssClass'] = $cssClass;
         $menu->items[$index]['isNested'] = $isNested;
         $menu->items[$index]['url'] = $url;
-        
+
       }
-      
+
       // save the menu
       $menu->save($siteId);
-      
+
       // get site and user
       $site = Site::getById($siteId);
       $user = User::getByEmail($email, $siteId);
-      
-      // re-publish site
-      Publish::publishAllPages($site, $user);
-      
+
+      // re-publish components
+      Publish::republishComponents($site, $user);
+
       return response('Ok', 200);
     }
-    
+
     // return error
     return response('Error', 400);
 
   }
-  
+
   /**
    * Updates the order of items in the list
    *
@@ -145,24 +145,24 @@ class MenuItemController extends Controller
     // name, items
     $menuId = $request->json()->get('id');
     $items = $request->json()->get('items');
-    
+
     // update order in file
     $menu = Menu::getById($menuId, $siteId);
-    
+
     if($menu != NULL) {
       $menu->items = $items;
       $menu->save($siteId);
-      
+
       // get site and user
       $site = Site::getById($siteId);
       $user = User::getByEmail($email, $siteId);
-      
-      // re-publish site
-      Publish::publishAllPages($site, $user);
-      
+
+      // re-publish components
+      Publish::republishComponents($site, $user);
+
       return response('Ok', 200);
     }
-    
+
     return response('Error', 400);
 
   }
@@ -177,26 +177,26 @@ class MenuItemController extends Controller
     // get request data
     $email = $request->input('auth-email');
     $siteId = $request->input('auth-id');
-    
+
     // name, items
     $menuId = $request->json()->get('id');
     $index = $request->json()->get('index');
-    
+
     // update order in file
     $menu = Menu::getById($menuId, $siteId);
-    
+
     if($menu != NULL) {
       array_splice($menu->items, $index);
-      
+
       $menu->save($siteId);
-      
+
       // get site and user
       $site = Site::getById($siteId);
       $user = User::getByEmail($email, $siteId);
-      
-      // re-publish site
-      Publish::publishAllPages($site, $user);
-      
+
+      // re-publish components
+      Publish::republishComponents($site, $user);
+
       return response('Ok', 200);
     }
 

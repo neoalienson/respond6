@@ -45,7 +45,7 @@ export class MenuItemService {
     return this.authHttp.post(this._addUrl, body, options);
 
   }
-  
+
   /**
    * Edits a menu item
    *
@@ -58,7 +58,7 @@ export class MenuItemService {
    * @param {string} url
    * @return {Observable}
    */
-  edit (id: string, index: int, html: string, cssClass: string, isNested: string, url: string) {
+  edit (id: string, index: number, html: string, cssClass: string, isNested: string, url: string) {
 
     let body = JSON.stringify({ id, index, html, cssClass, isNested, url });
     let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -75,7 +75,7 @@ export class MenuItemService {
    * @param {string} index
    * @return {Observable}
    */
-  remove (id: string, index: int) {
+  remove (id: string, index: number) {
 
     let body = JSON.stringify({ id, index });
     let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -84,7 +84,7 @@ export class MenuItemService {
     return this.authHttp.post(this._removeUrl, body, options);
 
   }
-  
+
   /**
    * Updates the order of a list
    *

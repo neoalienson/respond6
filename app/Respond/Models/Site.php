@@ -200,6 +200,9 @@ class Site {
      // publish site
     Publish::publishThemeMenus($site);
 
+    // publish the forms for the site
+    Publish::publishThemeForms($site);
+
     // publish default content
     Publish::publishDefaultContent($site, $user);
 

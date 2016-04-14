@@ -11,7 +11,7 @@
       "url": "component/footer"
     },
     {
-      "description": "Welcome to your new homepage created with Respond CMS",
+      "description": "Welcome to your new homepage created with Respond",
       "layout": "home",
       "source": "pages/home.html",
       "title": "Home",

@@ -11,54 +11,19 @@
 |
 */
 
-// base route should load the angular2 app
-$app->get('/', function () use ($app) {
-    $public = rtrim(app()->basePath('public/index.html'), '/');
+// handle Angular app routes
+$app_routes = array('/', 'login', 'create', 'pages', 'users', 'files', 'menus', 'forms', 'submissions');
 
-    return file_get_contents($public);
-});
+foreach($app_routes as $app_route) {
 
-// the login route should load the angular2 app
-$app->get('login', function () {
-    $public = rtrim(app()->basePath('public/index.html'), '/');
+  // load the angular app at index.html
+  $app->get($app_route, function () use ($app) {
+      $public = rtrim(app()->basePath('public/index.html'), '/');
 
-    return file_get_contents($public);
-});
+      return file_get_contents($public);
+  });
 
-// the create route should load the angular2 app
-$app->get('create', function () {
-    $public = rtrim(app()->basePath('public/index.html'), '/');
-
-    return file_get_contents($public);
-});
-
-// the pages route should load the angular2 app
-$app->get('pages', function () {
-    $public = rtrim(app()->basePath('public/index.html'), '/');
-
-    return file_get_contents($public);
-});
-
-// the users route should load the angular2 app
-$app->get('users', function () {
-    $public = rtrim(app()->basePath('public/index.html'), '/');
-
-    return file_get_contents($public);
-});
-
-// the files route should load the angular2 app
-$app->get('files', function () {
-    $public = rtrim(app()->basePath('public/index.html'), '/');
-
-    return file_get_contents($public);
-});
-
-// the menus route should load the angular2 app
-$app->get('menus', function () {
-    $public = rtrim(app()->basePath('public/index.html'), '/');
-
-    return file_get_contents($public);
-});
+}
 
 // the login/my-site route should load the angular2 app
 $app->get('login/{id}', function ($id) {
@@ -138,3 +103,16 @@ $app -> post('/api/menus/items/add', ['middleware' => 'jwtauth', 'uses'=> 'MenuI
 $app -> post('/api/menus/items/edit', ['middleware' => 'jwtauth', 'uses'=> 'MenuItemController@edit']);
 $app -> post('/api/menus/items/remove', ['middleware' => 'jwtauth', 'uses'=> 'MenuItemController@remove']);
 $app -> post('/api/menus/items/order', ['middleware' => 'jwtauth', 'uses'=> 'MenuItemController@updateOrder']);
+
+// forms
+$app -> get('/api/forms/list', ['middleware' => 'jwtauth', 'uses'=> 'FormController@listAll']);
+$app -> post('/api/forms/add', ['middleware' => 'jwtauth', 'uses'=> 'FormController@add']);
+$app -> post('/api/forms/edit', ['middleware' => 'jwtauth', 'uses'=> 'FormController@edit']);
+$app -> post('/api/forms/remove', ['middleware' => 'jwtauth', 'uses'=> 'FormController@remove']);
+
+// form field
+$app -> get('/api/forms/fields/list/{id}', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@listAll']);
+$app -> post('/api/forms/fields/add', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@add']);
+$app -> post('/api/forms/fields/edit', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@edit']);
+$app -> post('/api/forms/fields/remove', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@remove']);
+$app -> post('/api/forms/fields/order', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@updateOrder']);
