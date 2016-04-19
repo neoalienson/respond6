@@ -37,7 +37,7 @@ export class LoginComponent {
         this._userService.login(this.id, email, password)
                      .subscribe(
                        data => { this.data = data; this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error => { this.failure(); }
                       );
 
     }
@@ -47,12 +47,21 @@ export class LoginComponent {
      */
     success() {
 
+      toast.show('success');
+
       // set token
       this.setToken(this.data.token);
 
       // navigate
       this._router.navigate( ['Pages'] );
 
+    }
+
+    /**
+     * Handles a failed login
+     */
+    failure() {
+      toast.show('failure');
     }
 
     /**

@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/page.service', '/app/shared/components/add-page/add-page.component', '/app/shared/components/page-settings/page-settings.component', '/app/shared/components/remove-page/remove-page.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/page.service', '/app/shared/components/pages/add-page/add-page.component', '/app/shared/components/pages/page-settings/page-settings.component', '/app/shared/components/pages/remove-page/remove-page.component', '/app/shared/components/drawer/drawer.component', '/app/shared/pipes/time-ago.pipe'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, page_service_1, add_page_component_1, page_settings_component_1, remove_page_component_1, drawer_component_1;
+    var core_1, angular2_jwt_1, router_1, page_service_1, add_page_component_1, page_settings_component_1, remove_page_component_1, drawer_component_1, time_ago_pipe_1;
     var PagesComponent;
     return {
         setters:[
@@ -37,6 +37,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             },
             function (drawer_component_1_1) {
                 drawer_component_1 = drawer_component_1_1;
+            },
+            function (time_ago_pipe_1_1) {
+                time_ago_pipe_1 = time_ago_pipe_1_1;
             }],
         execute: function() {
             PagesComponent = (function () {
@@ -49,9 +52,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  */
                 PagesComponent.prototype.ngOnInit = function () {
                     this.id = localStorage.getItem('respond.siteId');
-                    this.addPageVisible = false;
-                    this.removePageVisible = false;
-                    this.pageSettingsVisible = false;
+                    this.addVisible = false;
+                    this.removeVisible = false;
+                    this.settingsVisible = false;
                     this.drawerVisible = false;
                     this.page = {};
                     this.list();
@@ -69,9 +72,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * Resets an modal booleans
                  */
                 PagesComponent.prototype.reset = function () {
-                    this.removePageVisible = false;
-                    this.addPageVisible = false;
-                    this.pageSettingsVisible = false;
+                    this.removeVisible = false;
+                    this.addVisible = false;
+                    this.settingsVisible = false;
                     this.drawerVisible = false;
                     this.page = {};
                 };
@@ -93,7 +96,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * Shows the add dialog
                  */
                 PagesComponent.prototype.showAdd = function () {
-                    this.addPageVisible = true;
+                    this.addVisible = true;
                 };
                 /**
                  * Shows the remove dialog
@@ -101,7 +104,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * @param {Page} page
                  */
                 PagesComponent.prototype.showRemove = function (page) {
-                    this.removePageVisible = true;
+                    this.removeVisible = true;
                     this.page = page;
                 };
                 /**
@@ -110,7 +113,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * @param {Page} page
                  */
                 PagesComponent.prototype.showSettings = function (page) {
-                    this.pageSettingsVisible = true;
+                    this.settingsVisible = true;
                     this.page = page;
                 };
                 /**
@@ -119,14 +122,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  * @param {Page} page
                  */
                 PagesComponent.prototype.edit = function (page) {
-                    window.location = '/edit?q=' + this.id + '/' + page.Url + '.html';
+                    window.location = '/edit?q=' + this.id + '/' + page.url + '.html';
                 };
                 PagesComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-pages',
                         templateUrl: './app/pages/pages.component.html',
                         providers: [page_service_1.PageService],
-                        directives: [add_page_component_1.AddPageComponent, page_settings_component_1.PageSettingsComponent, remove_page_component_1.RemovePageComponent, drawer_component_1.DrawerComponent]
+                        directives: [add_page_component_1.AddPageComponent, page_settings_component_1.PageSettingsComponent, remove_page_component_1.RemovePageComponent, drawer_component_1.DrawerComponent],
+                        pipes: [time_ago_pipe_1.TimeAgoPipe]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object])

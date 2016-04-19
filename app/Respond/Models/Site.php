@@ -4,8 +4,6 @@ namespace App\Respond\Models;
 
 use App\Respond\Libraries\Utilities;
 
-use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Yaml\Dumper;
 use App\Respond\Libraries\Publish;
 
 /**
@@ -13,21 +11,20 @@ use App\Respond\Libraries\Publish;
  */
 class Site {
 
-  public $Id;
-  public $Name;
-  public $Logo;
-  public $AltLogo;
-  public $Icon;
-  public $Color;
-  public $Domain;
-  public $Theme;
-  public $Email;
-  public $TimeZone;
-  public $Language;
-  public $Direction;
-  public $ShowCart;
-  public $ShowSearch;
-  public $Users;
+  public $id;
+  public $name;
+  public $logo;
+  public $altLogo;
+  public $icon;
+  public $color;
+  public $theme;
+  public $email;
+  public $timeZone;
+  public $language;
+  public $direction;
+  public $defaultContent;
+  public $showCart;
+  public $showSearch;
 
   /**
    * Constructs a page from an array of data
@@ -43,62 +40,19 @@ class Site {
   }
 
   /**
-   * Saves a user
-   *
-   * @param {string} $id the ID for the user
-   * @return {Site}
-   */
-  public function SaveUser($user) {
-
-    $is_match = false;
-
-    foreach($this->Users as &$item) {
-
-      // check email
-      if($item['Email'] == $user->Email) {
-
-        // update user
-        $is_match = true;
-        $item = (array)$user;
-
-        // save site
-        $this->Save();
-
-        return;
-
-      }
-
-    }
-
-    // push user
-    array_push($this->Users, $user);
-
-    // save site
-    $this->Save();
-
-    return;
-
-  }
-
-  /**
    * Saves a site
    *
    * @param {string} $id the ID for the user
    * @return {Site}
    */
-  public function Save() {
+  public function save() {
 
-    $dumper = new Dumper();
+    $dir = app()->basePath().'/resources/sites/'.$this->id.'/';
 
-    $dir = app()->basePath().'/resources/sites/'.$this->Id.'/';
+    $json = json_encode($this, JSON_PRETTY_PRINT);
 
-    $json = json_encode($this);
-    $arr = json_decode($json, true);
-
-    $yaml = $dumper->dump($arr, 3);
-
-    // save site.yaml
-    Utilities::SaveContent($dir, 'site.yaml', $yaml);
+    // save site.json
+    Utilities::saveContent($dir, 'site.json', $json);
 
   }
 
@@ -108,15 +62,14 @@ class Site {
    * @param {string} $id the ID for the user
    * @return {Site}
    */
-	public static function GetById($id) {
+	public static function getById($id) {
 
-    $yaml = new Parser();
-    $file = app()->basePath().'/resources/sites/'.$id.'/site.yaml';
+    $file = app()->basePath().'/resources/sites/'.$id.'/site.json';
 
     if(file_exists($file)) {
 
       try {
-        $arr = $yaml->parse(file_get_contents($file));
+        $arr = json_decode(file_get_contents($file), true);
 
         return new Site($arr);
       }
@@ -133,12 +86,12 @@ class Site {
 	}
 
 	/**
-   * Gets a site for a given Id
+   * Gets a site for a given id
    *
    * @param {string} $id
    * @return {Site}
    */
-	public static function IsIdUnique($id) {
+	public static function isIdUnique($id) {
 
     $file = app()->basePath().'/public/sites/'.$id;
 
@@ -160,7 +113,7 @@ class Site {
    * @param {string} $id the ID for the user
    * @return {Site}
    */
-	public static function Create($name, $theme, $email, $password) {
+	public static function create($name, $theme, $email, $password) {
 
 	  // create an id
 	  $id = strtolower($name);
@@ -191,66 +144,78 @@ class Site {
     $timeZone = 'America/Chicago';
     $language = env('DEFAULT_LANGUAGE');
     $direction = env('DEFAULT_DIRECTION');
-    $domain = env('APP_URL').'/sites/'.$id;
+    $defaultContent = '<h1>{{page.Title}}</h1><p>{{page.Description}}</p>';
+
+    $file = app()->basePath().'/resources/themes/'.$theme.'/theme.json';
+
+    // get default content from theme
+    if(file_exists($file)) {
+       $arr = json_decode(file_get_contents($file), true);
+       $defaultContent = $arr['defaultContent'];
+    }
 
     // create a site
     $site_arr = array(
-      'Id' => $id,
-      'Name' => $name,
-      'Logo' => 'sample-logo.png',
-      'AltLogo' => 'sample-logo.png',
-      'Icon' => '',
-      'Color' => '',
-      'Domain' => $domain,
-      'Theme' => $theme,
-      'Email' => $email,
-      'TimeZone' => $timeZone,
-      'Language' => $language,
-      'Direction' => $direction,
-      'ShowCart' => true,
-      'ShowSearch' => true,
-      'Users' => array()
+      'id' => $id,
+      'name' => $name,
+      'logo' => 'sample-logo.png',
+      'altLogo' => 'sample-logo.png',
+      'icon' => '',
+      'color' => '',
+      'theme' => $theme,
+      'email' => $email,
+      'timeZone' => $timeZone,
+      'language' => $language,
+      'direction' => $direction,
+      'defaultContent' => $defaultContent,
+      'showCart' => true,
+      'showSearch' => true,
+      'users' => array()
     );
 
+    // create and save the site
   	$site = new Site($site_arr);
+  	$site->save();
 
-    // create a user
-    $user_arr = array(
-      'Email' => $email,
-      'Password' => password_hash($password, PASSWORD_DEFAULT),
-      'FirstName' => 'New',
-      'LastName' => 'User',
-      'Role' => 'Admin',
-      'Language' => $language,
-      'Photo' => '',
-      'Token' => ''
-    );
+    // create and save the user
+    $user = new User(array(
+      'email' => $email,
+      'password' => password_hash($password, PASSWORD_DEFAULT),
+      'firstName' => 'New',
+      'lastName' => 'User',
+      'role' => 'Admin',
+      'language' => $language,
+      'photo' => '',
+      'token' => ''
+    ));
 
-    $user = new User($user_arr);
-
-    // this saves both the user and the site
-    $site->SaveUser($user);
+    $user->save($site->id);
 
     // publish theme
-    Publish::PublishTheme($site);
+    Publish::publishTheme($site);
 
     // inject settings
-    Publish::InjectSiteSettings($site);
+    Publish::injectSiteSettings($site);
 
      // publish site
-    Publish::PublishThemeMenus($site);
+    Publish::publishThemeMenus($site);
+
+    // publish the forms for the site
+    Publish::publishThemeForms($site);
 
     // publish default content
-    Publish::PublishDefaultContent($site, $user);
+    Publish::publishDefaultContent($site, $user);
 
     // publish components
-    Publish::PublishComponents($site);
+    Publish::publishComponents($site);
+
+    // publish locales
+    Publish::publishLocales($site);
 
     // return site information
     return array(
-      'Id' => $id,
-      'Name' => $name,
-      'Domain' => $domain
+      'id' => $id,
+      'name' => $name
       );
 
   }

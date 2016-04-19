@@ -1,0 +1,70 @@
+{
+  "defaultContent": "<div class=\"block row\"><div class=\"col col-md-12\"><h1>{{page.title}}</h1><p>{{page.description}}</p></div></div>",
+  "description": "A professional theme from Respond",
+  "name": "persistence",
+  "pages": [
+    {
+      "description": "This is the footer used across pages for your site",
+      "layout": "content",
+      "source": "pages/footer.html",
+      "title": "Footer",
+      "url": "component/footer"
+    },
+    {
+      "description": "Welcome to your new homepage created with Respond",
+      "layout": "home",
+      "source": "pages/home.html",
+      "title": "Home",
+      "url": "index"
+    },
+    {
+      "description": "You have successfully completed your purchase",
+      "layout": "content",
+      "source": "pages/thank-you.html",
+      "title": "Thank you",
+      "url": "thank-you"
+    },
+    {
+      "description": "You have successfully cancelled your purchase",
+      "layout": "content",
+      "source": "pages/cancel.html",
+      "title": "Purchase Cancelled",
+      "url": "cancel"
+    },
+    {
+      "description": "Your blog contains a list of your blog posts",
+      "layout": "content",
+      "source": "pages/blog.html",
+      "title": "Blog",
+      "url": "blog"
+    },
+    {
+      "description": "A sample blog post to get you started",
+      "layout": "content",
+      "source": "pages/post.html",
+      "title": "Sample Blog Post",
+      "url": "post/sample-blog-post"
+    },
+    {
+      "description": "A sample about page to introduce yourself or your business",
+      "layout": "content",
+      "source": "pages/about.html",
+      "title": "About",
+      "url": "page/about"
+    },
+    {
+      "description": "A contact us form is a great way for others to get in touch",
+      "layout": "content",
+      "source": "pages/contact.html",
+      "title": "Contact",
+      "url": "page/contact"
+    },
+    {
+      "description": "A simple error page that is displayed when content cannot be found",
+      "layout": "content",
+      "source": "pages/error.html",
+      "title": "Page Not Found",
+      "url": "page/error"
+    }
+  ]
+}

@@ -24,11 +24,15 @@ class PageController extends Controller
   {
 
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
+
+    // get site and user
+    $site = Site::getById($id);
+    $user = User::getByEmail($email, $id);
 
     // list pages in the site
-    $arr = Page::ListAll($email, $siteId);
+    $arr = Page::listAll($user, $site);
 
     return response()->json($arr);
 
@@ -43,13 +47,13 @@ class PageController extends Controller
   {
 
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
 
     // get base path for the site
-    $dir = $file = app()->basePath().'/public/sites/'.$siteId;
+    $dir = $file = app()->basePath().'/public/sites/'.$id;
 
-    $arr = array_merge(array('/'), Utilities::ListRoutes($dir, $siteId));
+    $arr = array_merge(array('/'), Utilities::listRoutes($dir, $id));
 
     return response()->json($arr);
 
@@ -63,23 +67,23 @@ class PageController extends Controller
   public function save(Request $request)
   {
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
 
     // get url & changes
     $url = $request->json()->get('url');
     $changes = $request->json()->get('changes');
 
     // get site and user
-    $site = Site::GetById($siteId);
-    $user = User::GetByEmail($siteId, $email);
+    $site = Site::getById($id);
+    $user = User::getByEmail($email, $id);
 
     // remove site and .html from url
-    $url = str_replace($siteId.'/', '', $url);
+    $url = str_replace($id.'/', '', $url);
     $url = preg_replace('/\\.[^.\\s]{3,4}$/', '', $url);
 
     // edit the page
-    $success = Page::Edit($url, $changes, $site, $user);
+    $success = Page::edit($url, $changes, $site, $user);
 
     // show response
     if($success == TRUE) {
@@ -99,8 +103,8 @@ class PageController extends Controller
   public function settings(Request $request)
   {
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
 
     // get url & changes
     $url = $request->json()->get('url');
@@ -110,26 +114,27 @@ class PageController extends Controller
     $callout = $request->json()->get('callout');
     $layout = $request->json()->get('layout');
     $language = $request->json()->get('language');
+    $direction = $request->json()->get('direction');
     $timestamp = gmdate('D M d Y H:i:s O', time());
 
     $data = array(
-      'Title' => $title,
-      'Description' => $description,
-      'Keywords' => $keywords,
-      'Callout' => $callout,
-      'Url' => $url,
-      'Layout' => 'content',
-      'Language' => 'en',
-      'LastModifiedBy' => $email,
-      'LastModifiedDate' => $timestamp
+      'title' => $title,
+      'description' => $description,
+      'keywords' => $keywords,
+      'callout' => $callout,
+      'url' => $url,
+      'language' => $language,
+      'direction' => $direction,
+      'lastModifiedBy' => $email,
+      'lastModifiedDate' => $timestamp
     );
 
     // get site and user
-    $site = Site::GetById($siteId);
-    $user = User::GetByEmail($siteId, $email);
+    $site = Site::getById($id);
+    $user = User::getByEmail($email, $id);
 
     // edit the page
-    $success = Page::EditSettings($data, $site, $user);
+    $success = Page::editSettings($data, $site, $user);
 
     // show response
     if($success == TRUE) {
@@ -149,8 +154,8 @@ class PageController extends Controller
   public function add(Request $request)
   {
     // get request data
-    $email = $request->input('email');
-    $siteId = $request->input('siteId');
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
 
     // get url, title and description
     $url = $request->json()->get('url');
@@ -159,8 +164,8 @@ class PageController extends Controller
     $timestamp = gmdate('D M d Y H:i:s O', time());
 
     // get the site
-    $site = Site::GetById($siteId);
-    $user = User::GetByEmail($siteId, $email);
+    $site = Site::getById($id);
+    $user = User::getByEmail($email, $id);
 
     // strip any leading slashes from url
     $url = ltrim($url, '/');
@@ -170,22 +175,50 @@ class PageController extends Controller
 
     // set page data
     $data = array(
-      'Title' => $title,
-      'Description' => $description,
-      'Keywords' => '',
-      'Callout' => '',
-      'Url' => $url,
-      'Layout' => 'content',
-      'Language' => 'en',
-      'LastModifiedBy' => $email,
-      'LastModifiedDate' => $timestamp
+      'title' => $title,
+      'description' => $description,
+      'keywords' => '',
+      'callout' => '',
+      'url' => $url,
+      'photo' => '',
+      'thumb' => '',
+      'layout' => 'content',
+      'language' => 'en',
+      'direction' => 'ltr',
+      'firstName' => $user->firstName,
+      'lastName' => $user->lastName,
+      'lastModifiedBy' => $user->email,
+      'lastModifiedDate' => $timestamp
     );
 
     // add a page
-    $page = Page::Add($data, $site, $user);
+    $page = Page::add($data, $site, $user);
 
     // return OK
-    return response('OK, page added at = '.$page->Url, 200);
+    return response('OK, page added at = '.$page->url, 200);
+
+  }
+
+  /**
+   * Removes the page
+   *
+   * @return Response
+   */
+  public function remove(Request $request)
+  {
+    // get request data
+    $email = $request->input('auth-email');
+    $id = $request->input('auth-id');
+
+    // get url, title and description
+    $url = $request->json()->get('url');
+
+    $page = Page::getByUrl($url, $id);
+
+    $page->remove($id);
+
+    // return OK
+    return response('OK, page removed at = '.$page->url, 200);
 
   }
 
