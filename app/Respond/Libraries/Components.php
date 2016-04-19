@@ -9,9 +9,13 @@ class Components
    * Generates HTML for <respond-menu type="menu-type"></respond-menu>
    *
    * @param {array} $attrs
-   * @param {string} $siteId
+   * @param {Site} $site
+   * @param {Page} $page
    */
-  public static function respondMenu($type, $cssClass, $pageUrl, $siteId) {
+  public static function respondMenu($attrs, $site, $page) {
+
+    $type = $attrs['type'];
+    $cssClass = $attrs['cssClass'];
 
     // set html extension
     $ext = '.html';
@@ -21,7 +25,7 @@ class Components
     }
 
     // get json for menu
-    $file = app()->basePath() . '/public/sites/' . $siteId . '/data/menus/' . $type . '.json';
+    $file = app()->basePath() . '/public/sites/' . $site->id . '/data/menus/' . $type . '.json';
 
     $menu = '';
 
@@ -56,7 +60,7 @@ class Components
             $isNested = $menuItem['isNested'];
 
             // set active
-            if ($pageUrl === $url) {
+            if ($page->url === $url) {
                 $cssClass .= ' active';
             }
 
@@ -112,12 +116,95 @@ class Components
   }
 
   /**
+   * Generates HTML for <respond-menu type="menu-type"></respond-menu>
+   *
+   * @param {array} $attrs
+   * @param {Site} $site
+   * @param {Page} $page
+   */
+  public static function respondForm($attrs, $site, $page) {
+
+    $id = $attrs['id'];
+
+    // get json for menu
+    $file = app()->basePath() . '/public/sites/' . $site->id . '/data/forms/' . $id . '.json';
+
+    $form = '';
+
+    if (file_exists($file)) {
+
+        $json = json_decode(file_get_contents($file), true);
+
+        // setup form
+        $form = '<form respond-form class="'.$json['cssClass'].'">';
+
+        // get fields
+        $fields = $json['fields'];
+
+        foreach ($fields as $field) {
+
+          $label = $field['label'];
+          $type = $field['type'];
+          $id = $field['id'];
+          $placeholder = $field['placeholder'];
+          $helperText = $field['helperText'];
+          $required = '';
+          $options = explode(',', $field['options']);
+
+          if ($field['required'] === TRUE) {
+            $required = ' required';
+          }
+
+          // create label
+          $form .= '<label for="' . $id . '">' . $label . '</label>';
+
+          // text
+          if($type=='text'){
+    				$form .= '<input id="' . $id . '" name="' . $id . '" type="text" class="form-control" placeholder="'. $placeholder. '"' . $required . '>';
+    			}
+
+    			// email
+          if($type=='email'){
+    				$form .= '<input id="' . $id . '" name="' . $id . '" type="email" class="form-control" placeholder="'. $placeholder. '"' . $required . '>';
+    			}
+
+    			// textarea
+    			if($type=='textarea'){
+    				$form .= '<textarea id="' . $id . '" name="' . $id . '" class="form-control" placeholder="'. $placeholder. '"' . $required . '></textarea>';
+    			}
+
+    			// select
+    			if($type=='select'){
+    				$form .= '<select id="' . $id . '" name="' . $id . '" class="form-control" placeholder="'. $placeholder. '"' . $required . '>';
+
+    				foreach ($options as $option) {
+      				$form .= '<option value="' . $option . '">' . $option .'</option>';
+    				}
+
+    				$form .= '</select>';
+    			}
+
+        }
+
+        // close form
+        $form .= '</form>';
+
+      }
+
+      return $form;
+
+  }
+
+  /**
    * Generates HTML for <respond-content url="page/test"></respond-content>
    *
    * @param {array} $attrs
-   * @param {string} $siteId
+   * @param {Site} $site
+   * @param {Page} $page
    */
-  public static function respondContent($url, $siteId) {
+  public static function respondContent($attrs, $site, $page) {
+
+    $url = $attrs['url'];
 
     // replace the / with a period
     $url = str_replace('/', '.', $url);
@@ -127,7 +214,7 @@ class Components
     $html = '';
 
     // get location of content html
-    $dest = app()->basePath() . '/public/sites/' . $siteId;
+    $dest = app()->basePath() . '/public/sites/' . $site->id;
     $content_dest = $dest . '/fragments/page/' . $url;
 
     // get contents

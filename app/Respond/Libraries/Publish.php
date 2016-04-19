@@ -395,7 +395,7 @@ class Publish
         // get phpQuery of file
         $doc = \phpQuery::newDocument($html);
 
-        foreach ($doc['[respond-menu]'] as $el) {
+        foreach ($doc['[respond-menu], respond-menu'] as $el) {
 
             $type = pq($el)->attr('type');
             $cssClass = pq($el)->attr('class');
@@ -403,8 +403,10 @@ class Publish
             // get the type
             if ($type != NULL) {
 
+              $attrs = array('type' => $type, 'cssClass' => $cssClass);
+
               // get the menu HTML
-              $html = Components::respondMenu($type, $cssClass, $page->url, $site->id);
+              $html = Components::respondMenu($attrs, $site, $page);
 
               // get menu HTML
               pq($el)->replaceWith($html);
@@ -412,14 +414,35 @@ class Publish
             }
             /* isset */
 
-            // get updated html
-            $html = $doc->htmlOuter();
+        }
+        /* foreach */
 
-            // publish
-            file_put_contents($location, $html);
+        foreach ($doc['[respond-form], respond-form'] as $el) {
+
+            $id = pq($el)->attr('id');
+
+            echo('found @ ' . $page->url . ', id='.$id);
+
+            // get the type
+            if ($id != NULL) {
+
+              $attrs = array('id' => $id);
+
+              // get the menu HTML
+              $html = Components::respondForm($attrs, $site, $page);
+
+              // get menu HTML
+              pq($el)->replaceWith($html);
+
+            }
+            /* isset */
 
         }
         /* foreach */
+
+        // publish
+        $html = $doc->htmlOuter();
+        file_put_contents($location, $html);
 
       }
 
@@ -552,7 +575,7 @@ class Publish
     public static function generateRenderAtPublish($doc, $site, $page)
     {
 
-        foreach ($doc['respond-menu[render=publish]'] as $el) {
+        foreach ($doc['respond-menu'] as $el) {
 
             $type = pq($el)->attr('type');
             $cssClass = pq($el)->attr('class');
@@ -560,8 +583,31 @@ class Publish
             // get the type
             if ($type != NULL) {
 
+              $attrs = array('type' => $type, 'cssClass' => $cssClass);
+
               // get the menu HTML
-              $html = Components::respondMenu($type, $cssClass, $page->url, $site->id);
+              $html = Components::respondMenu($attrs, $site, $page);
+
+              // get menu HTML
+              pq($el)->replaceWith($html);
+
+            }
+            /* isset */
+
+        }
+        /* foreach */
+
+        foreach ($doc['respond-form'] as $el) {
+
+            $id = pq($el)->attr('id');
+
+            // get the id
+            if ($id != NULL) {
+
+              $attrs = array('id' => $id);
+
+              // get the form HTML
+              $html = Components::respondForm($attrs, $site, $page);
 
               // get menu HTML
               pq($el)->replaceWith($html);
@@ -573,14 +619,17 @@ class Publish
         /* foreach */
 
         // replace content where render is set to publish
-        foreach ($doc['respond-content[render=publish]'] as $el) {
+        foreach ($doc['respond-content'] as $el) {
 
             $url = pq($el)->attr('url');
 
             // get the url
             if (isset($url)) {
 
-                $html = Components::respondContent($url, $site->id);
+                $attrs = array('url' => $url);
+
+                // get the content HTML
+                $html = Components::respondContent($attrs, $site, $page);
 
                 pq($el)->replaceWith($html);
 
