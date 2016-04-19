@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', './login/login.component', './forgot/forgot.component', './reset/reset.component', './create/create.component', './pages/pages.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/router', './login/login.component', './forgot/forgot.component', './reset/reset.component', './create/create.component', './pages/pages.component', './files/files.component', './users/users.component', './menus/menus.component', './forms/forms.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2/router', './login/login.component', 
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, login_component_1, forgot_component_1, reset_component_1, create_component_1, pages_component_1;
+    var core_1, router_1, login_component_1, forgot_component_1, reset_component_1, create_component_1, pages_component_1, files_component_1, users_component_1, menus_component_1, forms_component_1;
     var AppComponent;
     return {
         setters:[
@@ -34,6 +34,18 @@ System.register(['angular2/core', 'angular2/router', './login/login.component', 
             },
             function (pages_component_1_1) {
                 pages_component_1 = pages_component_1_1;
+            },
+            function (files_component_1_1) {
+                files_component_1 = files_component_1_1;
+            },
+            function (users_component_1_1) {
+                users_component_1 = users_component_1_1;
+            },
+            function (menus_component_1_1) {
+                menus_component_1 = menus_component_1_1;
+            },
+            function (forms_component_1_1) {
+                forms_component_1 = forms_component_1_1;
             }],
         execute: function() {
             AppComponent = (function () {
@@ -74,6 +86,26 @@ System.register(['angular2/core', 'angular2/router', './login/login.component', 
                             path: '/pages',
                             name: 'Pages',
                             component: pages_component_1.PagesComponent
+                        },
+                        {
+                            path: '/files',
+                            name: 'Files',
+                            component: files_component_1.FilesComponent
+                        },
+                        {
+                            path: '/users',
+                            name: 'Users',
+                            component: users_component_1.UsersComponent
+                        },
+                        {
+                            path: '/menus',
+                            name: 'Menus',
+                            component: menus_component_1.MenusComponent
+                        },
+                        {
+                            path: '/forms',
+                            name: 'Forms',
+                            component: forms_component_1.FormsComponent
                         }
                     ]), 
                     __metadata('design:paramtypes', [])

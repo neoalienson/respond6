@@ -45,16 +45,23 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
                     var _this = this;
                     event.preventDefault();
                     this._userService.login(this.id, email, password)
-                        .subscribe(function (data) { _this.data = data; _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.data = data; _this.success(); }, function (error) { _this.failure(); });
                 };
                 /**
                  * Handles a successful login
                  */
                 LoginComponent.prototype.success = function () {
+                    toast.show('success');
                     // set token
                     this.setToken(this.data.token);
                     // navigate
                     this._router.navigate(['Pages']);
+                };
+                /**
+                 * Handles a failed login
+                 */
+                LoginComponent.prototype.failure = function () {
+                    toast.show('failure');
                 };
                 /**
                  * Routes to the forgot password screen

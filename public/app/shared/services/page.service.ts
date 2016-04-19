@@ -38,9 +38,9 @@ export class PageService {
     return this.authHttp.post(this._addUrl, body, options);
 
   }
-  
+
   /**
-   * Updates the settings for a page 
+   * Updates the settings for a page
    *
    * @param {string} url
    * @param {string} title
@@ -49,18 +49,19 @@ export class PageService {
    * @param {string} callout
    * @param {string} layout
    * @param {string} language
+   * @param {string} direction
    * @return {Observable}
    */
-  updateSettings (url: string, title: string, description: string, keywords: string, callout: string, layout: string, language: string) {
-  
-    let body = JSON.stringify({ url, title, description, keywords, callout, layout, language });
+  updateSettings (url: string, title: string, description: string, keywords: string, callout: string, layout: string, language: string, direction: string) {
+
+    let body = JSON.stringify({ url, title, description, keywords, callout, layout, language, direction });
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
     return this.authHttp.post(this._updateSettingsUrl, body, options);
 
   }
-  
+
   /**
    * Removes the page
    *
@@ -68,7 +69,7 @@ export class PageService {
    * @return {Observable}
    */
   remove (url: string) {
-  
+
     let body = JSON.stringify({ url });
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });

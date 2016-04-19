@@ -2,28 +2,33 @@ import {Component} from 'angular2/core'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
 import {PageService} from '/app/shared/services/page.service'
-import {AddPageComponent} from '/app/shared/components/add-page/add-page.component';
-import {PageSettingsComponent} from '/app/shared/components/page-settings/page-settings.component';
-import {RemovePageComponent} from '/app/shared/components/remove-page/remove-page.component';
+import {AddPageComponent} from '/app/shared/components/pages/add-page/add-page.component';
+import {PageSettingsComponent} from '/app/shared/components/pages/page-settings/page-settings.component';
+import {RemovePageComponent} from '/app/shared/components/pages/remove-page/remove-page.component';
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
+import {TimeAgoPipe} from '/app/shared/pipes/time-ago.pipe';
 
 @Component({
     selector: 'respond-pages',
     templateUrl: './app/pages/pages.component.html',
     providers: [PageService],
-    directives: [AddPageComponent, PageSettingsComponent, RemovePageComponent, DrawerComponent]
+    directives: [AddPageComponent, PageSettingsComponent, RemovePageComponent, DrawerComponent],
+    pipes: [TimeAgoPipe]
 })
 
 @CanActivate(() => tokenNotExpired())
 
 export class PagesComponent {
 
+  id;
   page;
   pages;
   errorMessage;
   selectedPage;
-  addPageVisible: boolean;
-  removePageVisible: boolean;
+  addVisible: boolean;
+  removeVisible: boolean;
+  drawerVisible: boolean;
+  settingsVisible: boolean;
 
   constructor (private _pageService: PageService) {}
 
@@ -34,9 +39,9 @@ export class PagesComponent {
   ngOnInit() {
 
     this.id = localStorage.getItem('respond.siteId');
-    this.addPageVisible = false;
-    this.removePageVisible = false;
-    this.pageSettingsVisible = false;
+    this.addVisible = false;
+    this.removeVisible = false;
+    this.settingsVisible = false;
     this.drawerVisible = false;
     this.page = {};
 
@@ -48,7 +53,7 @@ export class PagesComponent {
    * Updates the list
    */
   list() {
-  
+
     this.reset();
     this._pageService.list()
                      .subscribe(
@@ -61,9 +66,9 @@ export class PagesComponent {
    * Resets an modal booleans
    */
   reset() {
-    this.removePageVisible = false;
-    this.addPageVisible = false;
-    this.pageSettingsVisible = false;
+    this.removeVisible = false;
+    this.addVisible = false;
+    this.settingsVisible = false;
     this.drawerVisible = false;
     this.page = {};
   }
@@ -88,7 +93,7 @@ export class PagesComponent {
    * Shows the add dialog
    */
   showAdd() {
-    this.addPageVisible = true;
+    this.addVisible = true;
   }
 
   /**
@@ -96,8 +101,8 @@ export class PagesComponent {
    *
    * @param {Page} page
    */
-  showRemove(page) { 
-    this.removePageVisible = true;
+  showRemove(page) {
+    this.removeVisible = true;
     this.page = page;
   }
 
@@ -106,8 +111,8 @@ export class PagesComponent {
    *
    * @param {Page} page
    */
-  showSettings(page) { 
-    this.pageSettingsVisible = true;
+  showSettings(page) {
+    this.settingsVisible = true;
     this.page = page;
   }
 
@@ -117,7 +122,7 @@ export class PagesComponent {
    * @param {Page} page
    */
   edit(page) {
-    window.location = '/edit?q=' + this.id + '/' + page.Url + '.html';
+    window.location = '/edit?q=' + this.id + '/' + page.url + '.html';
   }
 
 

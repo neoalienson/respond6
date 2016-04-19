@@ -22,7 +22,8 @@
     "hashedit": "*",
     "respond-components": "*",
     "dropzone": "4.3.0",
-    "sortablejs": "1.4.2"
+    "sortablejs": "1.4.2",
+    "moment": "2.12.0"
   },
   "devDependencies": {
     "concurrently": "^2.0.0",

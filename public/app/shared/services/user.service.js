@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/http'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2/http'], function(exports_1, context_
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, http_2;
+    var core_1, http_1, angular2_jwt_1, http_2;
     var UserService;
     return {
         setters:[
@@ -20,15 +20,31 @@ System.register(['angular2/core', 'angular2/http'], function(exports_1, context_
             function (http_1_1) {
                 http_1 = http_1_1;
                 http_2 = http_1_1;
+            },
+            function (angular2_jwt_1_1) {
+                angular2_jwt_1 = angular2_jwt_1_1;
             }],
         execute: function() {
             UserService = (function () {
-                function UserService(http) {
+                function UserService(http, authHttp, authConfig) {
                     this.http = http;
+                    this.authHttp = authHttp;
+                    this.authConfig = authConfig;
+                    this._listUrl = 'api/users/list';
                     this._loginUrl = 'api/users/login';
                     this._forgotUrl = 'api/users/forgot';
                     this._resetUrl = 'api/users/reset';
+                    this._addUrl = 'api/users/add';
+                    this._editUrl = 'api/users/edit';
+                    this._removeUrl = 'api/users/remove';
                 }
+                /**
+                 * Lists users
+                 *
+                 */
+                UserService.prototype.list = function () {
+                    return this.authHttp.get(this._listUrl).map(function (res) { return res.json(); });
+                };
                 /**
                  * Login to the application
                  *
@@ -71,9 +87,55 @@ System.register(['angular2/core', 'angular2/http'], function(exports_1, context_
                     var options = new http_2.RequestOptions({ headers: headers });
                     return this.http.post(this._resetUrl, body, options);
                 };
+                /**
+                 * Adds the user
+                 *
+                 * @param {string} email
+                 * @param {string} firstName
+                 * @param {string} lastName
+                 * @param {string} role
+                 * @param {string} password
+                 * @param {string} language
+                 * @return {Observable}
+                 */
+                UserService.prototype.add = function (email, firstName, lastName, role, password, language) {
+                    var body = JSON.stringify({ email: email, firstName: firstName, lastName: lastName, role: role, password: password, language: language });
+                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
+                    var options = new http_2.RequestOptions({ headers: headers });
+                    return this.authHttp.post(this._addUrl, body, options);
+                };
+                /**
+                 * Edits the user
+                 *
+                 * @param {string} email
+                 * @param {string} firstName
+                 * @param {string} lastName
+                 * @param {string} role
+                 * @param {string} password
+                 * @param {string} language
+                 * @return {Observable}
+                 */
+                UserService.prototype.edit = function (email, firstName, lastName, role, password, language) {
+                    var body = JSON.stringify({ email: email, firstName: firstName, lastName: lastName, role: role, password: password, language: language });
+                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
+                    var options = new http_2.RequestOptions({ headers: headers });
+                    return this.authHttp.post(this._editUrl, body, options);
+                };
+                /**
+                 * Removes the user
+                 *
+                 * @param {string} email
+                 * @return {Observable}
+                 */
+                UserService.prototype.remove = function (email) {
+                    var body = JSON.stringify({ email: email });
+                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
+                    var options = new http_2.RequestOptions({ headers: headers });
+                    return this.authHttp.post(this._removeUrl, body, options);
+                };
                 UserService = __decorate([
                     core_1.Injectable(), 
-                    __metadata('design:paramtypes', [http_1.Http])
+                    __metadata('design:paramtypes', [http_1.Http, angular2_jwt_1.AuthHttp, angular2_jwt_1.AuthConfig])
                 ], UserService);
                 return UserService;
             }());

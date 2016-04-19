@@ -1,0 +1,39 @@
+<div class="app-modal" [class.visible]="visible === true">
+
+  <form (ngSubmit)="submit()" #addForm="ngForm">
+
+    <h2>Add Menu Item</h2>
+
+    <label>Text (or HTML)</label>
+    <input id="hashedit-add-menu-item-html" type="text" maxlength="128" placeholder="" required
+      [(ngModel)]="model.html"
+      ngControl="html">
+      
+    <label>CSS Class</label>
+    <input id="hashedit-add-menu-item-css-class" type="text" maxlength="128" placeholder=""
+      [(ngModel)]="model.cssClass"
+      ngControl="cssClass">
+    
+    <label>Is Nested?</label>
+    <select id="hashedit-add-menu-item-is-nested"
+      [(ngModel)]="model.isNested"
+      ngControl="isNested">
+      <option value="true">True</option>
+      <option value="false">False</option>
+    </select>
+    
+    <label>Url</label>
+    <select id="hashedit-add-menu-item-url"
+      [(ngModel)]="model.url"
+      ngControl="url">
+      <option *ngFor="#page of pages" [value]="page.url">{{page.url}}</option>
+    </select>
+
+    <div class="actions">
+      <a (click)="hide()">Cancel</a>
+      <button type="submit">Add</button>
+    </div>
+
+  </form>
+
+</div>

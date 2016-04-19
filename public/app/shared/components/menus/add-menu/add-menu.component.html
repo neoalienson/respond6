@@ -1,0 +1,19 @@
+<div class="app-modal" [class.visible]="visible === true">
+
+  <form (ngSubmit)="submit()" #addForm="ngForm">
+
+    <h2>Add Menu</h2>
+
+    <label>Name</label>
+    <input id="hashedit-add-menu-name" type="text" maxlength="128" placeholder="" required
+      [(ngModel)]="model.name"
+      ngControl="name">
+
+    <div class="actions">
+      <a (click)="hide()">Cancel</a>
+      <button type="submit">Add</button>
+    </div>
+
+  </form>
+
+</div>
