@@ -595,6 +595,10 @@ body .dropzone {
   }
 
 /* app-form */
+body .app-form {
+  padding: 15px;  
+}
+
 body .app-form.standalone {
   font-family: 'Helvetica', 'Arial', 'sans-serif';
   box-sizing: border-box;
@@ -631,25 +635,45 @@ body .app-form.standalone {
     cursor: pointer;
   }
 
-  body .app-form input, body .app-form select {
+  body .app-form input[type=text], body .app-form input[type=password], body .app-form select {
     display: block;
     margin: 0 0 25px 0;
     padding: 10px;
     color: #555;
-    width: 100%;
     line-height: 17px;
     outline: none;
     font-size: 14px;
+    min-width: 250px;
+  }
+  
+  body .app-form input[type=color] {
+    margin: 0 0 25px 0;
+  }
+  
+    body .app-form.standalone input, body .app-form.standalone select {
+      width: 100%;
+    }
+    
+  body .app-form small {
+    display: block;
+    margin-top: -20px;
+    margin-bottom: 25px;
+    font-size: 13px;
+    color: #888;
   }
 
   body .app-form button {
     display: block;
-    width: 100%;
     background-color: #f0f0f0;
     padding: 15px 10px;
     text-transform: uppercase;
     border: 1px solid #ddd;
+    min-width: 125px;
   }
+  
+    body .app-form.standalone button {
+      width: 100%;
+    }
 
   body .app-form  a {
     display: block;

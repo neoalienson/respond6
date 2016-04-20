@@ -9,6 +9,7 @@ import {FilesComponent} from './files/files.component';
 import {UsersComponent} from './users/users.component';
 import {MenusComponent} from './menus/menus.component';
 import {FormsComponent} from './forms/forms.component';
+import {BrandingComponent} from './branding/branding.component';
 
 @Component({
     selector: 'respond-app',
@@ -65,6 +66,11 @@ import {FormsComponent} from './forms/forms.component';
     path: '/forms',
     name: 'Forms',
     component: FormsComponent
+  },
+  {
+    path: '/branding',
+    name: 'Branding',
+    component: BrandingComponent
   }
 ])
 

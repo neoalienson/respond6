@@ -12,7 +12,7 @@
 */
 
 // handle Angular app routes
-$app_routes = array('/', 'login', 'create', 'pages', 'users', 'files', 'menus', 'forms', 'submissions');
+$app_routes = array('/', 'login', 'create', 'pages', 'users', 'files', 'menus', 'forms', 'submissions', 'branding', 'settings');
 
 foreach($app_routes as $app_route) {
 
@@ -116,3 +116,7 @@ $app -> post('/api/forms/fields/add', ['middleware' => 'jwtauth', 'uses'=> 'Form
 $app -> post('/api/forms/fields/edit', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@edit']);
 $app -> post('/api/forms/fields/remove', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@remove']);
 $app -> post('/api/forms/fields/order', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@updateOrder']);
+
+// branding
+$app -> get('/api/branding/list', ['middleware' => 'jwtauth', 'uses'=> 'BrandingController@listAll']);
+$app -> post('/api/branding/edit', ['middleware' => 'jwtauth', 'uses'=> 'BrandingController@edit']);
