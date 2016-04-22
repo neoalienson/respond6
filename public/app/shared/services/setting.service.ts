@@ -5,14 +5,14 @@ import {Headers, RequestOptions} from 'angular2/http'
 import {Observable} from 'rxjs/Observable'
 
 @Injectable()
-export class BrandingService {
+export class SettingService {
   constructor (private http: Http, private authHttp: AuthHttp, private authConfig: AuthConfig) {}
 
-  private _listUrl = 'api/branding/list';
-  private _editUrl = 'api/branding/edit';
+  private _listUrl = 'api/settings/list';
+  private _editUrl = 'api/settings/edit';
 
   /**
-   * Lists branding items
+   * Lists settings
    *
    */
   list (id) {
@@ -23,7 +23,7 @@ export class BrandingService {
   }
 
   /**
-   * Edits a branding item
+   * Editssettings
    *
    * @param {array} settings
    * @return {Observable}

@@ -1,19 +1,19 @@
 import {Component} from 'angular2/core'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
-import {BrandingService} from '/app/shared/services/branding.service'
+import {SettingService} from '/app/shared/services/setting.service'
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 
 @Component({
-    selector: 'respond-branding',
-    templateUrl: './app/branding/branding.component.html',
-    providers: [BrandingService],
+    selector: 'respond-settings',
+    templateUrl: './app/settings/settings.component.html',
+    providers: [SettingService],
     directives: [DrawerComponent]
 })
 
 @CanActivate(() => tokenNotExpired())
 
-export class BrandingComponent {
+export class SettingsComponent {
 
   id;
   settings;
@@ -21,7 +21,7 @@ export class BrandingComponent {
   selectedSetting;
   drawerVisible: boolean;
 
-  constructor (private _brandingService: BrandingService) {}
+  constructor (private _settingService: SettingService) {}
 
   /**
    * Init
@@ -44,7 +44,7 @@ export class BrandingComponent {
 
     this.reset();
 
-    this._brandingService.list()
+    this._settingService.list()
                      .subscribe(
                        data => { this.settings = data; },
                        error =>  this.errorMessage = <any>error
@@ -57,7 +57,7 @@ export class BrandingComponent {
    */
   submit() {
 
-    this._brandingService.edit(this.settings)
+    this._settingService.edit(this.settings)
                      .subscribe(
                        data => { this.success(); },
                        error =>  this.errorMessage = <any>error

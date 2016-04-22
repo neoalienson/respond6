@@ -9,9 +9,9 @@ use App\Respond\Models\Site;
 use App\Respond\Models\User;
 
 /**
- * Models branding
+ * Models setting
  */
-class Branding {
+class Setting {
 
   public $id;
   public $label;
@@ -33,14 +33,14 @@ class Branding {
   }
 
   /**
-   * lists all branding settings
+   * lists all settings
    *
    * @param {files} $data
    * @return {array}
    */
   public static function listAll($siteId) {
 
-    $file = app()->basePath().'/resources/sites/'.$siteId.'/branding.json';
+    $file = app()->basePath().'/public/sites/'.$siteId.'/data/settings.json';
 
     return json_decode(file_get_contents($file), true);
 
@@ -56,7 +56,7 @@ class Branding {
   public static function saveAll($settings, $siteId) {
 
     // get file
-    $file = app()->basePath().'/resources/sites/'.$siteId.'/branding.json';
+    $file = app()->basePath().'/public/sites/'.$siteId.'/data/settings.json';
 
     // get settings
     if(file_exists($file)) {

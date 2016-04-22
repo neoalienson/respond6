@@ -9,7 +9,7 @@ import {FilesComponent} from './files/files.component';
 import {UsersComponent} from './users/users.component';
 import {MenusComponent} from './menus/menus.component';
 import {FormsComponent} from './forms/forms.component';
-import {BrandingComponent} from './branding/branding.component';
+import {SettingsComponent} from './settings/settings.component';
 
 @Component({
     selector: 'respond-app',
@@ -68,9 +68,9 @@ import {BrandingComponent} from './branding/branding.component';
     component: FormsComponent
   },
   {
-    path: '/branding',
-    name: 'Branding',
-    component: BrandingComponent
+    path: '/settings',
+    name: 'Settings',
+    component: SettingsComponent
   }
 ])
 

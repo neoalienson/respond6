@@ -420,7 +420,8 @@ class Page {
       // list files
       $files = Utilities::ListFiles($dir, $site->id,
               array('html'),
-              array('components/',
+              array('component',
+                    'components/',
                     'css/',
                     'data/',
                     'files/',

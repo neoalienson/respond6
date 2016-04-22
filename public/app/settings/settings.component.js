@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/branding.service', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/setting.service', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,8 +10,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, branding_service_1, drawer_component_1;
-    var BrandingComponent;
+    var core_1, angular2_jwt_1, router_1, setting_service_1, drawer_component_1;
+    var SettingsComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -23,22 +23,22 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             function (router_1_1) {
                 router_1 = router_1_1;
             },
-            function (branding_service_1_1) {
-                branding_service_1 = branding_service_1_1;
+            function (setting_service_1_1) {
+                setting_service_1 = setting_service_1_1;
             },
             function (drawer_component_1_1) {
                 drawer_component_1 = drawer_component_1_1;
             }],
         execute: function() {
-            BrandingComponent = (function () {
-                function BrandingComponent(_brandingService) {
-                    this._brandingService = _brandingService;
+            SettingsComponent = (function () {
+                function SettingsComponent(_settingService) {
+                    this._settingService = _settingService;
                 }
                 /**
                  * Init
                  *
                  */
-                BrandingComponent.prototype.ngOnInit = function () {
+                SettingsComponent.prototype.ngOnInit = function () {
                     this.id = localStorage.getItem('respond.siteId');
                     this.drawerVisible = false;
                     this.settings;
@@ -47,30 +47,30 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 /**
                  * Updates the list
                  */
-                BrandingComponent.prototype.list = function () {
+                SettingsComponent.prototype.list = function () {
                     var _this = this;
                     this.reset();
-                    this._brandingService.list()
+                    this._settingService.list()
                         .subscribe(function (data) { _this.settings = data; }, function (error) { return _this.errorMessage = error; });
                 };
                 /**
                  * Handles the form submission
                  */
-                BrandingComponent.prototype.submit = function () {
+                SettingsComponent.prototype.submit = function () {
                     var _this = this;
-                    this._brandingService.edit(this.settings)
+                    this._settingService.edit(this.settings)
                         .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
                 };
                 /**
                  * Handles success
                  */
-                BrandingComponent.prototype.success = function () {
+                SettingsComponent.prototype.success = function () {
                     toast.show('success');
                 };
                 /**
                  * Resets screen
                  */
-                BrandingComponent.prototype.reset = function () {
+                SettingsComponent.prototype.reset = function () {
                     this.drawerVisible = false;
                 };
                 /**
@@ -78,31 +78,31 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  *
                  * @param {Setting} setting
                  */
-                BrandingComponent.prototype.setActive = function (setting) {
+                SettingsComponent.prototype.setActive = function (setting) {
                     this.selectedSetting = setting;
                     this.listItems();
                 };
                 /**
                  * Shows the drawer
                  */
-                BrandingComponent.prototype.toggleDrawer = function () {
+                SettingsComponent.prototype.toggleDrawer = function () {
                     this.drawerVisible = !this.drawerVisible;
                 };
-                BrandingComponent = __decorate([
+                SettingsComponent = __decorate([
                     core_1.Component({
-                        selector: 'respond-branding',
-                        templateUrl: './app/branding/branding.component.html',
-                        providers: [branding_service_1.BrandingService],
+                        selector: 'respond-settings',
+                        templateUrl: './app/settings/settings.component.html',
+                        providers: [setting_service_1.SettingService],
                         directives: [drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof branding_service_1.BrandingService !== 'undefined' && branding_service_1.BrandingService) === 'function' && _a) || Object])
-                ], BrandingComponent);
-                return BrandingComponent;
+                    __metadata('design:paramtypes', [(typeof (_a = typeof setting_service_1.SettingService !== 'undefined' && setting_service_1.SettingService) === 'function' && _a) || Object])
+                ], SettingsComponent);
+                return SettingsComponent;
                 var _a;
             }());
-            exports_1("BrandingComponent", BrandingComponent);
+            exports_1("SettingsComponent", SettingsComponent);
         }
     }
 });
-//# sourceMappingURL=branding.component.js.map
+//# sourceMappingURL=settings.component.js.map

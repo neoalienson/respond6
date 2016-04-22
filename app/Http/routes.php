@@ -117,6 +117,6 @@ $app -> post('/api/forms/fields/edit', ['middleware' => 'jwtauth', 'uses'=> 'For
 $app -> post('/api/forms/fields/remove', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@remove']);
 $app -> post('/api/forms/fields/order', ['middleware' => 'jwtauth', 'uses'=> 'FormFieldController@updateOrder']);
 
-// branding
-$app -> get('/api/branding/list', ['middleware' => 'jwtauth', 'uses'=> 'BrandingController@listAll']);
-$app -> post('/api/branding/edit', ['middleware' => 'jwtauth', 'uses'=> 'BrandingController@edit']);
+// settings
+$app -> get('/api/settings/list', ['middleware' => 'jwtauth', 'uses'=> 'SettingController@listAll']);
+$app -> post('/api/settings/edit', ['middleware' => 'jwtauth', 'uses'=> 'SettingController@edit']);

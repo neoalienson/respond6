@@ -10,9 +10,9 @@ use App\Respond\Libraries\Publish;
 use App\Respond\Models\Site;
 use App\Respond\Models\User;
 
-use App\Respond\Models\Branding;
+use App\Respond\Models\Setting;
 
-class BrandingController extends Controller
+class SettingController extends Controller
 {
 
   /**
@@ -27,15 +27,15 @@ class BrandingController extends Controller
     $email = $request->input('auth-email');
     $siteId = $request->input('auth-id');
 
-    // list pages in the site
-    $arr = Branding::listAll($siteId);
+    // list settings for the site
+    $arr = Setting::listAll($siteId);
 
     return response()->json($arr);
 
   }
 
   /**
-   * Edits the branding
+   * Edits the settings
    *
    * @return Response
    */
@@ -49,7 +49,7 @@ class BrandingController extends Controller
     $settings = $request->json()->get('settings');
 
     // update order in file
-    $success = Branding::saveAll($settings, $siteId);
+    $success = Setting::saveAll($settings, $siteId);
 
     if( $success === TRUE ) {
 

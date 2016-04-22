@@ -11,7 +11,7 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, http_1, angular2_jwt_1, http_2;
-    var BrandingService;
+    var SettingService;
     return {
         setters:[
             function (core_1_1) {
@@ -25,42 +25,42 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
                 angular2_jwt_1 = angular2_jwt_1_1;
             }],
         execute: function() {
-            BrandingService = (function () {
-                function BrandingService(http, authHttp, authConfig) {
+            SettingService = (function () {
+                function SettingService(http, authHttp, authConfig) {
                     this.http = http;
                     this.authHttp = authHttp;
                     this.authConfig = authConfig;
-                    this._listUrl = 'api/branding/list';
-                    this._editUrl = 'api/branding/edit';
+                    this._listUrl = 'api/settings/list';
+                    this._editUrl = 'api/settings/edit';
                 }
                 /**
-                 * Lists branding items
+                 * Lists settings
                  *
                  */
-                BrandingService.prototype.list = function (id) {
+                SettingService.prototype.list = function (id) {
                     var url = this._listUrl;
                     return this.authHttp.get(url).map(function (res) { return res.json(); });
                 };
                 /**
-                 * Edits a branding item
+                 * Editssettings
                  *
                  * @param {array} settings
                  * @return {Observable}
                  */
-                BrandingService.prototype.edit = function (settings) {
+                SettingService.prototype.edit = function (settings) {
                     var body = JSON.stringify({ settings: settings });
                     var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
                     var options = new http_2.RequestOptions({ headers: headers });
                     return this.authHttp.post(this._editUrl, body, options);
                 };
-                BrandingService = __decorate([
+                SettingService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http, angular2_jwt_1.AuthHttp, angular2_jwt_1.AuthConfig])
-                ], BrandingService);
-                return BrandingService;
+                ], SettingService);
+                return SettingService;
             }());
-            exports_1("BrandingService", BrandingService);
+            exports_1("SettingService", SettingService);
         }
     }
 });
-//# sourceMappingURL=branding.service.js.map
+//# sourceMappingURL=setting.service.js.map
