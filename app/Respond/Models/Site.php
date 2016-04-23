@@ -15,7 +15,7 @@ class Site {
   public $name;
   public $email;
   public $defaultContent;
-  
+
   /**
    * Constructs a page from an array of data
    *
@@ -160,7 +160,7 @@ class Site {
       'firstName' => 'New',
       'lastName' => 'User',
       'role' => 'Admin',
-      'language' => $language,
+      'language' => 'en',
       'photo' => '',
       'token' => ''
     ));

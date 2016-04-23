@@ -6,6 +6,30 @@ class Components
 {
 
   /**
+   * Pre-processes content before it goes to edit
+   *
+   * @param {array} $attrs
+   * @param {Site} $site
+   * @param {Page} $page
+   */
+  public static function preProcess($doc) {
+
+    // find forms
+    $els = $doc['[respond-form]'];
+
+    // replace the form code with the component display
+    foreach($els as $el) {
+      $id = pq($el)->attr('id');
+
+      $html = '<respond-form id="'.$id.'"></respond-form>';
+
+      pq($el)->replaceWith($html);
+    }
+
+  }
+
+
+  /**
    * Generates HTML for <respond-menu type="menu-type"></respond-menu>
    *
    * @param {array} $attrs
@@ -116,7 +140,7 @@ class Components
   }
 
   /**
-   * Generates HTML for <respond-menu type="menu-type"></respond-menu>
+   * Generates HTML for <respond-form id="form-id"></respond-menu>
    *
    * @param {array} $attrs
    * @param {Site} $site
@@ -136,7 +160,7 @@ class Components
         $json = json_decode(file_get_contents($file), true);
 
         // setup form
-        $form = '<form respond-form class="'.$json['cssClass'].'">';
+        $form = '<form id="' + $id + '" respond-form class="'.$json['cssClass'].'">';
 
         // get fields
         $fields = $json['fields'];
