@@ -48,8 +48,12 @@ class SettingController extends Controller
     // get url, title and description
     $settings = $request->json()->get('settings');
 
+    // get site and user
+    $site = Site::getById($siteId);
+    $user = User::getByEmail($email, $siteId);
+
     // update order in file
-    $success = Setting::saveAll($settings, $siteId);
+    $success = Setting::saveAll($settings, $user, $site);
 
     if( $success === TRUE ) {
 

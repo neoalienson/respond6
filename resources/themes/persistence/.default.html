@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Home</title>
+  <title>{{page.Title}}</title>
 
   <!-- meta -->
   <meta charset="utf-8">
@@ -33,10 +33,10 @@
   <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script><script src="js/respond.site.js"></script><!-- web components --><script src="components/lib/webcomponentsjs/webcomponents-lite.min.js"></script><link rel="import" href="components/respond-build.html">
 </head>
 
-<body class="home">
+<body class="content">
 
-<respond-cart></respond-cart>
-<respond-search></respond-search>
+<respond-cart theme-show-cart show-cart="true"></respond-cart>
+<respond-search theme-show-search show-search="true"></respond-search>
 
 <!-- background and mask -->
 <div class="background"></div>
@@ -81,64 +81,12 @@
 </header>
 
 <div id="content" class="container" role="main">
-
-  <div class="block row jumbotron">
+  <div id="block-1" class="block row">
     <div class="col col-md-12">
-        <h1>Be Persistent</h1>
-        <p>Sometimes all it takes is a little work.  <a href="/page/about">Get started</a></p>
+        <h1>{{page.Title}}</h1>
+        <p>{{page.Description}}</p>
     </div>
   </div>
-
-  <div class="container nested-container alternate-background-3">
-      <div class="block row">
-          <div class="col col-md-12">
-              <h3>A Beautiful Home Screen</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean velit nunc, ultricies vitae pulvinar in, fringilla id lorem. Sed non dui in massa finibus posuere. Curabitur iaculis magna eget tempor pharetra. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-          </div>
-      </div>
-  </div>
-
-  <div class="container nested-container">
-      <div class="block row divider">
-          <div class="col col-md-6">
-              <h3>50+ configurations</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean velit nunc, ultricies vitae pulvinar in, fringilla id lorem. Sed non dui in massa finibus posuere. Curabitur iaculis magna eget tempor pharetra. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-          </div>
-          <div class="col col-md-6">
-              <h3>Built for Respond</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean velit nunc, ultricies vitae pulvinar in, fringilla id lorem. Sed non dui in massa finibus posuere. Curabitur iaculis magna eget tempor pharetra. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-          </div>
-      </div>
-  </div>
-
-    <div class="container nested-container backdrop">
-        <div class="block row">
-            <div class="col col-md-12">
-                <h3>A Great Experience</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean velit nunc, ultricies vitae pulvinar in, fringilla id lorem. Sed non dui in massa finibus posuere. Curabitur iaculis magna eget tempor pharetra. Interdum et malesuada fames ac ante ipsum primis in faucibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean velit nunc, ultricies vitae pulvinar in, fringilla id lorem. Sed non dui in massa finibus posuere. Curabitur iaculis magna eget tempor pharetra. Interdum et malesuada fames ac ante ipsum primis in faucibus..</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="container nested-container">
-        <div class="block row">
-            <div class="col col-md-12">
-                <h3>Full Support for Respond Widgets</h3>
-                <respond-map id="map-1" address="100 Washington Ave, St Louis, MO 63102" zoom="12"></respond-map>
-            </div>
-        </div>
-    </div>
-
-    <div class="container nested-container alternate-background-2">
-        <div id="block-4" class="block row">
-            <div class="col col-md-12">
-                <h3>Showcase your Brand</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean velit nunc, ultricies vitae pulvinar in, fringilla id lorem. Sed non dui in massa finibus posuere. Curabitur iaculis magna eget tempor pharetra. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                <p>Get started with  <a href="http://respondcms.com">Respond</a></p>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <footer role="contentinfo">

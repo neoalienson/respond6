@@ -517,9 +517,10 @@ class Page {
               'lastModifiedDate' => $timestamp
           );
 
-
-          // push array
-          array_push($arr, $data);
+          // push to array
+          if(substr($url, 0, strlen('.default')) !== '.default') {
+            array_push($arr, $data);
+          }
 
       }
 

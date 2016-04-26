@@ -43,7 +43,7 @@ class Utilities
                     if ($restrict != NULL) {
 
                       foreach ($restrict as $item) {
-                      
+
                           // TODO: MAKE SURE THE FILE DOES NOT START WITH A RESTRICTED PATH
                           if (substr($paths[1], 0, strlen($item)) === $item) {
                               $is_restricted = TRUE;
@@ -342,7 +342,9 @@ class Utilities
         while (false !== ($file = readdir($dir))) {
             if (($file != '.') && ($file != '..')) {
                 if (is_dir($src . '/' . $file)) {
-                    Utilities::copyDirectory($src . '/' . $file, $dst . '/' . $file);
+                    if($file !== '.private') {
+                      Utilities::copyDirectory($src . '/' . $file, $dst . '/' . $file);
+                    }
                 } else {
                     copy($src . '/' . $file, $dst . '/' . $file);
                 }

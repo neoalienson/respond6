@@ -176,6 +176,9 @@ class Site {
     // publish locales
     Publish::publishLocales($site);
 
+    // inject site settings
+    Publish::injectSiteSettings($site);
+
     // return site information
     return array(
       'id' => $id,

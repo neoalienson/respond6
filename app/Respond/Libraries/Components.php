@@ -14,6 +14,7 @@ class Components
    */
   public static function preProcess($doc) {
 
+    /*
     // find forms
     $els = $doc['[respond-form]'];
 
@@ -25,6 +26,8 @@ class Components
 
       pq($el)->replaceWith($html);
     }
+
+    */
 
   }
 
@@ -148,6 +151,8 @@ class Components
    */
   public static function respondForm($attrs, $site, $page) {
 
+
+    /*
     $id = $attrs['id'];
 
     // get json for menu
@@ -160,7 +165,7 @@ class Components
         $json = json_decode(file_get_contents($file), true);
 
         // setup form
-        $form = '<form id="' + $id + '" respond-form class="'.$json['cssClass'].'">';
+        $form = '<form id="' . $id . '" respond-form class="'.$json['cssClass'].'">';
 
         // get fields
         $fields = $json['fields'];
@@ -216,6 +221,8 @@ class Components
       }
 
       return $form;
+
+      */
 
   }
 

@@ -26,6 +26,13 @@ class Publish
         // copy the directory
         Utilities::copyDirectory($src, $dest);
 
+        // copy the private files
+        $src = app()->basePath() . '/resources/themes/' . $theme . '/.private';
+        $dest = app()->basePath() . '/resources/sites/' . $site->id;
+
+        // copy the directory
+        Utilities::copyDirectory($src, $dest);
+
     }
 
     /**
@@ -79,6 +86,47 @@ class Publish
 
         // copy build file
         copy($src, $dest);
+
+    }
+
+    /**
+     * Injects site settings the JS to the site
+     *
+     * @param {Site} $site
+     */
+    public static function injectSiteSettings($site)
+    {
+        // create settings
+        $settings = array(
+            'id' => $site->id,
+            'api' => env('APP_URL') . '/api'
+        );
+
+        // settings
+        $str_settings = json_encode($settings);
+
+        // get site file
+        $file = app()->basePath() . '/public/sites/' . $site->id . '/js/respond.site.js';
+
+        if (file_exists($file)) {
+
+            // get contents
+            $content = file_get_contents($file);
+
+            $start = 'settings: {';
+            $end = '}';
+
+            // remove { }
+            $new = str_replace('{', '', $str_settings);
+            $new = str_replace('}', '', $new);
+
+            // replace
+            $content = preg_replace('#(' . preg_quote($start) . ')(.*?)(' . preg_quote($end) . ')#si', '$1' . $new . '$3', $content);
+
+            // publish updates
+            file_put_contents($file, $content);
+
+        }
 
     }
 

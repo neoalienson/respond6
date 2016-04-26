@@ -40,7 +40,7 @@ class Setting {
    */
   public static function listAll($siteId) {
 
-    $file = app()->basePath().'/public/sites/'.$siteId.'/data/settings.json';
+    $file = app()->basePath().'/resources/sites/'.$siteId.'/settings.json';
 
     return json_decode(file_get_contents($file), true);
 
@@ -53,20 +53,58 @@ class Setting {
    * @param {string} $siteId site id
    * @return Response
    */
-  public static function saveAll($settings, $siteId) {
+  public static function saveAll($settings, $user, $site) {
 
     // get file
-    $file = app()->basePath().'/public/sites/'.$siteId.'/data/settings.json';
+    $file = app()->basePath().'/resources/sites/'.$site->id.'/settings.json';
 
     // get settings
     if(file_exists($file)) {
 
       file_put_contents($file, json_encode($settings, JSON_PRETTY_PRINT));
 
+      // update settings in the pages
+      $arr = Page::listAll($user, $site);
+
+      foreach($arr as $item) {
+
+        // get page
+        $page = new Page($item);
+
+        $path = app()->basePath().'/public/sites/'.$site->id.'/'.$page->url.'.html';
+
+        // get contents of the page
+        $html = file_get_contents($path);
+
+        // open document
+        $doc = \phpQuery::newDocument($html);
+
+        // walk through settings
+        foreach($settings as $setting) {
+
+          // handle sets
+          if(isset($setting['sets'])) {
+
+            // set attribute
+            if(isset($setting['attribute'])) {
+
+
+              $doc['['.$setting['id'].']']->attr($setting['attribute'], $setting['value']);
+
+            }
+
+          }
+
+        }
+
+        file_put_contents($path, $doc->htmlOuter());
+
+      }
+
       return TRUE;
 
-    }
 
+    }
 
     return FALSE;
 

@@ -1,0 +1,49 @@
+[
+    {
+        "id": "theme-logo",
+        "label": "Logo",
+        "description": "Primary logo of the site",
+        "type": "image",
+        "value": "files\/sample-logo.png",
+        "sets": "attribute",
+        "attribute": "src"
+    },
+    {
+        "id": "theme-icon",
+        "label": "Icon",
+        "description": "The favicon used for the site",
+        "type": "image",
+        "value": "files\/sample-logo.png",
+        "sets": "attribute",
+        "attribute": "href"
+    },
+    {
+        "id": "theme-color",
+        "label": "Color",
+        "description": "The color used as the Android application color",
+        "type": "text",
+        "value": "#888",
+        "sets": "attribute",
+        "attribute": "content"
+    },
+    {
+        "id": "theme-show-search",
+        "label": "Show Search",
+        "description": "Enables searching the site",
+        "type": "select",
+        "value": true,
+        "options": ["true", "false"],
+        "sets": "attribute",
+        "attribute": "show-search"
+    },
+    {
+        "id": "theme-show-cart",
+        "label": "Enable Cart",
+        "description": "Enables the cart on the site",
+        "type": "select",
+        "value": true,
+        "options": ["true", "false"],
+        "sets": "attribute",
+        "attribute": "show-cart"
+    }
+]
