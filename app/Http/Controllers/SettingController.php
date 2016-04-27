@@ -55,7 +55,7 @@ class SettingController extends Controller
     // update order in file
     $success = Setting::saveAll($settings, $user, $site);
 
-    if( $success === TRUE ) {
+    if($success === TRUE) {
 
       return response('Ok', 200);
 

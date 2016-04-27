@@ -11,7 +11,7 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, http_1, angular2_jwt_1, http_2;
-    var SiteService;
+    var SubmissionService;
     return {
         setters:[
             function (core_1_1) {
@@ -25,45 +25,41 @@ System.register(['angular2/core', 'angular2/http', 'angular2-jwt/angular2-jwt'],
                 angular2_jwt_1 = angular2_jwt_1_1;
             }],
         execute: function() {
-            SiteService = (function () {
-                function SiteService(http, authHttp, authConfig) {
+            SubmissionService = (function () {
+                function SubmissionService(http, authHttp, authConfig) {
                     this.http = http;
                     this.authHttp = authHttp;
                     this.authConfig = authConfig;
-                    this._createUrl = 'api/sites/create';
-                    this._reloadUrl = 'api/sites/reload';
+                    this._listUrl = 'api/submissions/list';
+                    this._removeUrl = 'api/submissions/remove';
                 }
                 /**
-                 * Login to the application
+                 * Lists submissions in the application
                  *
-                 * @param {string} id The site id
-                 * @param {string} email The user's login email
-                 * @param {string} password The user's login password
-                 * @return {Observable}
                  */
-                SiteService.prototype.create = function (name, theme, email, password, passcode) {
-                    var body = JSON.stringify({ name: name, theme: theme, email: email, password: password, passcode: passcode });
-                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
-                    var options = new http_2.RequestOptions({ headers: headers });
-                    return this.http.post(this._createUrl, body, options)
-                        .map(function (res) { return res.json(); });
+                SubmissionService.prototype.list = function () {
+                    return this.authHttp.get(this._listUrl).map(function (res) { return res.json(); });
                 };
                 /**
-                 * Reloads the system files
+                 * Removes the submission
                  *
+                 * @param {string} url
                  * @return {Observable}
                  */
-                SiteService.prototype.reload = function () {
-                    return this.authHttp.get(this._reloadUrl);
+                SubmissionService.prototype.remove = function (id) {
+                    var body = JSON.stringify({ id: id });
+                    var headers = new http_2.Headers({ 'Content-Type': 'application/json' });
+                    var options = new http_2.RequestOptions({ headers: headers });
+                    return this.authHttp.post(this._removeUrl, body, options);
                 };
-                SiteService = __decorate([
+                SubmissionService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http, angular2_jwt_1.AuthHttp, angular2_jwt_1.AuthConfig])
-                ], SiteService);
-                return SiteService;
+                ], SubmissionService);
+                return SubmissionService;
             }());
-            exports_1("SiteService", SiteService);
+            exports_1("SubmissionService", SubmissionService);
         }
     }
 });
-//# sourceMappingURL=site.service.js.map
+//# sourceMappingURL=submission.service.js.map

@@ -1,0 +1,14 @@
+<div class="app-modal" [class.visible]="visible === true">
+
+  <h2>View Submission</h2>
+
+  <div class="to-be-viewed">
+    <h3>{{model.name}}</h3>
+    <small>{{model.formId}}</small>
+  </div>
+
+  <div class="actions">
+    <a (click)="hide()">Done</a>
+  </div>
+
+</div>

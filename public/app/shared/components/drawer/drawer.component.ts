@@ -25,7 +25,7 @@ export class DrawerComponent {
 
   @Output() onHide = new EventEmitter<any>();
 
-  constructor() {}
+  constructor (private _siteService: SiteService) {}
 
   /**
    * Init pages
@@ -44,6 +44,12 @@ export class DrawerComponent {
    * Reload system files
    */
   reload() {
+    
+    this._siteService.reload()
+                     .subscribe(
+                       data => { toast.show('success'); },
+                       error => { toast.show('failure');  }
+                      );
     
   }
 

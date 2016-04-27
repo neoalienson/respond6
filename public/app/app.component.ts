@@ -10,6 +10,7 @@ import {UsersComponent} from './users/users.component';
 import {MenusComponent} from './menus/menus.component';
 import {FormsComponent} from './forms/forms.component';
 import {SettingsComponent} from './settings/settings.component';
+import {SubmissionsComponent} from './submissions/submissions.component';
 
 @Component({
     selector: 'respond-app',
@@ -71,6 +72,11 @@ import {SettingsComponent} from './settings/settings.component';
     path: '/settings',
     name: 'Settings',
     component: SettingsComponent
+  },
+  {
+    path: '/submissions',
+    name: 'Submissions',
+    component: SubmissionsComponent
   }
 ])
 

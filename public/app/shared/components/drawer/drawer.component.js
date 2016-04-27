@@ -28,7 +28,8 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
             }],
         execute: function() {
             DrawerComponent = (function () {
-                function DrawerComponent() {
+                function DrawerComponent(_siteService) {
+                    this._siteService = _siteService;
                     this._visible = false;
                     this.onHide = new core_1.EventEmitter();
                 }
@@ -55,6 +56,8 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                  * Reload system files
                  */
                 DrawerComponent.prototype.reload = function () {
+                    this._siteService.reload()
+                        .subscribe(function (data) { toast.show('success'); }, function (error) { toast.show('failure'); });
                 };
                 __decorate([
                     core_1.Input(), 
@@ -73,9 +76,10 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                         providers: [site_service_1.SiteService]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof site_service_1.SiteService !== 'undefined' && site_service_1.SiteService) === 'function' && _a) || Object])
                 ], DrawerComponent);
                 return DrawerComponent;
+                var _a;
             }());
             exports_1("DrawerComponent", DrawerComponent);
         }
