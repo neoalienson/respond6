@@ -151,8 +151,6 @@ class Components
    */
   public static function respondForm($attrs, $site, $page) {
 
-
-    /*
     $id = $attrs['id'];
 
     // get json for menu
@@ -165,7 +163,7 @@ class Components
         $json = json_decode(file_get_contents($file), true);
 
         // setup form
-        $form = '<form id="' . $id . '" respond-form class="'.$json['cssClass'].'">';
+        $html = '<respond-form id="' . $id . '">';
 
         // get fields
         $fields = $json['fields'];
@@ -177,52 +175,69 @@ class Components
           $id = $field['id'];
           $placeholder = $field['placeholder'];
           $helperText = $field['helperText'];
-          $required = '';
-          $options = explode(',', $field['options']);
+          $required = $field['required'];
+          $options = $field['options'];
 
-          if ($field['required'] === TRUE) {
-            $required = ' required';
-          }
-
-          // create label
-          $form .= '<label for="' . $id . '">' . $label . '</label>';
-
-          // text
-          if($type=='text'){
-    				$form .= '<input id="' . $id . '" name="' . $id . '" type="text" class="form-control" placeholder="'. $placeholder. '"' . $required . '>';
-    			}
-
-    			// email
-          if($type=='email'){
-    				$form .= '<input id="' . $id . '" name="' . $id . '" type="email" class="form-control" placeholder="'. $placeholder. '"' . $required . '>';
-    			}
-
-    			// textarea
-    			if($type=='textarea'){
-    				$form .= '<textarea id="' . $id . '" name="' . $id . '" class="form-control" placeholder="'. $placeholder. '"' . $required . '></textarea>';
-    			}
-
-    			// select
-    			if($type=='select'){
-    				$form .= '<select id="' . $id . '" name="' . $id . '" class="form-control" placeholder="'. $placeholder. '"' . $required . '>';
-
-    				foreach ($options as $option) {
-      				$form .= '<option value="' . $option . '">' . $option .'</option>';
-    				}
-
-    				$form .= '</select>';
-    			}
+          // set fields
+          $html .= '<respond-form-field fieldid="'.$id.
+                    '" type="'.$type.
+                    '" label="'.$label.
+                    '" required="'.$required.
+                    '" helper="'.$helperText.
+                    '" placeholder="'.$placeholder.
+                    '" options="'.$options.'"></respond-form-field>';
 
         }
 
         // close form
-        $form .= '</form>';
+        $html .= '</respond-form>';
 
       }
 
-      return $form;
+      return $html;
 
-      */
+
+  }
+
+  /**
+   * Generates HTML for <respond-gallery id="gallery-id"></respond-gallery>
+   *
+   * @param {array} $attrs
+   * @param {Site} $site
+   * @param {Page} $page
+   */
+  public static function respondGallery($attrs, $site, $page) {
+
+    // id of the gallery
+    $id = $attrs['id'];
+
+    // get json for menu
+    $file = app()->basePath() . '/public/sites/' . $site->id . '/data/galleries/' . $id . '.json';
+
+    $form = '';
+
+    if (file_exists($file)) {
+
+        $json = json_decode(file_get_contents($file), true);
+
+        // setup form
+        $html = '<respond-gallery id="' . $id . '">';
+
+        // get fields
+        $images = $json['images'];
+
+        foreach ($images as $image) {
+
+          $html .= '<img src="'. $image['url'].'" data-caption="'.$image['caption'].'" data-thumb="'.$image['thumb'].'" />';
+
+        }
+
+        // close form
+        $html .= '</respond-gallery>';
+
+      }
+
+      return $html;
 
   }
 

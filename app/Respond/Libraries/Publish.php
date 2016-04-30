@@ -139,6 +139,8 @@ class Publish
      */
     public static function republishComponents($site, $user) {
 
+      echo('republish components');
+
       $arr = Page::listAll($user, $site);
 
       foreach($arr as $item) {
@@ -176,7 +178,7 @@ class Publish
         }
         /* foreach */
 
-        foreach ($doc['[respond-form], respond-form'] as $el) {
+        foreach ($doc['respond-form'] as $el) {
 
             $id = pq($el)->attr('id');
 
@@ -189,6 +191,29 @@ class Publish
 
               // get the menu HTML
               $html = Components::respondForm($attrs, $site, $page);
+
+              // get menu HTML
+              pq($el)->replaceWith($html);
+
+            }
+            /* isset */
+
+        }
+        /* foreach */
+
+        foreach ($doc['respond-gallery'] as $el) {
+
+            $id = pq($el)->attr('id');
+
+            echo('found @ ' . $page->url . ', id='.$id);
+
+            // get the type
+            if ($id != NULL) {
+
+              $attrs = array('id' => $id);
+
+              // get the menu HTML
+              $html = Components::respondGallery($attrs, $site, $page);
 
               // get menu HTML
               pq($el)->replaceWith($html);

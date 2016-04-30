@@ -58,7 +58,7 @@ class GalleryImageController extends Controller
     $thumb = $request->json()->get('thumb');
     $caption = $request->json()->get('caption');
     $galleryId = $request->json()->get('galleryId');
-    
+
     // fix thumb and url
     $thumb = str_replace('sites/'.$siteId.'/', '', $thumb);
     $url = str_replace('sites/'.$siteId.'/', '', $url);
@@ -74,6 +74,13 @@ class GalleryImageController extends Controller
 
     // add a field
     $image = GalleryImage::add($id, $name, $url, $thumb, $caption, $galleryId, $siteId);
+
+    // get site and user
+    $site = Site::getById($siteId);
+    $user = User::getByEmail($email, $siteId);
+
+    // re-publish components
+    Publish::republishComponents($site, $user);
 
     if($image !== NULL) {
      return response('OK, image added', 200);
@@ -103,9 +110,9 @@ class GalleryImageController extends Controller
     $gallery = Gallery::getById($galleryId, $siteId);
 
     if($gallery != NULL) {
-    
+
       $index = GalleryImage::getIndexById($id, $galleryId, $siteId);
-      
+
       // update the item at the index
       if($gallery->images[$index] != NULL) {
 
@@ -116,7 +123,13 @@ class GalleryImageController extends Controller
       // save the gallery
       $gallery->save($siteId);
 
-   
+      // get site and user
+      $site = Site::getById($siteId);
+      $user = User::getByEmail($email, $siteId);
+
+      // re-publish components
+      Publish::republishComponents($site, $user);
+
       return response('Ok', 200);
     }
 
@@ -147,6 +160,14 @@ class GalleryImageController extends Controller
       $gallery->images = $images;
       $gallery->save($siteId);
 
+      // get site and user
+      $site = Site::getById($siteId);
+      $user = User::getByEmail($email, $siteId);
+
+      // re-publish components
+      Publish::republishComponents($site, $user);
+
+
       return response('Ok', 200);
     }
 
@@ -173,12 +194,19 @@ class GalleryImageController extends Controller
     $gallery = Gallery::getById($galleryId, $siteId);
 
     if($gallery != NULL) {
-    
+
       $index = GalleryImage::getIndexById($id, $galleryId, $siteId);
-    
+
       array_splice($gallery->images, $index);
 
       $gallery->save($siteId);
+
+      // get site and user
+      $site = Site::getById($siteId);
+      $user = User::getByEmail($email, $siteId);
+
+      // re-publish components
+      Publish::republishComponents($site, $user);
 
       return response('Ok', 200);
     }
