@@ -130,6 +130,7 @@ class Menu {
     $id = $new_id;
     
     // get file
+    $dir = app()->basePath().'/public/sites/'.$siteId.'/data/menus/';
     $file = app()->basePath().'/public/sites/'.$siteId.'/data/menus/'.$new_id.'.json';
     
     $items = array();
@@ -142,6 +143,11 @@ class Menu {
         'name' => $name,
         'items' => array()
       ));
+      
+      // create gallery
+      if(!file_exists($dir)) {
+  			mkdir($dir, 0777, true);	
+  		}
       
       file_put_contents($file, json_encode($menu, JSON_PRETTY_PRINT));
       

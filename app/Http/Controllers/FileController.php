@@ -177,7 +177,7 @@ class FileController extends Controller
       $arr = array(
         'filename' => $filename,
         'fullUrl' => '/files/'.$filename,
-        'thumbUrl' => $site->domain.'/files/thumbs/'.$filename,
+        'thumbUrl' => '/files/thumbs/'.$filename,
         'extension' => $ext,
         'isImage' => true,
         'width' => $arr['width'],

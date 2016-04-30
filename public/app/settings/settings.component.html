@@ -10,16 +10,29 @@
 
   <div *ngFor="#setting of settings">
 
-    <label>{{setting.label}}</label>
-
     <div [ngSwitch]="setting.type">
 
-      <div *ngSwitchWhen="'text'"><input type="text" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value"></div>
-      <div *ngSwitchWhen="'color'"><input type="color" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value"></div>
-      <div *ngSwitchWhen="'image'"><input type="text" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value"></div>
-      <div *ngSwitchWhen="'select'"><select id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
-        <option *ngFor="#option of setting.options" [value]="option">{{option}}</option>
-      </select></div>
+      <div *ngSwitchWhen="'text'">
+        <label>{{setting.label}}</label>
+        <input type="text" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
+      </div>
+      
+      <div *ngSwitchWhen="'color'">
+        <label>{{setting.label}}</label>
+        <input type="color" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
+      </div>
+      
+      <div *ngSwitchWhen="'image'">
+        <label>{{setting.label}} <a (click)="showSelect(setting)">Select</a></label>
+        <input type="text" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
+      </div>
+      
+      <div *ngSwitchWhen="'select'">
+        <label>{{setting.label}}</label>
+        <select id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
+          <option *ngFor="#option of setting.options" [value]="option">{{option}}</option>
+        </select>
+      </div>
 
     </div>
 
@@ -34,4 +47,6 @@
 
 </form>
 
+
+<respond-select-file [visible]="selectVisible" (onCancel)="reset($event)"  (onSelect)="select($event)"></respond-select-file>
 <respond-drawer [visible]="drawerVisible" (onHide)="reset($event)"></respond-drawer>

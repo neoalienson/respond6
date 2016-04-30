@@ -3,12 +3,13 @@ import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
 import {SettingService} from '/app/shared/services/setting.service'
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
+import {SelectFileComponent} from '/app/shared/components/files/select-file/select-file.component';
 
 @Component({
     selector: 'respond-settings',
     templateUrl: './app/settings/settings.component.html',
     providers: [SettingService],
-    directives: [DrawerComponent]
+    directives: [SelectFileComponent, DrawerComponent]
 })
 
 @CanActivate(() => tokenNotExpired())
@@ -16,10 +17,12 @@ import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 export class SettingsComponent {
 
   id;
+  setting;
   settings;
   errorMessage;
   selectedSetting;
   drawerVisible: boolean;
+  selectVisible: boolean;
 
   constructor (private _settingService: SettingService) {}
 
@@ -31,7 +34,9 @@ export class SettingsComponent {
 
     this.id = localStorage.getItem('respond.siteId');
     this.drawerVisible = false;
+    this.selectVisible = false;
     this.settings;
+    this.setting = null;
 
     this.list();
 
@@ -64,6 +69,23 @@ export class SettingsComponent {
                       );
 
   }
+  
+  
+  /**
+   * Shows the select modal
+   */
+  showSelect(setting) {
+    this.setting = setting;
+    this.selectVisible = true;
+  }
+  
+  /**
+   * Handles the selection of an image
+   */
+  select(event) {
+    this.setting.value = 'files/' + event.name;
+    this.selectVisible = false;
+  }
 
   /**
    * Handles success
@@ -77,6 +99,7 @@ export class SettingsComponent {
    */
   reset() {
     this.drawerVisible = false;
+    this.selectVisible = false;
   }
 
   /**

@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/setting.service', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/setting.service', '/app/shared/components/drawer/drawer.component', '/app/shared/components/files/select-file/select-file.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, setting_service_1, drawer_component_1;
+    var core_1, angular2_jwt_1, router_1, setting_service_1, drawer_component_1, select_file_component_1;
     var SettingsComponent;
     return {
         setters:[
@@ -28,6 +28,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             },
             function (drawer_component_1_1) {
                 drawer_component_1 = drawer_component_1_1;
+            },
+            function (select_file_component_1_1) {
+                select_file_component_1 = select_file_component_1_1;
             }],
         execute: function() {
             SettingsComponent = (function () {
@@ -41,7 +44,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 SettingsComponent.prototype.ngOnInit = function () {
                     this.id = localStorage.getItem('respond.siteId');
                     this.drawerVisible = false;
+                    this.selectVisible = false;
                     this.settings;
+                    this.setting = null;
                     this.list();
                 };
                 /**
@@ -62,6 +67,20 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
                 };
                 /**
+                 * Shows the select modal
+                 */
+                SettingsComponent.prototype.showSelect = function (setting) {
+                    this.setting = setting;
+                    this.selectVisible = true;
+                };
+                /**
+                 * Handles the selection of an image
+                 */
+                SettingsComponent.prototype.select = function (event) {
+                    this.setting.value = 'files/' + event.name;
+                    this.selectVisible = false;
+                };
+                /**
                  * Handles success
                  */
                 SettingsComponent.prototype.success = function () {
@@ -72,6 +91,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                  */
                 SettingsComponent.prototype.reset = function () {
                     this.drawerVisible = false;
+                    this.selectVisible = false;
                 };
                 /**
                  * Sets the setting to active
@@ -93,7 +113,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         selector: 'respond-settings',
                         templateUrl: './app/settings/settings.component.html',
                         providers: [setting_service_1.SettingService],
-                        directives: [drawer_component_1.DrawerComponent]
+                        directives: [select_file_component_1.SelectFileComponent, drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [(typeof (_a = typeof setting_service_1.SettingService !== 'undefined' && setting_service_1.SettingService) === 'function' && _a) || Object])

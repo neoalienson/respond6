@@ -50,6 +50,69 @@ class Submission {
       return array(); 
     }
     
+  }
+  
+  /**
+   * Gets a submission by id
+   *
+   * @param {string} $id
+   * @param {string} $email
+   * @return {User}
+   */
+	public static function getById($id, $siteId){
+
+    $submissions = Submission::listAll($siteId);
+
+    foreach($submissions as $submission) {
+
+      if($submission['id'] == $id) {
+
+        return new Submission($submission);
+
+      }
+
+    }
+
+    return NULL;
+
+	}
+	
+	/**
+   * Removes a submission
+   *
+   * @param {string} $siteId
+   * @return Response
+   */
+  public function remove($siteId){
+
+    // remove the user from JSON
+    $json_file = app()->basePath().'/resources/sites/'.$siteId.'/submissions.json';
+
+    if(file_exists($json_file)) {
+
+      $json = file_get_contents($json_file);
+
+      // decode json file
+      $submissions = json_decode($json, true);
+      $i = 0;
+
+      foreach($submissions as &$submission){
+
+        // remove submission
+        if($submission['id'] == $this->id) {
+          unset($submissions[$i]);
+        }
+
+        $i++;
+
+      }
+
+      // save pages
+      file_put_contents($json_file, json_encode($submissions, JSON_PRETTY_PRINT));
+
+    }
+
+    return TRUE;
 
   }
 

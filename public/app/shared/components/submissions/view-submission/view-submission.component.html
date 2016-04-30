@@ -2,13 +2,25 @@
 
   <h2>View Submission</h2>
 
-  <div class="to-be-viewed">
-    <h3>{{model.name}}</h3>
-    <small>{{model.formId}}</small>
-  </div>
+  <table class="details">
+    
+    <tr>
+      <td>Date</td>
+      <td>{{ model.date }}</td>
+    </tr>
+    <tr>
+      <td>Form</td>
+      <td>{{ model.formId }}</td>
+    </tr>
+    <tr *ngFor="#field of model.fields">
+      <td>{{ field.id  }}</td>
+      <td>{{ field.value }}</td>
+    </tr>
+  
+  </table>
 
   <div class="actions">
-    <a (click)="hide()">Done</a>
+    <a (click)="hide()" class="primary">Done</a>
   </div>
 
 </div>

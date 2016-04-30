@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/file.service', '/app/shared/components/files/remove-file/remove-file.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/file.service', '/app/shared/components/files/remove-file/remove-file.component', '/app/shared/components/dropzone/dropzone.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, file_service_1, remove_file_component_1, drawer_component_1;
+    var core_1, angular2_jwt_1, router_1, file_service_1, remove_file_component_1, dropzone_component_1, drawer_component_1;
     var FilesComponent;
     return {
         setters:[
@@ -29,6 +29,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             function (remove_file_component_1_1) {
                 remove_file_component_1 = remove_file_component_1_1;
             },
+            function (dropzone_component_1_1) {
+                dropzone_component_1 = dropzone_component_1_1;
+            },
             function (drawer_component_1_1) {
                 drawer_component_1 = drawer_component_1_1;
             }],
@@ -46,6 +49,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     this.removeVisible = false;
                     this.drawerVisible = false;
                     this.file = {};
+                    // list files 
                     this.list();
                 };
                 /**
@@ -93,7 +97,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         selector: 'respond-files',
                         templateUrl: './app/files/files.component.html',
                         providers: [file_service_1.FileService],
-                        directives: [remove_file_component_1.RemoveFileComponent, drawer_component_1.DrawerComponent],
+                        directives: [remove_file_component_1.RemoveFileComponent, dropzone_component_1.DropzoneComponent, drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [(typeof (_a = typeof file_service_1.FileService !== 'undefined' && file_service_1.FileService) === 'function' && _a) || Object])

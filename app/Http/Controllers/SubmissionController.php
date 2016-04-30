@@ -71,6 +71,27 @@ class SubmissionController extends Controller
 
     return response('Ok', 200);
 
+  }
+  
+  /**
+   * Removes a submission
+   *
+   * @return Response
+   */
+  public function remove(Request $request)
+  {
+    // get request data
+    $siteId = $request->input('auth-id');
+
+    // get id of submission
+    $id = $request->json()->get('id');
+
+    $submission = Submission::getById($id, $siteId);
+
+    $submission->remove($siteId);
+
+    // return OK
+    return response('OK, submission removed at = '.$submission->id, 200);
 
   }
 

@@ -216,7 +216,7 @@ class User {
       }
 
       // save pages
-      file_put_contents($json_file, json_encode($users));
+      file_put_contents($json_file, json_encode($users, JSON_PRETTY_PRINT));
 
     }
 

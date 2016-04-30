@@ -12,7 +12,7 @@
 */
 
 // handle Angular app routes
-$app_routes = array('/', 'login', 'create', 'pages', 'users', 'files', 'menus', 'forms', 'submissions', 'branding', 'settings');
+$app_routes = array('/', 'login', 'create', 'pages', 'users', 'files', 'menus', 'forms', 'submissions', 'branding', 'settings', 'galleries');
 
 foreach($app_routes as $app_route) {
 
@@ -121,5 +121,19 @@ $app->post('/api/settings/edit', ['middleware' => 'jwtauth', 'uses'=> 'SettingCo
 
 // submissions
 $app->get('/api/submissions/list', ['middleware' => 'jwtauth', 'uses'=> 'SubmissionController@listAll']);
+$app->post('/api/submissions/remove', ['middleware' => 'jwtauth', 'uses'=> 'SubmissionController@remove']);
 $app->post('/api/submissions/add', 'SubmissionController@add');
+
+// galleries
+$app->get('/api/galleries/list', ['middleware' => 'jwtauth', 'uses'=> 'GalleryController@listAll']);
+$app->post('/api/galleries/add', ['middleware' => 'jwtauth', 'uses'=> 'GalleryController@add']);
+$app->post('/api/galleries/edit', ['middleware' => 'jwtauth', 'uses'=> 'GalleryController@edit']);
+$app->post('/api/galleries/remove', ['middleware' => 'jwtauth', 'uses'=> 'GalleryController@remove']);
+
+// gallery images
+$app->get('/api/galleries/images/list/{id}', ['middleware' => 'jwtauth', 'uses'=> 'GalleryImageController@listAll']);
+$app->post('/api/galleries/images/add', ['middleware' => 'jwtauth', 'uses'=> 'GalleryImageController@add']);
+$app->post('/api/galleries/images/edit', ['middleware' => 'jwtauth', 'uses'=> 'GalleryImageController@edit']);
+$app->post('/api/galleries/images/remove', ['middleware' => 'jwtauth', 'uses'=> 'GalleryImageController@remove']);
+$app->post('/api/galleries/images/order', ['middleware' => 'jwtauth', 'uses'=> 'GalleryImageController@updateOrder']);
 

@@ -11,6 +11,7 @@ import {MenusComponent} from './menus/menus.component';
 import {FormsComponent} from './forms/forms.component';
 import {SettingsComponent} from './settings/settings.component';
 import {SubmissionsComponent} from './submissions/submissions.component';
+import {GalleriesComponent} from './galleries/galleries.component';
 
 @Component({
     selector: 'respond-app',
@@ -77,6 +78,11 @@ import {SubmissionsComponent} from './submissions/submissions.component';
     path: '/submissions',
     name: 'Submissions',
     component: SubmissionsComponent
+  },
+  {
+    path: '/galleries',
+    name: 'Galleries',
+    component: GalleriesComponent
   }
 ])
 

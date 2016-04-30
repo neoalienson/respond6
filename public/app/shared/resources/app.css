@@ -7,7 +7,7 @@ body {
   padding: 49px 0 0 0;
 }
 
-body h1, body h2, body h3, body h4, body h5, body label, body input, body li, body button, body a{
+body h1, body h2, body h3, body h4, body h5, body label, body input, body li, body button, body a, body td{
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -147,7 +147,7 @@ body .app-list {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    border: 1px solid #fff;
+    border: 1px solid #f0f0f0;
     float: left;
     background-size: cover;
     background-repeat: no-repeat;
@@ -402,6 +402,7 @@ body .app-modal {
     height: 40px;
     min-width: 50px;
     background-color: transparent;
+    -moz-appearance: none;
     -webkit-appearance: none;
     -webkit-border-radius: 0px;
     border: 1px solid #ddd;
@@ -463,9 +464,96 @@ body .app-modal {
 
   body .app-modal .to-be-removed small{
     font-size: 12px;
+    margin: 0;
+    padding: 0;
     color: #CF4647;
     text-transform: uppercase;
   }
+  
+  /* app-modal-list */
+  body .app-modal .app-modal-list {
+    margin: 0;
+    border: 1px solid #ddd;
+  }
+  
+    body .app-modal .app-modal-list-item {
+      position: relative;
+      border-top: 1px solid #ddd;
+      cursor: pointer;
+    }
+    
+    body .app-modal .app-modal-list-item:first-child {
+      border: none;
+    }
+  
+    body .app-modal .app-modal-list-item.image {
+      padding-left: 80px;
+      min-height: 70px;
+    }
+  
+    body .app-modal .app-modal-list-item.selected {
+      background-color: #fff;
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, .15);
+    }
+  
+    body .app-modal .app-modal-list-item h2 {
+      font-size: 15px;
+      font-weight: bold;
+      color: #111;
+      margin: 0 0 2px 0;
+      padding: 15px 0 0 0;
+    }
+  
+    body .app-modal .app-modal-list-item small {
+      display: block;
+      margin: 10px 0 0 0;
+      padding: 0 0 15px 0;
+      font-size: 11px;
+      color: #00ADE3;
+      text-transform: uppercase;
+    }
+  
+    body .app-modal .app-modal-list-item h2 span.secondary {
+      font-weight: normal;
+      color: #888;
+      text-transform: uppercase;
+      float: right;
+      font-size: 11px;
+    }
+  
+    body .app-modal .app-modal-list-item p {
+      font-weight: 400;
+      color: #aaa;
+      margin: 0 0 2px 0;
+      padding: 0;
+      line-height: 18px;
+      font-size: 13px;
+    }
+  
+    body .app-modal .app-modal-list-item label {
+      display: block;
+      margin: 0;
+      padding: 0 0 5px 0;
+      font-weight: normal;
+      color: #aaa;
+      min-width: 25%;
+      text-transform: uppercase;
+    }
+  
+    body .app-modal .app-modal-list-item .image {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 1px solid #f0f0f0;
+      float: left;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-color: #fff;
+    }
+
 
 /* app-card */
 .app-card {
@@ -628,11 +716,14 @@ body .app-form.standalone {
     display: block;
     margin: 0;
     padding: 0 0 5px 0;
+    max-width: 250px;
   }
 
   body .app-form label a {
     float: right;
     cursor: pointer;
+    text-transform: uppercase;
+    font-size: 13px;
   }
 
   body .app-form input[type=text], body .app-form input[type=password], body .app-form select {
@@ -675,7 +766,7 @@ body .app-form.standalone {
       width: 100%;
     }
 
-  body .app-form  a {
+  body .app-form.standalone  a {
     display: block;
     margin-top: 25px;
     padding: 15px 10px;
@@ -691,15 +782,17 @@ body .app-form.standalone {
     border: none;
     border: none;
     border-radius: 0;
-    padding: 5px 5px 5px 15px;
+    padding: 5px;
     margin: 0 0 25px 0;
     height: 40px;
-    min-width: 50px;
+    min-width: 250px;
     background-color: transparent;
     -webkit-appearance: none;
-    -webkit-border-radius: 0px;
+    -moz-appearance: none;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
     border: 1px solid #ddd;
-    text-align: center;
+    text-align: left;
   }
 
 /* app-menu */
@@ -860,6 +953,35 @@ body .app-form.standalone {
 
 .app-toast[active] {
   margin-top: 0;
+}
+
+/* details table */
+table.details td {
+  font-size: 13px;
+  padding: 0 15px 15px 0;
+  color: #555;
+}
+
+table.details td:first-child {
+  color: #888;
+  text-transform: uppercase;
+}
+
+/* dropzone */
+body .dropzone {
+  min-height: inherit;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  margin: 10px;
+}
+
+body .app-modal .dropzone {
+  margin: 0 0 10px 0;
+}
+
+body .dropzone .dz-message {
+  text-transform: uppercase;
+  font-size: 13px;
 }
 
 @media (min-width:768px) {
