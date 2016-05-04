@@ -46,6 +46,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     // outputs
                     this.onCancel = new core_1.EventEmitter();
                     this.onAdd = new core_1.EventEmitter();
+                    this.onError = new core_1.EventEmitter();
                 }
                 Object.defineProperty(AddMenuItemComponent.prototype, "visible", {
                     get: function () { return this._visible; },
@@ -85,7 +86,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 AddMenuItemComponent.prototype.submit = function () {
                     var _this = this;
                     this._menuItemService.add(this.menu.id, this.model.html, this.model.cssClass, this.model.isNested, this.model.url)
-                        .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.onError.emit(error); });
                 };
                 /**
                  * Handles a successful add
@@ -94,13 +95,6 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     toast.show('success');
                     this._visible = false;
                     this.onAdd.emit(null);
-                };
-                /**
-                 * Handles an error
-                 */
-                AddMenuItemComponent.prototype.error = function () {
-                    console.log('[respond.error] ' + this.errorMessage);
-                    toast.show('failure');
                 };
                 __decorate([
                     core_1.Input(), 
@@ -119,6 +113,10 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], AddMenuItemComponent.prototype, "onAdd", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], AddMenuItemComponent.prototype, "onError", void 0);
                 AddMenuItemComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-add-menu-item',

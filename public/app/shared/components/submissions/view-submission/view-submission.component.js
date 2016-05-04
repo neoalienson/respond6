@@ -33,6 +33,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     this._visible = false;
                     this.onCancel = new core_1.EventEmitter();
                     this.onUpdate = new core_1.EventEmitter();
+                    this.onError = new core_1.EventEmitter();
                 }
                 Object.defineProperty(ViewSubmissionComponent.prototype, "visible", {
                     get: function () { return this._visible; },
@@ -81,6 +82,10 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], ViewSubmissionComponent.prototype, "onUpdate", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], ViewSubmissionComponent.prototype, "onError", void 0);
                 ViewSubmissionComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-view-submission',

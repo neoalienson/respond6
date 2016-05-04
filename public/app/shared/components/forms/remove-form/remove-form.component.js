@@ -34,6 +34,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     // outputs
                     this.onCancel = new core_1.EventEmitter();
                     this.onUpdate = new core_1.EventEmitter();
+                    this.onError = new core_1.EventEmitter();
                 }
                 Object.defineProperty(RemoveFormComponent.prototype, "visible", {
                     get: function () { return this._visible; },
@@ -76,7 +77,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 RemoveFormComponent.prototype.submit = function () {
                     var _this = this;
                     this._formService.remove(this.model.id)
-                        .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.onError.emit(error); });
                 };
                 /**
                  * Handles a successful submission
@@ -103,6 +104,10 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], RemoveFormComponent.prototype, "onUpdate", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], RemoveFormComponent.prototype, "onError", void 0);
                 RemoveFormComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-remove-form',

@@ -33,6 +33,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     this._visible = false;
                     this.onCancel = new core_1.EventEmitter();
                     this.onUpdate = new core_1.EventEmitter();
+                    this.onError = new core_1.EventEmitter();
                 }
                 Object.defineProperty(EditFormComponent.prototype, "visible", {
                     get: function () { return this._visible; },
@@ -74,7 +75,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 EditFormComponent.prototype.submit = function () {
                     var _this = this;
                     this._formService.edit(this.model.id, this.model.name, this.model.cssClass)
-                        .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.onError.emit(error); });
                 };
                 /**
                  * Handles a successful edit
@@ -109,6 +110,10 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], EditFormComponent.prototype, "onUpdate", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], EditFormComponent.prototype, "onError", void 0);
                 EditFormComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-edit-form',

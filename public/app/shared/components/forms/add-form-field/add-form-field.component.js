@@ -45,6 +45,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     // outputs
                     this.onCancel = new core_1.EventEmitter();
                     this.onAdd = new core_1.EventEmitter();
+                    this.onError = new core_1.EventEmitter();
                 }
                 Object.defineProperty(AddFormFieldComponent.prototype, "visible", {
                     get: function () { return this._visible; },
@@ -83,7 +84,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 AddFormFieldComponent.prototype.submit = function () {
                     var _this = this;
                     this._formFieldService.add(this.form.id, this.model.label, this.model.type, this.model.required, this.model.options, this.model.helperText, this.model.placeholder, this.model.cssClass)
-                        .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.onError.emit(error); });
                 };
                 /**
                  * Handles a successful add
@@ -92,13 +93,6 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     toast.show('success');
                     this._visible = false;
                     this.onAdd.emit(null);
-                };
-                /**
-                 * Handles an error
-                 */
-                AddFormFieldComponent.prototype.error = function () {
-                    console.log('[respond.error] ' + this.errorMessage);
-                    toast.show('failure');
                 };
                 __decorate([
                     core_1.Input(), 
@@ -117,6 +111,10 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], AddFormFieldComponent.prototype, "onAdd", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], AddFormFieldComponent.prototype, "onError", void 0);
                 AddFormFieldComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-add-form-field',
