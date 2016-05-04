@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/menu.service', '/app/shared/services/menu-item.service', '/app/shared/components/menus/add-menu/add-menu.component', '/app/shared/components/menus/edit-menu/edit-menu.component', '/app/shared/components/menus/remove-menu/remove-menu.component', '/app/shared/components/menus/add-menu-item/add-menu-item.component', '/app/shared/components/menus/edit-menu-item/edit-menu-item.component', '/app/shared/components/menus/remove-menu-item/remove-menu-item.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['@angular/core', 'angular2-jwt/angular2-jwt', '@angular/router-deprecated', '/app/shared/services/menu.service', '/app/shared/services/menu-item.service', '/app/shared/components/menus/add-menu/add-menu.component', '/app/shared/components/menus/edit-menu/edit-menu.component', '/app/shared/components/menus/remove-menu/remove-menu.component', '/app/shared/components/menus/add-menu-item/add-menu-item.component', '/app/shared/components/menus/edit-menu-item/edit-menu-item.component', '/app/shared/components/menus/remove-menu-item/remove-menu-item.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, menu_service_1, menu_item_service_1, add_menu_component_1, edit_menu_component_1, remove_menu_component_1, add_menu_item_component_1, edit_menu_item_component_1, remove_menu_item_component_1, drawer_component_1;
+    var core_1, angular2_jwt_1, router_deprecated_1, menu_service_1, menu_item_service_1, add_menu_component_1, edit_menu_component_1, remove_menu_component_1, add_menu_item_component_1, edit_menu_item_component_1, remove_menu_item_component_1, drawer_component_1;
     var MenusComponent;
     return {
         setters:[
@@ -20,8 +20,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (menu_service_1_1) {
                 menu_service_1 = menu_service_1_1;
@@ -251,8 +251,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         providers: [menu_service_1.MenuService, menu_item_service_1.MenuItemService],
                         directives: [add_menu_component_1.AddMenuComponent, edit_menu_component_1.EditMenuComponent, remove_menu_component_1.RemoveMenuComponent, add_menu_item_component_1.AddMenuItemComponent, edit_menu_item_component_1.EditMenuItemComponent, remove_menu_item_component_1.RemoveMenuItemComponent, drawer_component_1.DrawerComponent]
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof menu_service_1.MenuService !== 'undefined' && menu_service_1.MenuService) === 'function' && _a) || Object, (typeof (_b = typeof menu_item_service_1.MenuItemService !== 'undefined' && menu_item_service_1.MenuItemService) === 'function' && _b) || Object, router_1.Router])
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    __metadata('design:paramtypes', [(typeof (_a = typeof menu_service_1.MenuService !== 'undefined' && menu_service_1.MenuService) === 'function' && _a) || Object, (typeof (_b = typeof menu_item_service_1.MenuItemService !== 'undefined' && menu_item_service_1.MenuItemService) === 'function' && _b) || Object, router_deprecated_1.Router])
                 ], MenusComponent);
                 return MenusComponent;
                 var _a, _b;

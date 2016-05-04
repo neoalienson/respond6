@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
 import {MenuService} from '/app/shared/services/menu.service';
 import {MenuItemService} from '/app/shared/services/menu-item.service';
 import {AddMenuComponent} from '/app/shared/components/menus/add-menu/add-menu.component';
@@ -266,18 +266,18 @@ export class MenusComponent {
                        error =>  { this.failure(<any>error); }
                       );
   }
-  
+
   /**
    * handles error
    */
   failure(obj) {
-    
+
     toast.show('failure');
-    
+
     if(obj.status == 401) {
       this._router.navigate( ['Login', {id: this.id}] );
     }
-   
+
   }
 
 

@@ -9,7 +9,7 @@
 </menu>
 
 <div id="users-list" class="app-list">
-  <div class="app-list-item" *ngFor="#user of users" (click)="setActive(user)" [class.selected]="user === selectedUser">
+  <div class="app-list-item" *ngFor="let user of users" (click)="setActive(user)" [class.selected]="user === selectedUser">
     <h2><span class="primary">{{ user.firstName }} {{ user.lastName }}</span></h2>
     <small>{{ user.email }}</small>
     <div class="app-list-actions">

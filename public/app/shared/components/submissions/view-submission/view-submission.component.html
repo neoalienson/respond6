@@ -3,7 +3,7 @@
   <h2>View Submission</h2>
 
   <table class="details">
-    
+
     <tr>
       <td>Date</td>
       <td>{{ model.date }}</td>
@@ -12,11 +12,11 @@
       <td>Form</td>
       <td>{{ model.formId }}</td>
     </tr>
-    <tr *ngFor="#field of model.fields">
+    <tr *ngFor="let field of model.fields">
       <td>{{ field.id  }}</td>
       <td>{{ field.value }}</td>
     </tr>
-  
+
   </table>
 
   <div class="actions">

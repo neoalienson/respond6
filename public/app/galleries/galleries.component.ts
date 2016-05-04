@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
 import {GalleryService} from '/app/shared/services/gallery.service';
 import {GalleryImageService} from '/app/shared/services/gallery-image.service';
 import {SelectFileComponent} from '/app/shared/components/files/select-file/select-file.component';
@@ -117,7 +117,7 @@ export class GalleriesComponent {
     this._galleryImageService.list(this.selectedGallery.id)
                      .subscribe(
                        data => { this.images = data; },
-                       error => { this.failure(<any>error); }  
+                       error => { this.failure(<any>error); }
                       );
 
   }
@@ -199,23 +199,23 @@ export class GalleriesComponent {
   showSelect() {
     this.selectVisible = true;
   }
-  
+
   /**
    * Handles the selection of an image
    */
   select(event) {
-  
-   var caption = ''; 
-    
+
+   var caption = '';
+
    this._galleryImageService.add(event.name, event.url, event.thumb, caption, this.selectedGallery.id)
                    .subscribe(
                      data => { this.listImages(); toast.show('success'); },
                      error => { this.failure(<any>error); }
                     );
-  
+
     this.selectVisible = false;
   }
-  
+
   /**
    * Shows the remove dialog
    *
@@ -225,7 +225,7 @@ export class GalleriesComponent {
     this.selectedImage = image;
     this.removeImageVisible = true;
   }
-  
+
   /**
    * Shows the remove dialog
    *
@@ -284,18 +284,18 @@ export class GalleriesComponent {
                        error =>  { this.failure(<any>error); }
                       );
   }
-  
+
   /**
    * handles error
    */
   failure(obj) {
-    
+
     toast.show('failure');
-    
+
     if(obj.status == 401) {
       this._router.navigate( ['Login', {id: this.id}] );
     }
-   
+
   }
 
 

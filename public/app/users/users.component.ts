@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
 import {UserService} from '/app/shared/services/user.service';
 import {AddUserComponent} from '/app/shared/components/users/add-user/add-user.component';
 import {EditUserComponent} from '/app/shared/components/users/edit-user/edit-user.component';
@@ -113,18 +113,18 @@ export class UsersComponent {
     this.editVisible = true;
     this.user = user;
   }
-  
+
   /**
    * handles error
    */
   failure (obj) {
-    
+
     toast.show('failure');
-    
+
     if(obj.status == 401) {
       this._router.navigate( ['Login', {id: this.id}] );
     }
-   
+
   }
 
 }

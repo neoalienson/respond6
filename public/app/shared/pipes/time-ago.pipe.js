@@ -1,4 +1,4 @@
-System.register(['angular2/core'], function(exports_1, context_1) {
+System.register(['@angular/core'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -18,15 +18,6 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                 core_1 = core_1_1;
             }],
         execute: function() {
-            /*
-             * Raise the value exponentially
-             * Takes an exponent argument that defaults to 1.
-             * Usage:
-             *   value | exponentialStrength:exponent
-             * Example:
-             *   {{ 2 |  exponentialStrength:10}}
-             *   formats to: 1024
-            */
             TimeAgoPipe = (function () {
                 function TimeAgoPipe() {
                 }
@@ -39,7 +30,6 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                         moment.locale('en');
                     }
                     return moment(value).fromNow();
-                    //return 'placeholder';
                 };
                 TimeAgoPipe = __decorate([
                     core_1.Pipe({ name: 'timeAgo' }), 

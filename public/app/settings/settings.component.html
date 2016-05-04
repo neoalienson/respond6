@@ -8,7 +8,7 @@
 
 <form class="app-form" (ngSubmit)="submit()" #settingsForm="ngForm">
 
-  <div *ngFor="#setting of settings">
+  <div *ngFor="let setting of settings">
 
     <div [ngSwitch]="setting.type">
 
@@ -16,21 +16,21 @@
         <label>{{setting.label}}</label>
         <input type="text" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
       </div>
-      
+
       <div *ngSwitchWhen="'color'">
         <label>{{setting.label}}</label>
         <input type="color" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
       </div>
-      
+
       <div *ngSwitchWhen="'image'">
         <label>{{setting.label}} <a (click)="showSelect(setting)">Select</a></label>
         <input type="text" id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
       </div>
-      
+
       <div *ngSwitchWhen="'select'">
         <label>{{setting.label}}</label>
         <select id="{{setting.id}}" ngControl="{{setting.id}}" [(ngModel)]="setting.value">
-          <option *ngFor="#option of setting.options" [value]="option">{{option}}</option>
+          <option *ngFor="let option of setting.options" [value]="option">{{option}}</option>
         </select>
       </div>
 

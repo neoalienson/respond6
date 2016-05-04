@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
-import {HTTP_PROVIDERS}    from 'angular2/http';
-import {RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {HTTP_PROVIDERS}    from '@angular/http';
+import {RouteParams, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {UserService} from '/app/shared/services/user.service';
 
 @Component({
@@ -39,14 +39,14 @@ export class ResetComponent {
       }
 
   }
-    
+
   /**
    * handles error
    */
   failure (obj) {
-    
+
     toast.show('failure');
-   
+
   }
 
 

@@ -2,11 +2,7 @@
   "name": "respondcms",
   "version": "6.0.0",
   "scripts": {
-    "start": "concurrent \"npm run tsc:w\" ",
-    "tsc": "tsc",
-    "tsc:w": "tsc -w",
-    "typings": "typings",
-    "postinstall": "typings install"
+    "tsc": "tsc"
   },
   "license": "ISC",
   "dependencies": {
@@ -25,7 +21,8 @@
     "rxjs": "5.0.0-beta.6",
     "zone.js": "^0.6.12",
     "angular2-in-memory-web-api": "0.0.7",
-    "bootstrap": "^3.3.6"
+    "bootstrap": "^3.3.6",
+    "angular2-jwt": "~0.1.7",
     "hashedit": "*",
     "respond-components": "*",
     "dropzone": "4.3.0",
@@ -35,7 +32,7 @@
   "devDependencies": {
     "concurrently": "^2.0.0",
     "gulp-tsc": "^1.1.4",
-    "typescript": "^1.8.2",
+    "typescript": "^1.8.10",
     "typings": "^0.6.8"
   }
 }

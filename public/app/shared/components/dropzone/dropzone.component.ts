@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, ElementRef} from 'angular2/core';
+import {Component, EventEmitter, Input, Output, ElementRef} from '@angular/core';
 
 @Component({
     selector: 'respond-dropzone',
@@ -17,13 +17,13 @@ export class DropzoneComponent {
   ngOnInit() {
 
     this.setupDropzone();
-    
+
   }
 
   setupDropzone() {
-  
+
     var el = this.elementRef.nativeElement.querySelector('.dropzone');
-    
+
     var dropzone: any;
 
     // set dropzone options
@@ -37,14 +37,14 @@ export class DropzoneComponent {
 
     // create the dropzone
     dropzone = new Dropzone(el, options);
-    
+
     var context = this;
 
     dropzone.on("complete", function(file) {
       dropzone.removeFile(file);
       context.onAdd.emit(null);
     });
-    
+
   }
 
 }

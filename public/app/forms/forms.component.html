@@ -12,7 +12,7 @@
 
 <nav class="app-selector">
   <ul>
-    <li *ngFor="#form of forms" [class.selected]="form.id === selectedForm.id" (click)="setActive(form)">
+    <li *ngFor="let form of forms" [class.selected]="form.id === selectedForm.id" (click)="setActive(form)">
       <a>{{form.name}}</a>
     </li>
   </ul>
@@ -20,7 +20,7 @@
 
 
 <div id="fields-list" class="app-list">
-  <div class="app-list-item" *ngFor="#field of fields" (click)="setFieldActive(field)" [class.selected]="field === selectedField">
+  <div class="app-list-item" *ngFor="let field of fields" (click)="setFieldActive(field)" [class.selected]="field === selectedField">
     <h2><span class="primary">{{ field.label }}</span></h2>
     <small>{{ field.type }}</small>
     <div class="app-list-actions">

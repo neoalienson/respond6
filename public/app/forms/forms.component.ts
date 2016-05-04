@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
 import {FormService} from '/app/shared/services/form.service';
 import {FormFieldService} from '/app/shared/services/form-field.service';
 import {AddFormComponent} from '/app/shared/components/forms/add-form/add-form.component';
@@ -265,18 +265,18 @@ export class FormsComponent {
                        error =>  this.errorMessage = <any>error
                       );
   }
-  
+
   /**
    * handles errors
    */
   failure(obj) {
-    
+
     toast.show('failure');
-    
+
     if(obj.status == 401) {
       this._router.navigate( ['Login', {id: this.id}] );
     }
-   
+
   }
 
 

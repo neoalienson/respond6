@@ -12,14 +12,14 @@
 
 <nav class="app-selector">
   <ul>
-    <li *ngFor="#gallery of galleries" [class.selected]="gallery.id === selectedGallery.id" (click)="setActive(gallery)">
+    <li *ngFor="let gallery of galleries" [class.selected]="gallery.id === selectedGallery.id" (click)="setActive(gallery)">
       <a>{{gallery.name}}</a>
     </li>
   </ul>
 </nav>
 
 <div id="images-list" class="app-list">
-  <div class="app-list-item" *ngFor="#image of images" (click)="setImageActive(image)" [class.selected]="image === selectedImage" [class.image]="image.thumb !== ''">
+  <div class="app-list-item" *ngFor="let image of images" (click)="setImageActive(image)" [class.selected]="image === selectedImage" [class.image]="image.thumb !== ''">
     <h2><span class="primary">{{ image.name }}</span></h2>
     <img *ngIf="image.thumb !== ''" class="image" src="sites/{{id}}/{{image.thumb}}">
     <small>{{ image.caption }}</small>

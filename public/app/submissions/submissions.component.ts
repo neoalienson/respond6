@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
 import {SubmissionService} from '/app/shared/services/submission.service';
 import {RemoveSubmissionComponent} from '/app/shared/components/submissions/remove-submission/remove-submission.component';
 import {ViewSubmissionComponent} from '/app/shared/components/submissions/view-submission/view-submission.component';
@@ -83,7 +83,7 @@ export class SubmissionsComponent {
   toggleDrawer() {
     this.drawerVisible = !this.drawerVisible;
   }
-  
+
   /**
    * Shows the view dialog
    *
@@ -108,13 +108,13 @@ export class SubmissionsComponent {
    * handles error
    */
   failure (obj) {
-    
+
     toast.show('failure');
-    
+
     if(obj.status == 401) {
       this._router.navigate( ['Login', {id: this.id}] );
     }
-   
+
   }
-  
+
 }

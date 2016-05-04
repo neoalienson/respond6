@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CanActivate} from '@angular/router-deprecated';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
 import {FileService} from '/app/shared/services/file.service';
 import {DropzoneComponent} from '/app/shared/components/dropzone/dropzone.component';
@@ -43,9 +43,9 @@ export class SelectFileComponent {
   ngOnInit() {
 
     this.list();
-    
+
   }
-  
+
   /**
    * Updates the list
    */
@@ -58,7 +58,7 @@ export class SelectFileComponent {
                        error =>  { this.onError.emit(<any>error); }
                       );
   }
-  
+
   /**
    * Resets an modal booleans
    */

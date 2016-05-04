@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
 import {FileService} from '/app/shared/services/file.service';
 import {RemoveFileComponent} from '/app/shared/components/files/remove-file/remove-file.component';
 import {DropzoneComponent} from '/app/shared/components/dropzone/dropzone.component';
@@ -24,7 +24,7 @@ export class FilesComponent {
   selectedFile;
   removeVisible: boolean;
   drawerVisible: boolean;
-  
+
 
   constructor (private _fileService: FileService, private _router: Router) {}
 
@@ -39,7 +39,7 @@ export class FilesComponent {
     this.drawerVisible = false;
     this.file = {};
 
-    // list files 
+    // list files
     this.list();
 
   }
@@ -91,18 +91,18 @@ export class FilesComponent {
     this.removeVisible = true;
     this.file = file;
   }
-  
+
   /**
    * handles error
    */
   failure(obj) {
-    
+
     toast.show('failure');
-    
+
     if(obj.status == 401) {
       this._router.navigate( ['Login', {id: this.id}] );
     }
-   
+
   }
 
 }

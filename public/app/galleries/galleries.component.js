@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/gallery.service', '/app/shared/services/gallery-image.service', '/app/shared/components/files/select-file/select-file.component', '/app/shared/components/galleries/add-gallery/add-gallery.component', '/app/shared/components/galleries/edit-gallery/edit-gallery.component', '/app/shared/components/galleries/remove-gallery/remove-gallery.component', '/app/shared/components/galleries/edit-caption/edit-caption.component', '/app/shared/components/galleries/remove-gallery-image/remove-gallery-image.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['@angular/core', 'angular2-jwt/angular2-jwt', '@angular/router-deprecated', '/app/shared/services/gallery.service', '/app/shared/services/gallery-image.service', '/app/shared/components/files/select-file/select-file.component', '/app/shared/components/galleries/add-gallery/add-gallery.component', '/app/shared/components/galleries/edit-gallery/edit-gallery.component', '/app/shared/components/galleries/remove-gallery/remove-gallery.component', '/app/shared/components/galleries/edit-caption/edit-caption.component', '/app/shared/components/galleries/remove-gallery-image/remove-gallery-image.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, gallery_service_1, gallery_image_service_1, select_file_component_1, add_gallery_component_1, edit_gallery_component_1, remove_gallery_component_1, edit_caption_component_1, remove_gallery_image_component_1, drawer_component_1;
+    var core_1, angular2_jwt_1, router_deprecated_1, gallery_service_1, gallery_image_service_1, select_file_component_1, add_gallery_component_1, edit_gallery_component_1, remove_gallery_component_1, edit_caption_component_1, remove_gallery_image_component_1, drawer_component_1;
     var GalleriesComponent;
     return {
         setters:[
@@ -20,8 +20,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (gallery_service_1_1) {
                 gallery_service_1 = gallery_service_1_1;
@@ -264,8 +264,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         providers: [gallery_service_1.GalleryService, gallery_image_service_1.GalleryImageService],
                         directives: [select_file_component_1.SelectFileComponent, add_gallery_component_1.AddGalleryComponent, edit_gallery_component_1.EditGalleryComponent, remove_gallery_component_1.RemoveGalleryComponent, edit_caption_component_1.EditCaptionComponent, remove_gallery_image_component_1.RemoveGalleryImageComponent, drawer_component_1.DrawerComponent]
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof gallery_service_1.GalleryService !== 'undefined' && gallery_service_1.GalleryService) === 'function' && _a) || Object, (typeof (_b = typeof gallery_image_service_1.GalleryImageService !== 'undefined' && gallery_image_service_1.GalleryImageService) === 'function' && _b) || Object, router_1.Router])
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    __metadata('design:paramtypes', [(typeof (_a = typeof gallery_service_1.GalleryService !== 'undefined' && gallery_service_1.GalleryService) === 'function' && _a) || Object, (typeof (_b = typeof gallery_image_service_1.GalleryImageService !== 'undefined' && gallery_image_service_1.GalleryImageService) === 'function' && _b) || Object, router_deprecated_1.Router])
                 ], GalleriesComponent);
                 return GalleriesComponent;
                 var _a, _b;

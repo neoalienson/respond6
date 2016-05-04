@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.service'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/router-deprecated', '/app/shared/services/user.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,15 +10,15 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, user_service_1;
+    var core_1, router_deprecated_1, user_service_1;
     var ForgotComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (user_service_1_1) {
                 user_service_1 = user_service_1_1;
@@ -50,7 +50,7 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
                         templateUrl: './app/forgot/forgot.component.html',
                         providers: [user_service_1.UserService]
                     }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object, router_1.RouteParams])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object, router_deprecated_1.RouteParams])
                 ], ForgotComponent);
                 return ForgotComponent;
                 var _a;

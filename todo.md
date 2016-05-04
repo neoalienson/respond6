@@ -4,7 +4,8 @@
 3.- Remove Search/Cart toggle (replace with generic attribute activated in respond.site.js)
 4.- Bootstrap-Slideshow v. Foundation-Slideshow
 5.- [base], respond-core.html [core] / respond-bootstrap.html [bootstrap] / respond-foundation.html [foundation] / respond-ecommerce.html [ecommerce] / respond-social.html [social]
-6.- Catch login errors
+x.- Catch login errors
+7.- Fix Timeago pipe
 
 ## Bugs
 - Floated elements (e.g. pull-left) are not editable

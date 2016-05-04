@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
-import {HTTP_PROVIDERS}    from 'angular2/http';
-import {RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
+import {Component} from '@angular/core';
+import {HTTP_PROVIDERS} from '@angular/http';
+import {RouteConfig, Router, RouteParams, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {UserService} from '/app/shared/services/user.service';
 
 @Component({
@@ -70,14 +70,14 @@ export class LoginComponent {
   setToken(token) {
       localStorage.setItem('id_token', token)
   }
-    
+
   /**
    * handles error
    */
   failure(obj) {
-    
+
     toast.show('failure');
-   
+
   }
 
 }

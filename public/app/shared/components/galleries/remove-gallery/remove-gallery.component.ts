@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CanActivate} from '@angular/router-deprecated';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
 import {GalleryService} from '/app/shared/services/gallery.service';
 
@@ -34,7 +34,7 @@ export class RemoveGalleryComponent {
   // gallery input
   @Input()
   set gallery(gallery){
-  
+
     // set visible
     this.model = gallery;
 

@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/submission.service'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/router-deprecated', 'angular2-jwt/angular2-jwt', '/app/shared/services/submission.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,15 +10,15 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, angular2_jwt_1, submission_service_1;
+    var core_1, router_deprecated_1, angular2_jwt_1, submission_service_1;
     var RemoveSubmissionComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
@@ -107,7 +107,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                         templateUrl: './app/shared/components/submissions/remove-submission/remove-submission.component.html',
                         providers: [submission_service_1.SubmissionService]
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [(typeof (_a = typeof submission_service_1.SubmissionService !== 'undefined' && submission_service_1.SubmissionService) === 'function' && _a) || Object])
                 ], RemoveSubmissionComponent);
                 return RemoveSubmissionComponent;

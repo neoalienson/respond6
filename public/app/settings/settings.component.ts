@@ -1,6 +1,6 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
 import {SettingService} from '/app/shared/services/setting.service';
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 import {SelectFileComponent} from '/app/shared/components/files/select-file/select-file.component';
@@ -69,8 +69,8 @@ export class SettingsComponent {
                       );
 
   }
-  
-  
+
+
   /**
    * Shows the select modal
    */
@@ -78,7 +78,7 @@ export class SettingsComponent {
     this.setting = setting;
     this.selectVisible = true;
   }
-  
+
   /**
    * Handles the selection of an image
    */
@@ -119,18 +119,18 @@ export class SettingsComponent {
   toggleDrawer() {
     this.drawerVisible = !this.drawerVisible;
   }
-  
+
   /**
    * handles error
    */
   failure (obj) {
-    
+
     toast.show('failure');
-    
+
     if(obj.status == 401) {
       this._router.navigate( ['Login', {id: this.id}] );
     }
-   
+
   }
 
 }

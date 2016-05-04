@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CanActivate} from '@angular/router-deprecated';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
 import {FormFieldService} from '/app/shared/services/form-field.service';
 

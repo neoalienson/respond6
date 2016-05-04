@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core'
-import {ROUTER_DIRECTIVES, CanActivate} from 'angular2/router'
+import {Component, EventEmitter, Input, Output} from '@angular/core'
+import {ROUTER_DIRECTIVES, CanActivate} from '@angular/router-deprecated'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {SiteService} from '/app/shared/services/site.service'
 
@@ -39,18 +39,18 @@ export class DrawerComponent {
     this._visible = false;
     this.onHide.emit(null);
   }
-  
+
   /**
    * Reload system files
    */
   reload() {
-    
+
     this._siteService.reload()
                      .subscribe(
                        data => { toast.show('success'); },
                        error => { toast.show('failure');  }
                       );
-    
+
   }
 
 }

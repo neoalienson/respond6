@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {SiteService} from '/app/shared/services/site.service';
 
 @Component({
@@ -62,14 +62,14 @@ export class CreateComponent {
     };
 
   }
-  
+
   /**
    * handles errors
    */
   failure(obj) {
-    
+
     toast.show('failure');
-   
+
   }
 
 }

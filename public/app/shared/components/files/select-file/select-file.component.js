@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/file.service', '/app/shared/components/dropzone/dropzone.component'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/router-deprecated', 'angular2-jwt/angular2-jwt', '/app/shared/services/file.service', '/app/shared/components/dropzone/dropzone.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,15 +10,15 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, angular2_jwt_1, file_service_1, dropzone_component_1;
+    var core_1, router_deprecated_1, angular2_jwt_1, file_service_1, dropzone_component_1;
     var SelectFileComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
@@ -105,7 +105,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                         providers: [file_service_1.FileService],
                         directives: [dropzone_component_1.DropzoneComponent],
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [(typeof (_a = typeof file_service_1.FileService !== 'undefined' && file_service_1.FileService) === 'function' && _a) || Object])
                 ], SelectFileComponent);
                 return SelectFileComponent;
