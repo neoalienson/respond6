@@ -31,7 +31,6 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                 };
                 DropzoneComponent.prototype.setupDropzone = function () {
                     var el = this.elementRef.nativeElement.querySelector('.dropzone');
-                    console.log(el);
                     var dropzone;
                     // set dropzone options
                     var options = {

@@ -14,7 +14,6 @@ import {MenuItemService} from '/app/shared/services/menu-item.service';
 export class RemoveMenuItemComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model;
@@ -50,6 +49,7 @@ export class RemoveMenuItemComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _menuItemService: MenuItemService) {}
 
@@ -81,7 +81,7 @@ export class RemoveMenuItemComponent {
     this._menuItemService.remove(this.menu.id, this.index)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

@@ -37,8 +37,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             FilesComponent = (function () {
-                function FilesComponent(_fileService) {
+                function FilesComponent(_fileService, _router) {
                     this._fileService = _fileService;
+                    this._router = _router;
                 }
                 /**
                  * Init files
@@ -59,7 +60,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._fileService.list()
-                        .subscribe(function (data) { _this.files = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.files = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets an modal booleans
@@ -92,6 +93,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     this.removeVisible = true;
                     this.file = file;
                 };
+                /**
+                 * handles error
+                 */
+                FilesComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
+                };
                 FilesComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-files',
@@ -100,7 +110,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         directives: [remove_file_component_1.RemoveFileComponent, dropzone_component_1.DropzoneComponent, drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof file_service_1.FileService !== 'undefined' && file_service_1.FileService) === 'function' && _a) || Object])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof file_service_1.FileService !== 'undefined' && file_service_1.FileService) === 'function' && _a) || Object, router_1.Router])
                 ], FilesComponent);
                 return FilesComponent;
                 var _a;

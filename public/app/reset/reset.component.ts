@@ -1,7 +1,7 @@
-import {Component} from 'angular2/core'
-import {HTTP_PROVIDERS}    from 'angular2/http'
-import {RouteParams, ROUTER_DIRECTIVES} from 'angular2/router'
-import {UserService} from '/app/shared/services/user.service'
+import {Component} from 'angular2/core';
+import {HTTP_PROVIDERS}    from 'angular2/http';
+import {RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
+import {UserService} from '/app/shared/services/user.service';
 
 @Component({
     selector: 'respond-reset',
@@ -11,34 +11,43 @@ import {UserService} from '/app/shared/services/user.service'
 
 export class ResetComponent {
 
-    data;
-    id;
-    token;
-    errorMessage;
+  data;
+  id;
+  token;
+  errorMessage;
 
-    constructor (private _userService: UserService, private _routeParams: RouteParams) {}
+  constructor (private _userService: UserService, private _routeParams: RouteParams) {}
 
-    ngOnInit() {
-        this.id = this._routeParams.get('id');
-        this.token = this._routeParams.get('token');
-    }
+  ngOnInit() {
+      this.id = this._routeParams.get('id');
+      this.token = this._routeParams.get('token');
+  }
 
-    reset(event, password, retype){
+  reset(event, password, retype){
 
-        event.preventDefault();
+      event.preventDefault();
 
-        if(password !== retype) {
-          alert('Password mismatch');
-        }
-        else {
-          this._userService.reset(this.id, this.token, password, retype)
-                       .subscribe(
-                         () => { alert('success'); },
-                         error =>  this.errorMessage = <any>error
-                        );
-        }
+      if(password !== retype) {
+        alert('Password mismatch');
+      }
+      else {
+        this._userService.reset(this.id, this.token, password, retype)
+                     .subscribe(
+                       () => { alert('success'); },
+                       error =>  { this.failure(<any>error); }
+                      );
+      }
 
-    }
+  }
+    
+  /**
+   * handles error
+   */
+  failure (obj) {
+    
+    toast.show('failure');
+   
+  }
 
 
 }

@@ -40,8 +40,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             SubmissionsComponent = (function () {
-                function SubmissionsComponent(_submissionService) {
+                function SubmissionsComponent(_submissionService, _router) {
                     this._submissionService = _submissionService;
+                    this._router = _router;
                 }
                 /**
                  * Init submissions
@@ -61,7 +62,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._submissionService.list()
-                        .subscribe(function (data) { _this.submissions = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.submissions = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets an modal booleans
@@ -104,6 +105,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     this.removeVisible = true;
                     this.submission = submission;
                 };
+                /**
+                 * handles error
+                 */
+                SubmissionsComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
+                };
                 SubmissionsComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-submissions',
@@ -113,7 +123,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         pipes: [time_ago_pipe_1.TimeAgoPipe]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof submission_service_1.SubmissionService !== 'undefined' && submission_service_1.SubmissionService) === 'function' && _a) || Object])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof submission_service_1.SubmissionService !== 'undefined' && submission_service_1.SubmissionService) === 'function' && _a) || Object, router_1.Router])
                 ], SubmissionsComponent);
                 return SubmissionsComponent;
                 var _a;

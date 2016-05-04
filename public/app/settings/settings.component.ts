@@ -1,7 +1,7 @@
-import {Component} from 'angular2/core'
-import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
-import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
-import {SettingService} from '/app/shared/services/setting.service'
+import {Component} from 'angular2/core';
+import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {SettingService} from '/app/shared/services/setting.service';
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
 import {SelectFileComponent} from '/app/shared/components/files/select-file/select-file.component';
 
@@ -24,7 +24,7 @@ export class SettingsComponent {
   drawerVisible: boolean;
   selectVisible: boolean;
 
-  constructor (private _settingService: SettingService) {}
+  constructor (private _settingService: SettingService, private _router: Router) {}
 
   /**
    * Init
@@ -52,7 +52,7 @@ export class SettingsComponent {
     this._settingService.list()
                      .subscribe(
                        data => { this.settings = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
 
   }
@@ -65,7 +65,7 @@ export class SettingsComponent {
     this._settingService.edit(this.settings)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
 
   }
@@ -118,6 +118,19 @@ export class SettingsComponent {
    */
   toggleDrawer() {
     this.drawerVisible = !this.drawerVisible;
+  }
+  
+  /**
+   * handles error
+   */
+  failure (obj) {
+    
+    toast.show('failure');
+    
+    if(obj.status == 401) {
+      this._router.navigate( ['Login', {id: this.id}] );
+    }
+   
   }
 
 }

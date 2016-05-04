@@ -37,6 +37,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     this._visible = false;
                     this.onCancel = new core_1.EventEmitter();
                     this.onUpdate = new core_1.EventEmitter();
+                    this.onError = new core_1.EventEmitter();
                 }
                 Object.defineProperty(PageSettingsComponent.prototype, "visible", {
                     get: function () { return this._visible; },
@@ -61,7 +62,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 PageSettingsComponent.prototype.ngOnInit = function () {
                     var _this = this;
                     this._routeService.list()
-                        .subscribe(function (data) { _this.routes = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.routes = data; }, function (error) { _this.onError.emit(error); });
                 };
                 /**
                  * Hides the modal
@@ -111,6 +112,10 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], PageSettingsComponent.prototype, "onUpdate", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], PageSettingsComponent.prototype, "onError", void 0);
                 PageSettingsComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-page-settings',

@@ -14,7 +14,6 @@ import {UserService} from '/app/shared/services/user.service'
 export class RemoveUserComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model: {
@@ -45,6 +44,7 @@ export class RemoveUserComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _userService: UserService) {}
 
@@ -71,7 +71,7 @@ export class RemoveUserComponent {
     this._userService.remove(this.model.email)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

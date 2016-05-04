@@ -19,6 +19,6 @@
   </div>
 </div>
 
-<respond-remove-file [visible]="removeVisible" [file]="file" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-remove-file>
+<respond-remove-file [visible]="removeVisible" [file]="file" (onCancel)="reset($event)" (onUpdate)="list($event)" (onError)="failure($event)"></respond-remove-file>
 
 <respond-drawer [visible]="drawerVisible" (onHide)="reset($event)"></respond-drawer>

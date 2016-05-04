@@ -45,7 +45,7 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
                     var _this = this;
                     event.preventDefault();
                     this._userService.login(this.id, email, password)
-                        .subscribe(function (data) { _this.data = data; _this.success(); }, function (error) { _this.failure(); });
+                        .subscribe(function (data) { _this.data = data; _this.success(); }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Handles a successful login
@@ -58,12 +58,6 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
                     this._router.navigate(['Pages']);
                 };
                 /**
-                 * Handles a failed login
-                 */
-                LoginComponent.prototype.failure = function () {
-                    toast.show('failure');
-                };
-                /**
                  * Routes to the forgot password screen
                  */
                 LoginComponent.prototype.forgot = function () {
@@ -74,6 +68,12 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
                  */
                 LoginComponent.prototype.setToken = function (token) {
                     localStorage.setItem('id_token', token);
+                };
+                /**
+                 * handles error
+                 */
+                LoginComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
                 };
                 LoginComponent = __decorate([
                     core_1.Component({

@@ -1,5 +1,5 @@
 import {Component} from 'angular2/core';
-import {SiteService} from '/app/shared/services/site.service'
+import {SiteService} from '/app/shared/services/site.service';
 
 @Component({
     selector: 'respond-create',
@@ -39,7 +39,7 @@ export class CreateComponent {
       this._siteService.create(this.model.name, this.model.theme, this.model.email, this.model.password, this.model.passcode)
                    .subscribe(
                      data => { this.site = data; this.success(); },
-                     error =>  this.errorMessage = <any>error
+                     error =>  { this.failure(<any>error); }
                     );
 
   }
@@ -49,8 +49,6 @@ export class CreateComponent {
    *
    */
   success() {
-
-    console.log(this.site);
 
     alert('success! site=' + this.site.id);
 
@@ -63,8 +61,15 @@ export class CreateComponent {
       passcode: ''
     };
 
-
-
+  }
+  
+  /**
+   * handles errors
+   */
+  failure(obj) {
+    
+    toast.show('failure');
+   
   }
 
 }

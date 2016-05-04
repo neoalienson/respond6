@@ -14,7 +14,6 @@ import {GalleryService} from '/app/shared/services/gallery.service';
 export class RemoveGalleryComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model;
@@ -36,8 +35,6 @@ export class RemoveGalleryComponent {
   @Input()
   set gallery(gallery){
   
-    console.log(gallery);
-
     // set visible
     this.model = gallery;
 
@@ -46,6 +43,7 @@ export class RemoveGalleryComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _galleryService: GalleryService) {}
 
@@ -77,7 +75,7 @@ export class RemoveGalleryComponent {
     this._galleryService.remove(this.model.id)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

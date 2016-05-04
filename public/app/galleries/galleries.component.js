@@ -52,9 +52,10 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             GalleriesComponent = (function () {
-                function GalleriesComponent(_galleryService, _galleryImageService) {
+                function GalleriesComponent(_galleryService, _galleryImageService, _router) {
                     this._galleryService = _galleryService;
                     this._galleryImageService = _galleryImageService;
+                    this._router = _router;
                 }
                 /**
                  * Init
@@ -82,7 +83,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._galleryService.list()
-                        .subscribe(function (data) { _this.galleries = data; console.log(_this.galleries); _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.galleries = data; _this.success(); }, function (error) { _this.failure(error); });
                 };
                 /**
                  * handles the list successfully updated
@@ -114,7 +115,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 GalleriesComponent.prototype.listImages = function () {
                     var _this = this;
                     this._galleryImageService.list(this.selectedGallery.id)
-                        .subscribe(function (data) { _this.images = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.images = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets screen
@@ -191,7 +192,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     var caption = '';
                     this._galleryImageService.add(event.name, event.url, event.thumb, caption, this.selectedGallery.id)
-                        .subscribe(function (data) { _this.listImages(); toast.show('success'); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.listImages(); toast.show('success'); }, function (error) { _this.failure(error); });
                     this.selectVisible = false;
                 };
                 /**
@@ -245,7 +246,16 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 GalleriesComponent.prototype.updateOrder = function () {
                     var _this = this;
                     this._galleryImageService.updateOrder(this.images, this.selectedGallery.id)
-                        .subscribe(function (data) { }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { }, function (error) { _this.failure(error); });
+                };
+                /**
+                 * handles error
+                 */
+                GalleriesComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
                 };
                 GalleriesComponent = __decorate([
                     core_1.Component({
@@ -255,7 +265,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         directives: [select_file_component_1.SelectFileComponent, add_gallery_component_1.AddGalleryComponent, edit_gallery_component_1.EditGalleryComponent, remove_gallery_component_1.RemoveGalleryComponent, edit_caption_component_1.EditCaptionComponent, remove_gallery_image_component_1.RemoveGalleryImageComponent, drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof gallery_service_1.GalleryService !== 'undefined' && gallery_service_1.GalleryService) === 'function' && _a) || Object, (typeof (_b = typeof gallery_image_service_1.GalleryImageService !== 'undefined' && gallery_image_service_1.GalleryImageService) === 'function' && _b) || Object])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof gallery_service_1.GalleryService !== 'undefined' && gallery_service_1.GalleryService) === 'function' && _a) || Object, (typeof (_b = typeof gallery_image_service_1.GalleryImageService !== 'undefined' && gallery_image_service_1.GalleryImageService) === 'function' && _b) || Object, router_1.Router])
                 ], GalleriesComponent);
                 return GalleriesComponent;
                 var _a, _b;

@@ -41,8 +41,14 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
                     }
                     else {
                         this._userService.reset(this.id, this.token, password, retype)
-                            .subscribe(function () { alert('success'); }, function (error) { return _this.errorMessage = error; });
+                            .subscribe(function () { alert('success'); }, function (error) { _this.failure(error); });
                     }
+                };
+                /**
+                 * handles error
+                 */
+                ResetComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
                 };
                 ResetComponent = __decorate([
                     core_1.Component({

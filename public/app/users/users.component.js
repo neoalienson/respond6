@@ -40,8 +40,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             UsersComponent = (function () {
-                function UsersComponent(_userService) {
+                function UsersComponent(_userService, _router) {
                     this._userService = _userService;
+                    this._router = _router;
                 }
                 /**
                  * Init
@@ -63,7 +64,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._userService.list()
-                        .subscribe(function (data) { _this.users = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.users = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets an modal booleans
@@ -113,6 +114,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     this.editVisible = true;
                     this.user = user;
                 };
+                /**
+                 * handles error
+                 */
+                UsersComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
+                };
                 UsersComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-users',
@@ -121,7 +131,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         directives: [add_user_component_1.AddUserComponent, edit_user_component_1.EditUserComponent, remove_user_component_1.RemoveUserComponent, drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object, router_1.Router])
                 ], UsersComponent);
                 return UsersComponent;
                 var _a;

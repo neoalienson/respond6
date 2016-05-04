@@ -13,8 +13,6 @@ import {FormFieldService} from '/app/shared/services/form-field.service';
 
 export class AddFormFieldComponent {
 
-  errorMessage;
-
   // model to store
   model = {
     label: '',
@@ -56,6 +54,7 @@ export class AddFormFieldComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onAdd = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _formFieldService: FormFieldService) {}
 
@@ -82,7 +81,7 @@ export class AddFormFieldComponent {
     this._formFieldService.add(this.form.id, this.model.label, this.model.type, this.model.required, this.model.options, this.model.helperText, this.model.placeholder, this.model.cssClass)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -96,16 +95,6 @@ export class AddFormFieldComponent {
 
     this._visible = false;
     this.onAdd.emit(null);
-
-  }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
 
   }
 

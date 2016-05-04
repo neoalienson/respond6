@@ -1,7 +1,7 @@
-import {Component} from 'angular2/core'
-import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
-import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
-import {FileService} from '/app/shared/services/file.service'
+import {Component} from 'angular2/core';
+import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {FileService} from '/app/shared/services/file.service';
 import {RemoveFileComponent} from '/app/shared/components/files/remove-file/remove-file.component';
 import {DropzoneComponent} from '/app/shared/components/dropzone/dropzone.component';
 import {DrawerComponent} from '/app/shared/components/drawer/drawer.component';
@@ -26,7 +26,7 @@ export class FilesComponent {
   drawerVisible: boolean;
   
 
-  constructor (private _fileService: FileService) {}
+  constructor (private _fileService: FileService, private _router: Router) {}
 
   /**
    * Init files
@@ -53,7 +53,7 @@ export class FilesComponent {
     this._fileService.list()
                      .subscribe(
                        data => { this.files = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
   }
 
@@ -90,6 +90,19 @@ export class FilesComponent {
   showRemove(file) {
     this.removeVisible = true;
     this.file = file;
+  }
+  
+  /**
+   * handles error
+   */
+  failure(obj) {
+    
+    toast.show('failure');
+    
+    if(obj.status == 401) {
+      this._router.navigate( ['Login', {id: this.id}] );
+    }
+   
   }
 
 }

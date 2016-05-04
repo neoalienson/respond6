@@ -1,13 +1,12 @@
 import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router'
-import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
-import {FileService} from '/app/shared/services/file.service'
-import {RouteService} from '/app/shared/services/route.service'
+import {CanActivate} from 'angular2/router';
+import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
+import {FileService} from '/app/shared/services/file.service';
 
 @Component({
     selector: 'respond-remove-file',
     templateUrl: './app/shared/components/files/remove-file/remove-file.component.html',
-    providers: [FileService, RouteService]
+    providers: [FileService]
 })
 
 @CanActivate(() => tokenNotExpired())
@@ -45,8 +44,9 @@ export class RemoveFileComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
-  constructor (private _fileService: FileService, private _routeService: RouteService) {}
+  constructor (private _fileService: FileService) {}
 
   /**
    * Init files
@@ -71,7 +71,7 @@ export class RemoveFileComponent {
     this._fileService.remove(this.model.name)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error => { this.onError.emit(<any>error) }
                       );
 
   }

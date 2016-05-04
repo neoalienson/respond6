@@ -33,6 +33,7 @@ export class SelectFileComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onSelect = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _fileService: FileService) {}
 
@@ -54,7 +55,7 @@ export class SelectFileComponent {
     this._fileService.list()
                      .subscribe(
                        data => { this.files = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
   }
   

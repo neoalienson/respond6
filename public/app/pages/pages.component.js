@@ -43,8 +43,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             PagesComponent = (function () {
-                function PagesComponent(_pageService) {
+                function PagesComponent(_pageService, _router) {
                     this._pageService = _pageService;
+                    this._router = _router;
                 }
                 /**
                  * Init pages
@@ -66,7 +67,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._pageService.list()
-                        .subscribe(function (data) { _this.pages = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.pages = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets an modal booleans
@@ -124,6 +125,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 PagesComponent.prototype.edit = function (page) {
                     window.location = '/edit?q=' + this.id + '/' + page.url + '.html';
                 };
+                /**
+                 * handles error
+                 */
+                PagesComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
+                };
                 PagesComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-pages',
@@ -133,7 +143,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         pipes: [time_ago_pipe_1.TimeAgoPipe]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object, router_1.Router])
                 ], PagesComponent);
                 return PagesComponent;
                 var _a;

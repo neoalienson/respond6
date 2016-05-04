@@ -15,7 +15,6 @@ import {RouteService} from '/app/shared/services/route.service'
 export class AddPageComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model: {
@@ -47,6 +46,7 @@ export class AddPageComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onAdd = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _pageService: PageService, private _routeService: RouteService) {}
 
@@ -58,7 +58,7 @@ export class AddPageComponent {
     this._routeService.list()
                      .subscribe(
                        data => { this.routes = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -86,7 +86,7 @@ export class AddPageComponent {
     this._pageService.add(fullUrl, this.model.title, this.model.description)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -102,16 +102,5 @@ export class AddPageComponent {
     this.onAdd.emit(null);
 
   }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
-
-  }
-
 
 }

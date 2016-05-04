@@ -1,6 +1,6 @@
 import {Component} from 'angular2/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
 import {SubmissionService} from '/app/shared/services/submission.service';
 import {RemoveSubmissionComponent} from '/app/shared/components/submissions/remove-submission/remove-submission.component';
 import {ViewSubmissionComponent} from '/app/shared/components/submissions/view-submission/view-submission.component';
@@ -28,7 +28,7 @@ export class SubmissionsComponent {
   viewVisible: boolean;
   drawerVisible: boolean;
 
-  constructor (private _submissionService: SubmissionService) {}
+  constructor (private _submissionService: SubmissionService, private _router: Router) {}
 
   /**
    * Init submissions
@@ -54,7 +54,7 @@ export class SubmissionsComponent {
     this._submissionService.list()
                      .subscribe(
                        data => { this.submissions = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
   }
 
@@ -104,4 +104,17 @@ export class SubmissionsComponent {
     this.submission = submission;
   }
 
+  /**
+   * handles error
+   */
+  failure (obj) {
+    
+    toast.show('failure');
+    
+    if(obj.status == 401) {
+      this._router.navigate( ['Login', {id: this.id}] );
+    }
+   
+  }
+  
 }

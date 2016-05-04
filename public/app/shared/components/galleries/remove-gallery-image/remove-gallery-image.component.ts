@@ -14,7 +14,6 @@ import {GalleryImageService} from '/app/shared/services/gallery-image.service';
 export class RemoveGalleryImageComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model;
@@ -47,6 +46,7 @@ export class RemoveGalleryImageComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _galleryImageService: GalleryImageService) {}
 
@@ -80,7 +80,7 @@ export class RemoveGalleryImageComponent {
     this._galleryImageService.remove(this.model.id, this.gallery.id)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

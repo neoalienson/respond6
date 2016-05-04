@@ -1,6 +1,6 @@
 import {Component} from 'angular2/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
 import {GalleryService} from '/app/shared/services/gallery.service';
 import {GalleryImageService} from '/app/shared/services/gallery-image.service';
 import {SelectFileComponent} from '/app/shared/components/files/select-file/select-file.component';
@@ -37,7 +37,7 @@ export class GalleriesComponent {
   drawerVisible: boolean;
   overflowVisible: boolean;
 
-  constructor (private _galleryService: GalleryService, private _galleryImageService: GalleryImageService) {}
+  constructor (private _galleryService: GalleryService, private _galleryImageService: GalleryImageService, private _router: Router) {}
 
   /**
    * Init
@@ -71,8 +71,8 @@ export class GalleriesComponent {
 
     this._galleryService.list()
                      .subscribe(
-                       data => { this.galleries = data; console.log(this.galleries); this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       data => { this.galleries = data; this.success(); },
+                       error =>  { this.failure(<any>error); }
                       );
 
   }
@@ -117,7 +117,7 @@ export class GalleriesComponent {
     this._galleryImageService.list(this.selectedGallery.id)
                      .subscribe(
                        data => { this.images = data; },
-                       error =>  this.errorMessage = <any>error
+                       error => { this.failure(<any>error); }  
                       );
 
   }
@@ -210,7 +210,7 @@ export class GalleriesComponent {
    this._galleryImageService.add(event.name, event.url, event.thumb, caption, this.selectedGallery.id)
                    .subscribe(
                      data => { this.listImages(); toast.show('success'); },
-                     error =>  this.errorMessage = <any>error
+                     error => { this.failure(<any>error); }
                     );
   
     this.selectVisible = false;
@@ -281,8 +281,21 @@ export class GalleriesComponent {
     this._galleryImageService.updateOrder(this.images, this.selectedGallery.id)
                      .subscribe(
                        data => { },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
+  }
+  
+  /**
+   * handles error
+   */
+  failure(obj) {
+    
+    toast.show('failure');
+    
+    if(obj.status == 401) {
+      this._router.navigate( ['Login', {id: this.id}] );
+    }
+   
   }
 
 

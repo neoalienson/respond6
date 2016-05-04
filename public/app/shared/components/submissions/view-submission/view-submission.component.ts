@@ -14,7 +14,6 @@ import {SubmissionService} from '/app/shared/services/submission.service'
 export class ViewSubmissionComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model: {
@@ -45,6 +44,7 @@ export class ViewSubmissionComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _submissionService: SubmissionService) {}
 

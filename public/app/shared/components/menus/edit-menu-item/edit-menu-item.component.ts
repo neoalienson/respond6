@@ -16,7 +16,6 @@ export class EditMenuItemComponent {
 
   menu;
   pages;
-  errorMessage;
 
   // model to store
   model = {
@@ -57,6 +56,7 @@ export class EditMenuItemComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onAdd = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _menuItemService: MenuItemService, private _pageService: PageService) {}
 
@@ -97,7 +97,7 @@ export class EditMenuItemComponent {
     this._menuItemService.edit(this.menu.id, this.index, this.model.html, this.model.cssClass, this.model.isNested, this.model.url)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -113,16 +113,5 @@ export class EditMenuItemComponent {
     this.onAdd.emit(null);
 
   }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
-
-  }
-
 
 }

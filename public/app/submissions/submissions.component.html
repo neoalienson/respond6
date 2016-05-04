@@ -17,7 +17,7 @@
   </div>
 </div>
 
-<respond-view-submission [visible]="viewVisible" [submission]="submission" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-view-submission>
-<respond-remove-submission [visible]="removeVisible" [submission]="submission" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-remove-submission>
+<respond-view-submission [visible]="viewVisible" [submission]="submission" (onCancel)="reset($event)" (onUpdate)="list($event)" (onError)="failure($event)"></respond-view-submission>
+<respond-remove-submission [visible]="removeVisible" [submission]="submission" (onCancel)="reset($event)" (onUpdate)="list($event)" (onError)="failure($event)"></respond-remove-submission>
 
 <respond-drawer [visible]="drawerVisible" (onHide)="reset($event)"></respond-drawer>

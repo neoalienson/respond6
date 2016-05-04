@@ -36,7 +36,13 @@ System.register(['angular2/core', 'angular2/router', '/app/shared/services/user.
                     var _this = this;
                     event.preventDefault();
                     this._userService.forgot(this.id, email)
-                        .subscribe(function () { alert('success'); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function () { toast.show('success'); }, function (error) { _this.failure(error); });
+                };
+                /**
+                 * handles errors
+                 */
+                ForgotComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
                 };
                 ForgotComponent = __decorate([
                     core_1.Component({

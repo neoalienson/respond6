@@ -52,9 +52,10 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             MenusComponent = (function () {
-                function MenusComponent(_menuService, _menuItemService) {
+                function MenusComponent(_menuService, _menuItemService, _router) {
                     this._menuService = _menuService;
                     this._menuItemService = _menuItemService;
+                    this._router = _router;
                 }
                 /**
                  * Init
@@ -81,7 +82,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._menuService.list()
-                        .subscribe(function (data) { _this.menus = data; _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.menus = data; _this.success(); }, function (error) { _this.failure(error); });
                 };
                 /**
                  * handles the list successfully updated
@@ -113,7 +114,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 MenusComponent.prototype.listItems = function () {
                     var _this = this;
                     this._menuItemService.list(this.selectedMenu.id)
-                        .subscribe(function (data) { _this.items = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.items = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets screen
@@ -232,7 +233,16 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 MenusComponent.prototype.updateOrder = function () {
                     var _this = this;
                     this._menuItemService.updateOrder(this.selectedMenu.id, this.items)
-                        .subscribe(function (data) { }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { }, function (error) { _this.failure(error); });
+                };
+                /**
+                 * handles error
+                 */
+                MenusComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
                 };
                 MenusComponent = __decorate([
                     core_1.Component({
@@ -242,7 +252,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         directives: [add_menu_component_1.AddMenuComponent, edit_menu_component_1.EditMenuComponent, remove_menu_component_1.RemoveMenuComponent, add_menu_item_component_1.AddMenuItemComponent, edit_menu_item_component_1.EditMenuItemComponent, remove_menu_item_component_1.RemoveMenuItemComponent, drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof menu_service_1.MenuService !== 'undefined' && menu_service_1.MenuService) === 'function' && _a) || Object, (typeof (_b = typeof menu_item_service_1.MenuItemService !== 'undefined' && menu_item_service_1.MenuItemService) === 'function' && _b) || Object])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof menu_service_1.MenuService !== 'undefined' && menu_service_1.MenuService) === 'function' && _a) || Object, (typeof (_b = typeof menu_item_service_1.MenuItemService !== 'undefined' && menu_item_service_1.MenuItemService) === 'function' && _b) || Object, router_1.Router])
                 ], MenusComponent);
                 return MenusComponent;
                 var _a, _b;

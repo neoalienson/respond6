@@ -13,8 +13,6 @@ import {GalleryImageService} from '/app/shared/services/gallery-image.service';
 
 export class EditCaptionComponent {
 
-  errorMessage;
-
   // model to store
   model = {
     caption: ''
@@ -54,6 +52,7 @@ export class EditCaptionComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onAdd = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _galleryImageService: GalleryImageService) {}
 
@@ -84,7 +83,7 @@ export class EditCaptionComponent {
     this._galleryImageService.edit(this.model.id, this.model.caption, this.gallery.id)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -100,16 +99,5 @@ export class EditCaptionComponent {
     this.onAdd.emit(null);
 
   }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
-
-  }
-
 
 }

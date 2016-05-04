@@ -34,8 +34,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             SettingsComponent = (function () {
-                function SettingsComponent(_settingService) {
+                function SettingsComponent(_settingService, _router) {
                     this._settingService = _settingService;
+                    this._router = _router;
                 }
                 /**
                  * Init
@@ -56,7 +57,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._settingService.list()
-                        .subscribe(function (data) { _this.settings = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.settings = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Handles the form submission
@@ -64,7 +65,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 SettingsComponent.prototype.submit = function () {
                     var _this = this;
                     this._settingService.edit(this.settings)
-                        .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Shows the select modal
@@ -108,6 +109,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 SettingsComponent.prototype.toggleDrawer = function () {
                     this.drawerVisible = !this.drawerVisible;
                 };
+                /**
+                 * handles error
+                 */
+                SettingsComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
+                };
                 SettingsComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-settings',
@@ -116,7 +126,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         directives: [select_file_component_1.SelectFileComponent, drawer_component_1.DrawerComponent]
                     }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof setting_service_1.SettingService !== 'undefined' && setting_service_1.SettingService) === 'function' && _a) || Object])
+                    __metadata('design:paramtypes', [(typeof (_a = typeof setting_service_1.SettingService !== 'undefined' && setting_service_1.SettingService) === 'function' && _a) || Object, router_1.Router])
                 ], SettingsComponent);
                 return SettingsComponent;
                 var _a;

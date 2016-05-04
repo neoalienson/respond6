@@ -1,6 +1,6 @@
 import {Component} from 'angular2/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
 import {FormService} from '/app/shared/services/form.service';
 import {FormFieldService} from '/app/shared/services/form-field.service';
 import {AddFormComponent} from '/app/shared/components/forms/add-form/add-form.component';
@@ -38,7 +38,7 @@ export class FormsComponent {
   drawerVisible: boolean;
   overflowVisible: boolean;
 
-  constructor (private _formService: FormService, private _formFieldService: FormFieldService) {}
+  constructor (private _formService: FormService, private _formFieldService: FormFieldService, private _router: Router) {}
 
   /**
    * Init
@@ -72,7 +72,7 @@ export class FormsComponent {
     this._formService.list()
                      .subscribe(
                        data => { this.forms = data; this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
 
   }
@@ -117,7 +117,7 @@ export class FormsComponent {
     this._formFieldService.list(this.selectedForm.id)
                      .subscribe(
                        data => { this.fields = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
 
   }
@@ -264,6 +264,19 @@ export class FormsComponent {
                        data => { },
                        error =>  this.errorMessage = <any>error
                       );
+  }
+  
+  /**
+   * handles errors
+   */
+  failure(obj) {
+    
+    toast.show('failure');
+    
+    if(obj.status == 401) {
+      this._router.navigate( ['Login', {id: this.id}] );
+    }
+   
   }
 
 

@@ -1,6 +1,6 @@
 import {Component} from 'angular2/core';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
-import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router';
 import {UserService} from '/app/shared/services/user.service';
 import {AddUserComponent} from '/app/shared/components/users/add-user/add-user.component';
 import {EditUserComponent} from '/app/shared/components/users/edit-user/edit-user.component';
@@ -28,7 +28,7 @@ export class UsersComponent {
   removeVisible: boolean;
   drawerVisible: boolean;
 
-  constructor (private _userService: UserService) {}
+  constructor (private _userService: UserService, private _router: Router) {}
 
   /**
    * Init
@@ -56,7 +56,7 @@ export class UsersComponent {
     this._userService.list()
                      .subscribe(
                        data => { this.users = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
   }
 
@@ -113,7 +113,18 @@ export class UsersComponent {
     this.editVisible = true;
     this.user = user;
   }
-
-
+  
+  /**
+   * handles error
+   */
+  failure (obj) {
+    
+    toast.show('failure');
+    
+    if(obj.status == 401) {
+      this._router.navigate( ['Login', {id: this.id}] );
+    }
+   
+  }
 
 }

@@ -14,7 +14,6 @@ import {MenuService} from '/app/shared/services/menu.service'
 export class EditMenuComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model;
@@ -41,6 +40,7 @@ export class EditMenuComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _menuService: MenuService) {}
 
@@ -70,7 +70,7 @@ export class EditMenuComponent {
     this._menuService.edit(this.model.id, this.model.name)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -86,16 +86,5 @@ export class EditMenuComponent {
     this.onUpdate.emit(null);
 
   }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
-
-  }
-
 
 }

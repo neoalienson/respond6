@@ -51,6 +51,7 @@ export class PageSettingsComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _pageService: PageService, private _routeService: RouteService) {}
 
@@ -62,7 +63,7 @@ export class PageSettingsComponent {
     this._routeService.list()
                      .subscribe(
                        data => { this.routes = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

@@ -14,7 +14,6 @@ import {FormFieldService} from '/app/shared/services/form-field.service';
 export class RemoveFormFieldComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model;
@@ -50,6 +49,7 @@ export class RemoveFormFieldComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _formFieldService: FormFieldService) {}
 
@@ -81,7 +81,7 @@ export class RemoveFormFieldComponent {
     this._formFieldService.remove(this.form.id, this.index)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

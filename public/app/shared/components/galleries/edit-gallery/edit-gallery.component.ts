@@ -14,7 +14,6 @@ import {GalleryService} from '/app/shared/services/gallery.service';
 export class EditGalleryComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model;
@@ -41,6 +40,7 @@ export class EditGalleryComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _galleryService: GalleryService) {}
 
@@ -70,7 +70,7 @@ export class EditGalleryComponent {
     this._galleryService.edit(this.model.id, this.model.name)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -84,16 +84,6 @@ export class EditGalleryComponent {
 
     this._visible = false;
     this.onUpdate.emit(null);
-
-  }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
 
   }
 

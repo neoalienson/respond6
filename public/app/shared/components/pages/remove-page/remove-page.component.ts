@@ -50,6 +50,7 @@ export class RemovePageComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _pageService: PageService, private _routeService: RouteService) {}
 
@@ -76,7 +77,7 @@ export class RemovePageComponent {
     this._pageService.remove(this.model.url)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

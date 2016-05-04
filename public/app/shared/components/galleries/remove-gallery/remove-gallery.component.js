@@ -48,7 +48,6 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 Object.defineProperty(RemoveGalleryComponent.prototype, "gallery", {
                     // gallery input
                     set: function (gallery) {
-                        console.log(gallery);
                         // set visible
                         this.model = gallery;
                     },

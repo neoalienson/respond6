@@ -24,8 +24,6 @@ export class DropzoneComponent {
   
     var el = this.elementRef.nativeElement.querySelector('.dropzone');
     
-    console.log(el);
-    
     var dropzone: any;
 
     // set dropzone options

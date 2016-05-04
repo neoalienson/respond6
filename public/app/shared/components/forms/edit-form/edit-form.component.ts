@@ -14,7 +14,6 @@ import {FormService} from '/app/shared/services/form.service';
 export class EditFormComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model;
@@ -41,6 +40,7 @@ export class EditFormComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _formService: FormService) {}
 
@@ -71,7 +71,7 @@ export class EditFormComponent {
     this._formService.edit(this.model.id, this.model.name, this.model.cssClass)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

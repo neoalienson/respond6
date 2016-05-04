@@ -14,7 +14,6 @@ import {SubmissionService} from '/app/shared/services/submission.service'
 export class RemoveSubmissionComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model: {
@@ -45,6 +44,7 @@ export class RemoveSubmissionComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _submissionService: SubmissionService) {}
 
@@ -71,7 +71,7 @@ export class RemoveSubmissionComponent {
     this._submissionService.remove(this.model.id)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
