@@ -5,14 +5,14 @@
     <h1>Menus</h1>
 
     <button class="app-add position-2" (click)="showAddItem()"><svg viewBox="0 0 24 24" width="24" height="24" preserveAspectRatio="xMidYMid meet"><g><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></g></svg></button>
-    
+
     <button class="app-overflow" (click)="toggleOverflow()" *ngIf="selectedMenu !== undefined"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
-    
+
 </menu>
 
 <nav class="app-selector">
   <ul>
-    <li *ngFor="#menu of menus" [class.selected]="menu.id === selectedMenu.id" (click)="setActive(menu)">
+    <li *ngFor="let menu of menus" [class.selected]="menu.id === selectedMenu.id" (click)="setActive(menu)">
       <a>{{menu.name}}</a>
     </li>
   </ul>
@@ -20,7 +20,7 @@
 
 
 <div id="items-list" class="app-list">
-  <div class="app-list-item" *ngFor="#item of items" (click)="setItemActive(item)" [class.selected]="item === selectedItem">
+  <div class="app-list-item" *ngFor="let item of items" (click)="setItemActive(item)" [class.selected]="item === selectedItem">
     <h2><span class="primary">{{ item.html }}</span></h2>
     <small>{{ item.url }}</small>
     <div class="app-list-actions">
@@ -34,17 +34,17 @@
   </div>
 </div>
 
-<respond-add-menu [visible]="addVisible" (onCancel)="reset($event)" (onAdd)="list($event)"></respond-add-menu>
+<respond-add-menu [visible]="addVisible" (onCancel)="reset($event)" (onAdd)="list($event)" (onError)="failure($event)"></respond-add-menu>
 
-<respond-edit-menu [visible]="editVisible" [menu]="selectedMenu" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-edit-menu>
+<respond-edit-menu [visible]="editVisible" [menu]="selectedMenu" (onCancel)="reset($event)" (onUpdate)="list($event)" (onError)="failure($event)"></respond-edit-menu>
 
-<respond-remove-menu [visible]="removeVisible" [menu]="selectedMenu" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-remove-menu>
+<respond-remove-menu [visible]="removeVisible" [menu]="selectedMenu" (onCancel)="reset($event)" (onUpdate)="list($event)" (onError)="failure($event)"></respond-remove-menu>
 
-<respond-add-menu-item [visible]="addItemVisible" [menu]="selectedMenu" (onCancel)="reset($event)" (onAdd)="list($event)"></respond-add-menu-item>
+<respond-add-menu-item [visible]="addItemVisible" [menu]="selectedMenu" (onCancel)="reset($event)" (onAdd)="list($event)" (onError)="failure($event)"></respond-add-menu-item>
 
-<respond-edit-menu-item [visible]="editItemVisible" [menu]="selectedMenu" [item]="selectedItem" [index]="selectedIndex" (onCancel)="reset($event)" (onAdd)="list($event)"></respond-edit-menu-item>
+<respond-edit-menu-item [visible]="editItemVisible" [menu]="selectedMenu" [item]="selectedItem" [index]="selectedIndex" (onCancel)="reset($event)" (onAdd)="list($event)" (onError)="failure($event)"></respond-edit-menu-item>
 
-<respond-remove-menu-item [visible]="removeItemVisible" [menu]="selectedMenu" [item]="selectedItem" [index]="selectedIndex" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-remove-menu-item>
+<respond-remove-menu-item [visible]="removeItemVisible" [menu]="selectedMenu" [item]="selectedItem" [index]="selectedIndex" (onCancel)="reset($event)" (onUpdate)="list($event)" (onError)="failure($event)"></respond-remove-menu-item>
 
 <respond-drawer [visible]="drawerVisible" (onHide)="reset($event)"></respond-drawer>
 

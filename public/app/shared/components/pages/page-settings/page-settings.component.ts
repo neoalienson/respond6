@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router'
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CanActivate} from '@angular/router-deprecated'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {PageService} from '/app/shared/services/page.service'
 import {RouteService} from '/app/shared/services/route.service'
@@ -51,6 +51,7 @@ export class PageSettingsComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _pageService: PageService, private _routeService: RouteService) {}
 
@@ -62,7 +63,7 @@ export class PageSettingsComponent {
     this._routeService.list()
                      .subscribe(
                        data => { this.routes = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

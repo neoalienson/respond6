@@ -1,4 +1,4 @@
-System.register(['angular2/core', '/app/shared/services/site.service'], function(exports_1, context_1) {
+System.register(['@angular/core', '/app/shared/services/site.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -44,14 +44,13 @@ System.register(['angular2/core', '/app/shared/services/site.service'], function
                 CreateComponent.prototype.submit = function () {
                     var _this = this;
                     this._siteService.create(this.model.name, this.model.theme, this.model.email, this.model.password, this.model.passcode)
-                        .subscribe(function (data) { _this.site = data; _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.site = data; _this.success(); }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Handles a successful create
                  *
                  */
                 CreateComponent.prototype.success = function () {
-                    console.log(this.site);
                     alert('success! site=' + this.site.id);
                     // clear model
                     this.model = {
@@ -61,6 +60,12 @@ System.register(['angular2/core', '/app/shared/services/site.service'], function
                         password: '',
                         passcode: ''
                     };
+                };
+                /**
+                 * handles errors
+                 */
+                CreateComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
                 };
                 CreateComponent = __decorate([
                     core_1.Component({

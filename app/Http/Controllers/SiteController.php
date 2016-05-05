@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Respond\Models\Site;
 use \Illuminate\Http\Request;
 
+use App\Respond\Libraries\Publish;
+
 class SiteController extends Controller
 {
 
@@ -17,48 +19,6 @@ class SiteController extends Controller
   { 
   
     return '[Respond] API works!';
-  
-  }
-  
-  /**
-  * Test the auth
-  *
-  * @return Response
-  */
-  public function testAuth(Request $request)
-  {
-  
-    $siteId = $request->input('siteId');
-    $userId = $request->input('userId');
-    
-    return '[Respond] Authorized, siteId='.$siteId.' and userId='.$userId;
-  
-  }
-  
-  /**
-  * Validates the site id
-  *
-  * @return Response
-  */
-  public function validateId(Request $request)
-  {
-  
-    $id = $request->input('id');
-    
-    $is_unique = Site::isIdUnique($id);
-    
-    if($is_unique==false) {
-    
-      // send conflict(409)
-      return response('ID is not unique', 409);
-      
-    }
-    else {
-    
-      // return 200
-      return response('Ok', 200);
-    
-    }
   
   }
 
@@ -88,5 +48,28 @@ class SiteController extends Controller
     }
 
   }
+  
+  /**
+   * Reloads system files for sites (e.g. components)
+   *
+   * @return Response
+   */
+  public function reload(Request $request)
+  {
+
+    // get request data
+    $email = $request->input('auth-email');
+    $siteId = $request->input('auth-id');
+    
+    // get site
+    $site = Site::getById($siteId);
+
+    // publish components
+    Publish::publishComponents($site);
+
+    return response('Ok', 200);
+    
+  }
+  
 
 }

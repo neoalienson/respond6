@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/page.service', '/app/shared/components/pages/add-page/add-page.component', '/app/shared/components/pages/page-settings/page-settings.component', '/app/shared/components/pages/remove-page/remove-page.component', '/app/shared/components/drawer/drawer.component', '/app/shared/pipes/time-ago.pipe'], function(exports_1, context_1) {
+System.register(['@angular/core', 'angular2-jwt/angular2-jwt', '@angular/router-deprecated', '/app/shared/services/page.service', '/app/shared/components/pages/add-page/add-page.component', '/app/shared/components/pages/page-settings/page-settings.component', '/app/shared/components/pages/remove-page/remove-page.component', '/app/shared/components/drawer/drawer.component', '/app/shared/pipes/time-ago.pipe'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, page_service_1, add_page_component_1, page_settings_component_1, remove_page_component_1, drawer_component_1, time_ago_pipe_1;
+    var core_1, angular2_jwt_1, router_deprecated_1, page_service_1, add_page_component_1, page_settings_component_1, remove_page_component_1, drawer_component_1, time_ago_pipe_1;
     var PagesComponent;
     return {
         setters:[
@@ -20,8 +20,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (page_service_1_1) {
                 page_service_1 = page_service_1_1;
@@ -43,8 +43,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             PagesComponent = (function () {
-                function PagesComponent(_pageService) {
+                function PagesComponent(_pageService, _router) {
                     this._pageService = _pageService;
+                    this._router = _router;
                 }
                 /**
                  * Init pages
@@ -66,7 +67,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._pageService.list()
-                        .subscribe(function (data) { _this.pages = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.pages = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets an modal booleans
@@ -124,6 +125,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 PagesComponent.prototype.edit = function (page) {
                     window.location = '/edit?q=' + this.id + '/' + page.url + '.html';
                 };
+                /**
+                 * handles error
+                 */
+                PagesComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
+                };
                 PagesComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-pages',
@@ -132,8 +142,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         directives: [add_page_component_1.AddPageComponent, page_settings_component_1.PageSettingsComponent, remove_page_component_1.RemovePageComponent, drawer_component_1.DrawerComponent],
                         pipes: [time_ago_pipe_1.TimeAgoPipe]
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object])
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    __metadata('design:paramtypes', [(typeof (_a = typeof page_service_1.PageService !== 'undefined' && page_service_1.PageService) === 'function' && _a) || Object, router_deprecated_1.Router])
                 ], PagesComponent);
                 return PagesComponent;
                 var _a;

@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', './login/login.component', './forgot/forgot.component', './reset/reset.component', './create/create.component', './pages/pages.component', './files/files.component', './users/users.component', './menus/menus.component', './forms/forms.component'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/router-deprecated', './login/login.component', './forgot/forgot.component', './reset/reset.component', './create/create.component', './pages/pages.component', './files/files.component', './users/users.component', './menus/menus.component', './forms/forms.component', './settings/settings.component', './submissions/submissions.component', './galleries/galleries.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,15 +10,15 @@ System.register(['angular2/core', 'angular2/router', './login/login.component', 
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, login_component_1, forgot_component_1, reset_component_1, create_component_1, pages_component_1, files_component_1, users_component_1, menus_component_1, forms_component_1;
+    var core_1, router_deprecated_1, login_component_1, forgot_component_1, reset_component_1, create_component_1, pages_component_1, files_component_1, users_component_1, menus_component_1, forms_component_1, settings_component_1, submissions_component_1, galleries_component_1;
     var AppComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (login_component_1_1) {
                 login_component_1 = login_component_1_1;
@@ -46,6 +46,15 @@ System.register(['angular2/core', 'angular2/router', './login/login.component', 
             },
             function (forms_component_1_1) {
                 forms_component_1 = forms_component_1_1;
+            },
+            function (settings_component_1_1) {
+                settings_component_1 = settings_component_1_1;
+            },
+            function (submissions_component_1_1) {
+                submissions_component_1 = submissions_component_1_1;
+            },
+            function (galleries_component_1_1) {
+                galleries_component_1 = galleries_component_1_1;
             }],
         execute: function() {
             AppComponent = (function () {
@@ -54,13 +63,13 @@ System.register(['angular2/core', 'angular2/router', './login/login.component', 
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-app',
-                        directives: [router_1.ROUTER_DIRECTIVES],
+                        directives: [router_deprecated_1.ROUTER_DIRECTIVES],
                         providers: [
-                            router_1.ROUTER_PROVIDERS
+                            router_deprecated_1.ROUTER_PROVIDERS
                         ],
                         templateUrl: './app/app.component.html'
                     }),
-                    router_1.RouteConfig([
+                    router_deprecated_1.RouteConfig([
                         {
                             path: '/create',
                             name: 'Create',
@@ -106,6 +115,21 @@ System.register(['angular2/core', 'angular2/router', './login/login.component', 
                             path: '/forms',
                             name: 'Forms',
                             component: forms_component_1.FormsComponent
+                        },
+                        {
+                            path: '/settings',
+                            name: 'Settings',
+                            component: settings_component_1.SettingsComponent
+                        },
+                        {
+                            path: '/submissions',
+                            name: 'Submissions',
+                            component: submissions_component_1.SubmissionsComponent
+                        },
+                        {
+                            path: '/galleries',
+                            name: 'Galleries',
+                            component: galleries_component_1.GalleriesComponent
                         }
                     ]), 
                     __metadata('design:paramtypes', [])

@@ -1,8 +1,8 @@
-import {Component} from 'angular2/core'
-import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
-import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
-import {MenuService} from '/app/shared/services/menu.service'
-import {MenuItemService} from '/app/shared/services/menu-item.service'
+import {Component} from '@angular/core';
+import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
+import {MenuService} from '/app/shared/services/menu.service';
+import {MenuItemService} from '/app/shared/services/menu-item.service';
 import {AddMenuComponent} from '/app/shared/components/menus/add-menu/add-menu.component';
 import {EditMenuComponent} from '/app/shared/components/menus/edit-menu/edit-menu.component';
 import {RemoveMenuComponent} from '/app/shared/components/menus/remove-menu/remove-menu.component';
@@ -38,7 +38,7 @@ export class MenusComponent {
   drawerVisible: boolean;
   overflowVisible: boolean;
 
-  constructor (private _menuService: MenuService, private _menuItemService: MenuItemService) {}
+  constructor (private _menuService: MenuService, private _menuItemService: MenuItemService, private _router: Router) {}
 
   /**
    * Init
@@ -72,7 +72,7 @@ export class MenusComponent {
     this._menuService.list()
                      .subscribe(
                        data => { this.menus = data; this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
 
   }
@@ -117,7 +117,7 @@ export class MenusComponent {
     this._menuItemService.list(this.selectedMenu.id)
                      .subscribe(
                        data => { this.items = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
 
   }
@@ -263,8 +263,21 @@ export class MenusComponent {
     this._menuItemService.updateOrder(this.selectedMenu.id, this.items)
                      .subscribe(
                        data => { },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
+  }
+
+  /**
+   * handles error
+   */
+  failure(obj) {
+
+    toast.show('failure');
+
+    if(obj.status == 401) {
+      this._router.navigate( ['Login', {id: this.id}] );
+    }
+
   }
 
 

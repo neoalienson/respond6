@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CanActivate} from '@angular/router-deprecated';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
 import {FormFieldService} from '/app/shared/services/form-field.service';
 
@@ -14,7 +14,6 @@ import {FormFieldService} from '/app/shared/services/form-field.service';
 export class RemoveFormFieldComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model;
@@ -50,6 +49,7 @@ export class RemoveFormFieldComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _formFieldService: FormFieldService) {}
 
@@ -81,7 +81,7 @@ export class RemoveFormFieldComponent {
     this._formFieldService.remove(this.form.id, this.index)
                      .subscribe(
                        data => { this.success(); },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }

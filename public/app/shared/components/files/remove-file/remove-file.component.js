@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/file.service', '/app/shared/services/route.service'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/router-deprecated', 'angular2-jwt/angular2-jwt', '/app/shared/services/file.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,33 +10,30 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, angular2_jwt_1, file_service_1, route_service_1;
+    var core_1, router_deprecated_1, angular2_jwt_1, file_service_1;
     var RemoveFileComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
             },
             function (file_service_1_1) {
                 file_service_1 = file_service_1_1;
-            },
-            function (route_service_1_1) {
-                route_service_1 = route_service_1_1;
             }],
         execute: function() {
             RemoveFileComponent = (function () {
-                function RemoveFileComponent(_fileService, _routeService) {
+                function RemoveFileComponent(_fileService) {
                     this._fileService = _fileService;
-                    this._routeService = _routeService;
                     this._visible = false;
                     this.onCancel = new core_1.EventEmitter();
                     this.onUpdate = new core_1.EventEmitter();
+                    this.onError = new core_1.EventEmitter();
                 }
                 Object.defineProperty(RemoveFileComponent.prototype, "visible", {
                     get: function () { return this._visible; },
@@ -73,7 +70,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                 RemoveFileComponent.prototype.submit = function () {
                     var _this = this;
                     this._fileService.remove(this.model.name)
-                        .subscribe(function (data) { _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.onError.emit(error); });
                 };
                 /**
                  * Handles a successful submission
@@ -100,17 +97,21 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], RemoveFileComponent.prototype, "onUpdate", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], RemoveFileComponent.prototype, "onError", void 0);
                 RemoveFileComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-remove-file',
                         templateUrl: './app/shared/components/files/remove-file/remove-file.component.html',
-                        providers: [file_service_1.FileService, route_service_1.RouteService]
+                        providers: [file_service_1.FileService]
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof file_service_1.FileService !== 'undefined' && file_service_1.FileService) === 'function' && _a) || Object, (typeof (_b = typeof route_service_1.RouteService !== 'undefined' && route_service_1.RouteService) === 'function' && _b) || Object])
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    __metadata('design:paramtypes', [(typeof (_a = typeof file_service_1.FileService !== 'undefined' && file_service_1.FileService) === 'function' && _a) || Object])
                 ], RemoveFileComponent);
                 return RemoveFileComponent;
-                var _a, _b;
+                var _a;
             }());
             exports_1("RemoveFileComponent", RemoveFileComponent);
         }

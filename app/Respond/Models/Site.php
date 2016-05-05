@@ -13,18 +13,8 @@ class Site {
 
   public $id;
   public $name;
-  public $logo;
-  public $altLogo;
-  public $icon;
-  public $color;
-  public $theme;
   public $email;
-  public $timeZone;
-  public $language;
-  public $direction;
   public $defaultContent;
-  public $showCart;
-  public $showSearch;
 
   /**
    * Constructs a page from an array of data
@@ -141,9 +131,6 @@ class Site {
     $id = $new_id;
 
     // set defaults
-    $timeZone = 'America/Chicago';
-    $language = env('DEFAULT_LANGUAGE');
-    $direction = env('DEFAULT_DIRECTION');
     $defaultContent = '<h1>{{page.Title}}</h1><p>{{page.Description}}</p>';
 
     $file = app()->basePath().'/resources/themes/'.$theme.'/theme.json';
@@ -158,19 +145,8 @@ class Site {
     $site_arr = array(
       'id' => $id,
       'name' => $name,
-      'logo' => 'sample-logo.png',
-      'altLogo' => 'sample-logo.png',
-      'icon' => '',
-      'color' => '',
-      'theme' => $theme,
       'email' => $email,
-      'timeZone' => $timeZone,
-      'language' => $language,
-      'direction' => $direction,
       'defaultContent' => $defaultContent,
-      'showCart' => true,
-      'showSearch' => true,
-      'users' => array()
     );
 
     // create and save the site
@@ -184,7 +160,7 @@ class Site {
       'firstName' => 'New',
       'lastName' => 'User',
       'role' => 'Admin',
-      'language' => $language,
+      'language' => 'en',
       'photo' => '',
       'token' => ''
     ));
@@ -192,25 +168,16 @@ class Site {
     $user->save($site->id);
 
     // publish theme
-    Publish::publishTheme($site);
-
-    // inject settings
-    Publish::injectSiteSettings($site);
-
-     // publish site
-    Publish::publishThemeMenus($site);
-
-    // publish the forms for the site
-    Publish::publishThemeForms($site);
-
-    // publish default content
-    Publish::publishDefaultContent($site, $user);
+    Publish::publishTheme($theme, $site);
 
     // publish components
     Publish::publishComponents($site);
 
     // publish locales
     Publish::publishLocales($site);
+
+    // inject site settings
+    Publish::injectSiteSettings($site);
 
     // return site information
     return array(

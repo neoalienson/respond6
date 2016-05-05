@@ -133,6 +133,7 @@ class Form {
     $id = $new_id;
 
     // get file
+    $dir = app()->basePath().'/public/sites/'.$siteId.'/data/forms/';
     $file = app()->basePath().'/public/sites/'.$siteId.'/data/forms/'.$new_id.'.json';
 
     $items = array();
@@ -146,6 +147,11 @@ class Form {
         'cssClass' => $cssClass,
         'fields' => array()
       ));
+      
+      // create gallery
+      if(!file_exists($dir)) {
+  			mkdir($dir, 0777, true);	
+  		}
 
       file_put_contents($file, json_encode($form, JSON_PRETTY_PRINT));
 

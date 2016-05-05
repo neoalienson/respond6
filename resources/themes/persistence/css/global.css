@@ -20,7 +20,7 @@ body .container .row {
   left: 0;
   width: 100%;
   height: 600px;
-  background: #ddd url(../themes/persistence/resources/bridge.png) no-repeat center center;
+  background: #ddd url(../resources/bridge.png) no-repeat center center;
   background-size: cover;
   background-attachment: fixed;
   -webkit-filter: blur(2px);

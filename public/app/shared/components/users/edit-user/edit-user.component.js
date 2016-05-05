@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt', '/app/shared/services/user.service'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/router-deprecated', 'angular2-jwt/angular2-jwt', '/app/shared/services/user.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,15 +10,15 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, angular2_jwt_1, user_service_1;
+    var core_1, router_deprecated_1, angular2_jwt_1, user_service_1;
     var EditUserComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
@@ -33,6 +33,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     this._visible = false;
                     this.onCancel = new core_1.EventEmitter();
                     this.onUpdate = new core_1.EventEmitter();
+                    this.onError = new core_1.EventEmitter();
                 }
                 Object.defineProperty(EditUserComponent.prototype, "visible", {
                     get: function () { return this._visible; },
@@ -85,7 +86,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     }
                     // add user
                     this._userService.edit(this.model.email, this.model.firstName, this.model.lastName, this.model.role, this.model.password, this.model.language)
-                        .subscribe(function (data) { _this.success(); }, function (error) { _this.errorMessage = error; _this.error(); });
+                        .subscribe(function (data) { _this.success(); }, function (error) { _this.onError.emit(error); });
                 };
                 /**
                  * Handles a successful edit
@@ -94,13 +95,6 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     toast.show('success');
                     this._visible = false;
                     this.onUpdate.emit(null);
-                };
-                /**
-                 * Handles an error
-                 */
-                EditUserComponent.prototype.error = function () {
-                    console.log('[respond.error] ' + this.errorMessage);
-                    toast.show('failure');
                 };
                 __decorate([
                     core_1.Input(), 
@@ -120,13 +114,17 @@ System.register(['angular2/core', 'angular2/router', 'angular2-jwt/angular2-jwt'
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], EditUserComponent.prototype, "onUpdate", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], EditUserComponent.prototype, "onError", void 0);
                 EditUserComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-edit-user',
                         templateUrl: './app/shared/components/users/edit-user/edit-user.component.html',
                         providers: [user_service_1.UserService]
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object])
                 ], EditUserComponent);
                 return EditUserComponent;

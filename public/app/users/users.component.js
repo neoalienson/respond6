@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/user.service', '/app/shared/components/users/add-user/add-user.component', '/app/shared/components/users/edit-user/edit-user.component', '/app/shared/components/users/remove-user/remove-user.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['@angular/core', 'angular2-jwt/angular2-jwt', '@angular/router-deprecated', '/app/shared/services/user.service', '/app/shared/components/users/add-user/add-user.component', '/app/shared/components/users/edit-user/edit-user.component', '/app/shared/components/users/remove-user/remove-user.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, user_service_1, add_user_component_1, edit_user_component_1, remove_user_component_1, drawer_component_1;
+    var core_1, angular2_jwt_1, router_deprecated_1, user_service_1, add_user_component_1, edit_user_component_1, remove_user_component_1, drawer_component_1;
     var UsersComponent;
     return {
         setters:[
@@ -20,8 +20,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (user_service_1_1) {
                 user_service_1 = user_service_1_1;
@@ -40,8 +40,9 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             UsersComponent = (function () {
-                function UsersComponent(_userService) {
+                function UsersComponent(_userService, _router) {
                     this._userService = _userService;
+                    this._router = _router;
                 }
                 /**
                  * Init
@@ -63,7 +64,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._userService.list()
-                        .subscribe(function (data) { _this.users = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.users = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets an modal booleans
@@ -113,6 +114,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     this.editVisible = true;
                     this.user = user;
                 };
+                /**
+                 * handles error
+                 */
+                UsersComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
+                };
                 UsersComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-users',
@@ -120,8 +130,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         providers: [user_service_1.UserService],
                         directives: [add_user_component_1.AddUserComponent, edit_user_component_1.EditUserComponent, remove_user_component_1.RemoveUserComponent, drawer_component_1.DrawerComponent]
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object])
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    __metadata('design:paramtypes', [(typeof (_a = typeof user_service_1.UserService !== 'undefined' && user_service_1.UserService) === 'function' && _a) || Object, router_deprecated_1.Router])
                 ], UsersComponent);
                 return UsersComponent;
                 var _a;

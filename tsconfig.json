@@ -12,6 +12,8 @@
     "exclude": [
         "node_modules",
         "vendor",
-        "public/node_modules"
+        "public/node_modules",
+        "typings/main",
+        "typings/main.d.ts"
     ]
 }
