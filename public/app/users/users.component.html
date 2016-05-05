@@ -9,7 +9,7 @@
 </menu>
 
 <div id="users-list" class="app-list">
-  <div class="app-list-item" *ngFor="#user of users" (click)="setActive(user)" [class.selected]="user === selectedUser">
+  <div class="app-list-item" *ngFor="let user of users" (click)="setActive(user)" [class.selected]="user === selectedUser">
     <h2><span class="primary">{{ user.firstName }} {{ user.lastName }}</span></h2>
     <small>{{ user.email }}</small>
     <div class="app-list-actions">
@@ -19,10 +19,10 @@
   </div>
 </div>
 
-<respond-add-user [visible]="addVisible" (onCancel)="reset($event)" (onAdd)="list($event)"></respond-add-user>
+<respond-add-user [visible]="addVisible" (onCancel)="reset($event)" (onAdd)="list($event)" (onError)="failure($event)"></respond-add-user>
 
-<respond-edit-user [visible]="editVisible" [user]="user" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-edit-user>
+<respond-edit-user [visible]="editVisible" [user]="user" (onCancel)="reset($event)" (onUpdate)="list($event)" (onError)="failure($event)"></respond-edit-user>
 
-<respond-remove-user [visible]="removeVisible" [user]="user" (onCancel)="reset($event)" (onUpdate)="list($event)"></respond-remove-user>
+<respond-remove-user [visible]="removeVisible" [user]="user" (onCancel)="reset($event)" (onUpdate)="list($event)" (onError)="failure($event)"></respond-remove-user>
 
 <respond-drawer [visible]="drawerVisible" (onHide)="reset($event)"></respond-drawer>

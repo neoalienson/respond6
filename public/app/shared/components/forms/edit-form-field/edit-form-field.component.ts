@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CanActivate} from '@angular/router-deprecated';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
 import {FormFieldService} from '/app/shared/services/form-field.service';
 
@@ -12,8 +12,6 @@ import {FormFieldService} from '/app/shared/services/form-field.service';
 @CanActivate(() => tokenNotExpired())
 
 export class EditFormFieldComponent {
-
-  errorMessage;
 
   // model to store
   model = {
@@ -57,6 +55,7 @@ export class EditFormFieldComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onAdd = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _formFieldService: FormFieldService) {}
 
@@ -93,7 +92,7 @@ export class EditFormFieldComponent {
     this._formFieldService.edit(this.form.id, this.index, this.model.label, this.model.type, this.model.required, this.model.options, this.model.helperText, this.model.placeholder, this.model.cssClass)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -109,16 +108,5 @@ export class EditFormFieldComponent {
     this.onAdd.emit(null);
 
   }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
-
-  }
-
 
 }

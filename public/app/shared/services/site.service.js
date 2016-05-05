@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/http'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/http', 'angular2-jwt/angular2-jwt'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2/http'], function(exports_1, context_
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, http_2;
+    var core_1, http_1, angular2_jwt_1, http_2;
     var SiteService;
     return {
         setters:[
@@ -20,12 +20,18 @@ System.register(['angular2/core', 'angular2/http'], function(exports_1, context_
             function (http_1_1) {
                 http_1 = http_1_1;
                 http_2 = http_1_1;
+            },
+            function (angular2_jwt_1_1) {
+                angular2_jwt_1 = angular2_jwt_1_1;
             }],
         execute: function() {
             SiteService = (function () {
-                function SiteService(http) {
+                function SiteService(http, authHttp, authConfig) {
                     this.http = http;
+                    this.authHttp = authHttp;
+                    this.authConfig = authConfig;
                     this._createUrl = 'api/sites/create';
+                    this._reloadUrl = 'api/sites/reload';
                 }
                 /**
                  * Login to the application
@@ -42,9 +48,17 @@ System.register(['angular2/core', 'angular2/http'], function(exports_1, context_
                     return this.http.post(this._createUrl, body, options)
                         .map(function (res) { return res.json(); });
                 };
+                /**
+                 * Reloads the system files
+                 *
+                 * @return {Observable}
+                 */
+                SiteService.prototype.reload = function () {
+                    return this.authHttp.get(this._reloadUrl);
+                };
                 SiteService = __decorate([
                     core_1.Injectable(), 
-                    __metadata('design:paramtypes', [http_1.Http])
+                    __metadata('design:paramtypes', [http_1.Http, angular2_jwt_1.AuthHttp, angular2_jwt_1.AuthConfig])
                 ], SiteService);
                 return SiteService;
             }());

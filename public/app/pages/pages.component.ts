@@ -1,7 +1,7 @@
-import {Component} from 'angular2/core'
-import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
-import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from 'angular2/router'
-import {PageService} from '/app/shared/services/page.service'
+import {Component} from '@angular/core';
+import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
+import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS, CanActivate} from '@angular/router-deprecated';
+import {PageService} from '/app/shared/services/page.service';
 import {AddPageComponent} from '/app/shared/components/pages/add-page/add-page.component';
 import {PageSettingsComponent} from '/app/shared/components/pages/page-settings/page-settings.component';
 import {RemovePageComponent} from '/app/shared/components/pages/remove-page/remove-page.component';
@@ -30,7 +30,7 @@ export class PagesComponent {
   drawerVisible: boolean;
   settingsVisible: boolean;
 
-  constructor (private _pageService: PageService) {}
+  constructor (private _pageService: PageService, private _router: Router) {}
 
   /**
    * Init pages
@@ -58,7 +58,7 @@ export class PagesComponent {
     this._pageService.list()
                      .subscribe(
                        data => { this.pages = data; },
-                       error =>  this.errorMessage = <any>error
+                       error =>  { this.failure(<any>error); }
                       );
   }
 
@@ -123,6 +123,19 @@ export class PagesComponent {
    */
   edit(page) {
     window.location = '/edit?q=' + this.id + '/' + page.url + '.html';
+  }
+
+  /**
+   * handles error
+   */
+  failure (obj) {
+
+    toast.show('failure');
+
+    if(obj.status == 401) {
+      this._router.navigate( ['Login', {id: this.id}] );
+    }
+
   }
 
 

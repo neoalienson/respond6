@@ -173,14 +173,11 @@ class FileController extends Controller
 
       $arr = Utilities::createThumb($site, $path, $filename);
 
-      // set local URL
-      $url = 	$site->domain;
-
       // create array
       $arr = array(
         'filename' => $filename,
-        'fullUrl' => $url.'/files/'.$filename,
-        'thumbUrl' => $site->domain.'/files/thumbs/'.$filename,
+        'fullUrl' => '/files/'.$filename,
+        'thumbUrl' => '/files/thumbs/'.$filename,
         'extension' => $ext,
         'isImage' => true,
         'width' => $arr['width'],

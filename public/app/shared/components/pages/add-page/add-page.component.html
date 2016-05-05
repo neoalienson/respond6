@@ -8,7 +8,7 @@
     <select id="hashedit-add-page-path"
       [(ngModel)]="model.path"
       ngControl="path">
-      <option *ngFor="#route of routes" [value]="route">{{route}}</option>
+      <option *ngFor="let route of routes" [value]="route">{{route}}</option>
     </select>
 
     <label>URL</label>

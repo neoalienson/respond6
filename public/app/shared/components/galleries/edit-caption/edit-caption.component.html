@@ -1,0 +1,19 @@
+<div class="app-modal" [class.visible]="visible === true">
+
+  <form (ngSubmit)="submit()" #addForm="ngForm">
+
+    <h2>Edit Caption</h2>
+
+    <label>Caption</label>
+    <input id="hashedit-edit-caption" type="text" maxlength="128" placeholder="" required
+      [(ngModel)]="model.caption"
+      ngControl="label">
+
+    <div class="actions">
+      <a (click)="hide()">Cancel</a>
+      <button type="submit">Update</button>
+    </div>
+
+  </form>
+
+</div>

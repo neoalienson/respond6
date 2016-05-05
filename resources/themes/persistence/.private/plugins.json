@@ -1,0 +1,13 @@
+{
+  packages: ['base', 'core'],
+  additional: [
+    {
+      {
+        selector: "[sample-plugin]",
+        title: "Sample Plugin",
+        display: "S",
+        html: "<div sample-plugin><h1>My Sample</h1><p>More Text</p></div>"
+      }
+    }
+  ]
+}

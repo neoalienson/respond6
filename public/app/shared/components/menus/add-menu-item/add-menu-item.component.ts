@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CanActivate} from '@angular/router-deprecated';
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt';
 import {MenuItemService} from '/app/shared/services/menu-item.service';
 import {PageService} from '/app/shared/services/page.service';
@@ -16,7 +16,6 @@ export class AddMenuItemComponent {
 
   menu;
   pages;
-  errorMessage;
 
   // model to store
   model = {
@@ -53,6 +52,7 @@ export class AddMenuItemComponent {
   // outputs
   @Output() onCancel = new EventEmitter<any>();
   @Output() onAdd = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _menuItemService: MenuItemService, private _pageService: PageService) {}
 
@@ -86,7 +86,7 @@ export class AddMenuItemComponent {
     this._menuItemService.add(this.menu.id, this.model.html, this.model.cssClass, this.model.isNested, this.model.url)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -102,16 +102,5 @@ export class AddMenuItemComponent {
     this.onAdd.emit(null);
 
   }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
-
-  }
-
 
 }

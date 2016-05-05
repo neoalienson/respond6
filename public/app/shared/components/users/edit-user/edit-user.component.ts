@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {CanActivate} from 'angular2/router'
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CanActivate} from '@angular/router-deprecated'
 import {tokenNotExpired} from 'angular2-jwt/angular2-jwt'
 import {UserService} from '/app/shared/services/user.service'
 
@@ -14,7 +14,6 @@ import {UserService} from '/app/shared/services/user.service'
 export class EditUserComponent {
 
   routes;
-  errorMessage;
 
   // model to store
   model: {
@@ -60,6 +59,7 @@ export class EditUserComponent {
 
   @Output() onCancel = new EventEmitter<any>();
   @Output() onUpdate = new EventEmitter<any>();
+  @Output() onError = new EventEmitter<any>();
 
   constructor (private _userService: UserService) {}
 
@@ -93,7 +93,7 @@ export class EditUserComponent {
     this._userService.edit(this.model.email, this.model.firstName, this.model.lastName, this.model.role, this.model.password, this.model.language)
                      .subscribe(
                        data => { this.success(); },
-                       error => { this.errorMessage = <any>error; this.error(); }
+                       error =>  { this.onError.emit(<any>error); }
                       );
 
   }
@@ -109,16 +109,5 @@ export class EditUserComponent {
     this.onUpdate.emit(null);
 
   }
-
-  /**
-   * Handles an error
-   */
-  error() {
-
-    console.log('[respond.error] ' + this.errorMessage);
-    toast.show('failure');
-
-  }
-
 
 }

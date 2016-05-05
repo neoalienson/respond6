@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router', '/app/shared/services/form.service', '/app/shared/services/form-field.service', '/app/shared/components/forms/add-form/add-form.component', '/app/shared/components/forms/edit-form/edit-form.component', '/app/shared/components/forms/remove-form/remove-form.component', '/app/shared/components/forms/add-form-field/add-form-field.component', '/app/shared/components/forms/edit-form-field/edit-form-field.component', '/app/shared/components/forms/remove-form-field/remove-form-field.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
+System.register(['@angular/core', 'angular2-jwt/angular2-jwt', '@angular/router-deprecated', '/app/shared/services/form.service', '/app/shared/services/form-field.service', '/app/shared/components/forms/add-form/add-form.component', '/app/shared/components/forms/edit-form/edit-form.component', '/app/shared/components/forms/remove-form/remove-form.component', '/app/shared/components/forms/add-form-field/add-form-field.component', '/app/shared/components/forms/edit-form-field/edit-form-field.component', '/app/shared/components/forms/remove-form-field/remove-form-field.component', '/app/shared/components/drawer/drawer.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, angular2_jwt_1, router_1, form_service_1, form_field_service_1, add_form_component_1, edit_form_component_1, remove_form_component_1, add_form_field_component_1, edit_form_field_component_1, remove_form_field_component_1, drawer_component_1;
+    var core_1, angular2_jwt_1, router_deprecated_1, form_service_1, form_field_service_1, add_form_component_1, edit_form_component_1, remove_form_component_1, add_form_field_component_1, edit_form_field_component_1, remove_form_field_component_1, drawer_component_1;
     var FormsComponent;
     return {
         setters:[
@@ -20,8 +20,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             function (angular2_jwt_1_1) {
                 angular2_jwt_1 = angular2_jwt_1_1;
             },
-            function (router_1_1) {
-                router_1 = router_1_1;
+            function (router_deprecated_1_1) {
+                router_deprecated_1 = router_deprecated_1_1;
             },
             function (form_service_1_1) {
                 form_service_1 = form_service_1_1;
@@ -52,9 +52,10 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
             }],
         execute: function() {
             FormsComponent = (function () {
-                function FormsComponent(_formService, _formFieldService) {
+                function FormsComponent(_formService, _formFieldService, _router) {
                     this._formService = _formService;
                     this._formFieldService = _formFieldService;
+                    this._router = _router;
                 }
                 /**
                  * Init
@@ -81,7 +82,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     var _this = this;
                     this.reset();
                     this._formService.list()
-                        .subscribe(function (data) { _this.forms = data; _this.success(); }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.forms = data; _this.success(); }, function (error) { _this.failure(error); });
                 };
                 /**
                  * handles the list successfully updated
@@ -113,7 +114,7 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                 FormsComponent.prototype.listFields = function () {
                     var _this = this;
                     this._formFieldService.list(this.selectedForm.id)
-                        .subscribe(function (data) { _this.fields = data; }, function (error) { return _this.errorMessage = error; });
+                        .subscribe(function (data) { _this.fields = data; }, function (error) { _this.failure(error); });
                 };
                 /**
                  * Resets screen
@@ -233,6 +234,15 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                     this._formFieldService.updateOrder(this.selectedForm.id, this.fields)
                         .subscribe(function (data) { }, function (error) { return _this.errorMessage = error; });
                 };
+                /**
+                 * handles errors
+                 */
+                FormsComponent.prototype.failure = function (obj) {
+                    toast.show('failure');
+                    if (obj.status == 401) {
+                        this._router.navigate(['Login', { id: this.id }]);
+                    }
+                };
                 FormsComponent = __decorate([
                     core_1.Component({
                         selector: 'respond-forms',
@@ -240,8 +250,8 @@ System.register(['angular2/core', 'angular2-jwt/angular2-jwt', 'angular2/router'
                         providers: [form_service_1.FormService, form_field_service_1.FormFieldService],
                         directives: [add_form_component_1.AddFormComponent, edit_form_component_1.EditFormComponent, remove_form_component_1.RemoveFormComponent, add_form_field_component_1.AddFormFieldComponent, edit_form_field_component_1.EditFormFieldComponent, remove_form_field_component_1.RemoveFormFieldComponent, drawer_component_1.DrawerComponent]
                     }),
-                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof form_service_1.FormService !== 'undefined' && form_service_1.FormService) === 'function' && _a) || Object, (typeof (_b = typeof form_field_service_1.FormFieldService !== 'undefined' && form_field_service_1.FormFieldService) === 'function' && _b) || Object])
+                    router_deprecated_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    __metadata('design:paramtypes', [(typeof (_a = typeof form_service_1.FormService !== 'undefined' && form_service_1.FormService) === 'function' && _a) || Object, (typeof (_b = typeof form_field_service_1.FormFieldService !== 'undefined' && form_field_service_1.FormFieldService) === 'function' && _b) || Object, router_deprecated_1.Router])
                 ], FormsComponent);
                 return FormsComponent;
                 var _a, _b;

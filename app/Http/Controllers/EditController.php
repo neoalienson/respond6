@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use \Illuminate\Http\Request;
+use App\Respond\Libraries\Components;
 
 class EditController extends Controller
 {
@@ -42,6 +43,9 @@ class EditController extends Controller
               // get defaults
               $sortable = '.col, .column';
               $editable = ['[role="main"]'];
+
+              // cleanup components that run at the server (e.g. form, menu)
+              Components::preProcess($doc);
 
               // TODO try to load public/sites/site-name/hashedit-config.json
 

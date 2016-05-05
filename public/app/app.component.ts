@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from 'angular2/router';
+import {Component} from '@angular/core';
+import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from '@angular/router-deprecated';
 import {LoginComponent} from './login/login.component';
 import {ForgotComponent} from './forgot/forgot.component';
 import {ResetComponent} from './reset/reset.component';
@@ -9,6 +9,9 @@ import {FilesComponent} from './files/files.component';
 import {UsersComponent} from './users/users.component';
 import {MenusComponent} from './menus/menus.component';
 import {FormsComponent} from './forms/forms.component';
+import {SettingsComponent} from './settings/settings.component';
+import {SubmissionsComponent} from './submissions/submissions.component';
+import {GalleriesComponent} from './galleries/galleries.component';
 
 @Component({
     selector: 'respond-app',
@@ -65,6 +68,21 @@ import {FormsComponent} from './forms/forms.component';
     path: '/forms',
     name: 'Forms',
     component: FormsComponent
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: SettingsComponent
+  },
+  {
+    path: '/submissions',
+    name: 'Submissions',
+    component: SubmissionsComponent
+  },
+  {
+    path: '/galleries',
+    name: 'Galleries',
+    component: GalleriesComponent
   }
 ])
 

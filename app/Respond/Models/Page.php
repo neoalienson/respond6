@@ -177,6 +177,11 @@ class Page {
       $name = str_replace('/', '.', $page->url);
       $fragment = $dest . '/fragments/page/' . $name . '.html';
 
+      // make fragments dir
+      if(!file_exists($dest . '/fragments/page/')) {
+  			mkdir($dest . '/fragments/page/', 0777, true);
+  		}
+
       // update template
       file_put_contents($fragment, $main_content);
 
@@ -222,7 +227,7 @@ class Page {
   /**
    * Removes a page
    *
-   * @param {id} $id 
+   * @param {id} $id
    * @return Response
    */
   public function remove($id){
@@ -420,7 +425,8 @@ class Page {
       // list files
       $files = Utilities::ListFiles($dir, $site->id,
               array('html'),
-              array('components/',
+              array('component',
+                    'components/',
                     'css/',
                     'data/',
                     'files/',
@@ -511,9 +517,10 @@ class Page {
               'lastModifiedDate' => $timestamp
           );
 
-
-          // push array
-          array_push($arr, $data);
+          // push to array
+          if(substr($url, 0, strlen('.default')) !== '.default') {
+            array_push($arr, $data);
+          }
 
       }
 
