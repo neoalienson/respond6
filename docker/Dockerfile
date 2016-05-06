@@ -39,7 +39,7 @@ composer install
 RUN sed  "s/var\\/www/var\\/www\\/public/" /etc/apache2/sites-enabled/000-default.conf
 RUN a2enmod rewrite
 
-RUN service apache2 start
+RUN service apache2 restart
 
 EXPOSE 80
 
