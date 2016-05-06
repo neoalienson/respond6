@@ -1,8 +1,8 @@
 FROM coderstephen/php7:latest
 
 # install nodejs 6
-RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-RUN apt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && \
+apt-get install -y nodejs
 
 # Rebuild PHP for the required mbstring
 RUN cd /usr/local/src/php/ && \
