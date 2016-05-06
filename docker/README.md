@@ -1,8 +1,8 @@
 # Respond CMS Docker Image
 
 ## The docker image
-You can either pull the docker image from DockerHub or build it yourself from
-DockerFile locally
+You can have the image by either pulling from DockerHub or building it yourself from
+DockerFile locally. Update port forwarding in `-p 80:80` if required. 
 
 ### Building from DockerFile
 
