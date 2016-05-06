@@ -39,3 +39,4 @@ RUN a2enmod rewrite
 EXPOSE 80
 VOLUME ["/var/www/public/sites", "/var/www/resources"]
 
+CMD ["/usr/bin/supervisord"]
