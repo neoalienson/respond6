@@ -1,5 +1,8 @@
 FROM coderstephen/php7:latest
 
+# Silence debconf's endless prattle
+ENV DEBIAN_FRONTEND noninteractive
+
 # install nodejs 6
 RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && \
 apt-get install -y nodejs
