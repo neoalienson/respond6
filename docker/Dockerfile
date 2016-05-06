@@ -37,5 +37,5 @@ RUN sed  "s/var\\/www/var\\/www\\/public/" /etc/apache2/sites-enabled/000-defaul
 RUN a2enmod rewrite
 
 EXPOSE 80
+VOLUME ["/var/www/public/sites", "/var/www/resources"]
 
-CMD /usr/sbin/apache2 -DFOREGROUND
