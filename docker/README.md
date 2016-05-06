@@ -14,6 +14,7 @@ $ docker build -t respond .
 
 ```bash
 $ docker pull neoalienson/respond6
+$ docker tag neoalienson/respond6 respond
 ```
 
 ## Starting a container from the docker image
@@ -21,7 +22,7 @@ After the image is ready, you can start a container from the docker image.
  
 ### Run without data volumes
 ```bash
-$ docker run --name=respond6 -p 80:80 respond6
+$ docker run --name=respond -p 80:80 respond
 ```
 
 ### Run with data volume
@@ -33,9 +34,9 @@ Please check [data volumes](https://docs.docker.com/engine/userguide/containers/
 $ DATA_DIR=${HOME}/respond-data
 $ mkdir -p ${DATA_DIR}/sites 
 $ mkdir -p ${DATA_DIR}/resources 
-$ docker run --name=respond6 -p 80:80 \
+$ docker run --name=respond -p 80:80 \
 -v ${DATA_DIR}/sites:/var/www/public/sites:Z \
 -v ${DATA_DIR}/resources:/var/www/resources/:Z \
-respond6
+respond
 ```
 
