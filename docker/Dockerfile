@@ -38,4 +38,4 @@ RUN a2enmod rewrite
 
 EXPOSE 80
 
-CMD ["apache2ctl start"]
+CMD ["/usr/sbin/apache2ctl start"]
