@@ -32,9 +32,10 @@ RUN cd /var/www/ && \
 npm install && \
 composer install
 
-# update apache config
+# update apache config and mod
 RUN sed  "s/var\\/www/var\\/www\\/public/" /etc/apache2/sites-enabled/000-default.conf
 RUN a2enmod rewrite
-RUN apache2ctl restart
 
 EXPOSE 80
+
+CMD ["apache2ctl start"]
