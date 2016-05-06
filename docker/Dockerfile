@@ -7,8 +7,7 @@ RUN apt-get install -y nodejs
 # mbstring is required
 RUN cd /usr/local/src/php/
 RUN ./configure --prefix=/usr/local/php70 --with-config-file-path=/usr/local/php70 \
---with-config-file-scan-dir=/usr/local/php70/conf.d \
---with-apxs2=/usr/bin/apxs2 --with-libdir=/lib/x86_64-linux-gnu \
+--with-config-file-scan-dir=/usr/local/php70/conf.d --with-libdir=/lib/x86_64-linux-gnu \
 --enable-fpm --without-pear --with-openssl --with-curl \
 --enable-mbstring --enable-zip
 
@@ -35,9 +34,9 @@ RUN composer install
 
 
 # update apache config
-sed  "s/var\\/www/var\\/www\\/public/" /etc/apache2/sites-enabled/000-default.conf
-
-apache2ctl restart
+RUN sed  "s/var\\/www/var\\/www\\/public/" /etc/apache2/sites-enabled/000-default.conf
+RUN a2enmod rewrite
+RUN apache2ctl restart
 
 EXPOSE 80
 
