@@ -38,5 +38,3 @@ RUN a2enmod rewrite
 RUN apache2ctl restart
 
 EXPOSE 80
-
-CMD ["/run.sh"]
