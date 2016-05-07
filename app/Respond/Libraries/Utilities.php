@@ -528,13 +528,13 @@ class Utilities
             $attr
         );
     }
-    
+
     /**
      *  Creates a GUID
      *
      */
     public static function getGUID() {
-    
+
       if (function_exists('com_create_guid')) {
           return com_create_guid();
       }
@@ -551,6 +551,20 @@ class Utilities
               .chr(125);// "}"
           return $uuid;
       }
+    }
+
+    /**
+     *  Replaces text between two strings, #ref: http://bit.ly/1TvAviJ
+     *
+     */
+    public static function replaceBetween($str, $needle_start, $needle_end, $replacement) {
+        $pos = strpos($str, $needle_start);
+        $start = $pos === false ? 0 : $pos + strlen($needle_start);
+
+        $pos = strpos($str, $needle_end, $start);
+        $end = $pos === false ? strlen($str) : $pos;
+
+        return substr_replace($str, $replacement, $start, $end - $start);
     }
 
 

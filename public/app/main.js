@@ -21,6 +21,7 @@ System.register(['@angular/platform-browser-dynamic', '@angular/core', '@angular
             },
             function (_1) {}],
         execute: function() {
+            // enableProdMode();
             platform_browser_dynamic_1.bootstrap(app_component_1.AppComponent, [
                 http_1.HTTP_PROVIDERS,
                 core_1.provide(angular2_jwt_1.AuthConfig, { useValue: new angular2_jwt_1.AuthConfig({

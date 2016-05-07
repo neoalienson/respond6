@@ -356,10 +356,7 @@ class Page {
 
     }
 
-
-
   }
-
 
   /**
    * Retrieves page data based on a url
@@ -425,7 +422,7 @@ class Page {
       // list files
       $files = Utilities::ListFiles($dir, $site->id,
               array('html'),
-              array('component',
+              array('snippets/',
                     'components/',
                     'css/',
                     'data/',

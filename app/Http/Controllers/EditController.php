@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use \Illuminate\Http\Request;
-use App\Respond\Libraries\Components;
+
+use App\Respond\Libraries\Utilities;
+
+use App\Respond\Models\Form;
+use App\Respond\Models\Gallery;
 
 class EditController extends Controller
 {
@@ -44,9 +48,6 @@ class EditController extends Controller
               $sortable = '.col, .column';
               $editable = ['[role="main"]'];
 
-              // cleanup components that run at the server (e.g. form, menu)
-              Components::preProcess($doc);
-
               // TODO try to load public/sites/site-name/hashedit-config.json
 
               // setup sortable
@@ -72,12 +73,112 @@ class EditController extends Controller
                 $doc[$value]->attr('hashedit-selector', $value);
               }
 
+              // get plugins from packages
+              $plugins_file = app()->basePath().'/resources/sites/'.$site.'/plugins.json';
+              $plugins_script = '';
+
+              if(file_exists($plugins_file)) {
+
+                $json = json_decode(file_get_contents($plugins_file), true);
+
+                $packages = $json['packages'];
+
+                // add packages to $plugins_script
+                foreach($packages as $package) {
+
+                  $js_file = app()->basePath().'/resources/plugins/'.$package.'.js';
+
+                  if(file_exists($js_file)) {
+
+                    $plugins_script .= file_get_contents($js_file);
+
+                  }
+
+                }
+
+              }
+              
+              // get custom plugins
+              $js_file = app()->basePath().'/resources/sites/'.$site.'/custom.plugins.js';
+
+              if(file_exists($js_file)) {
+
+                if(file_exists($js_file)) {
+                  $plugins_script .= file_get_contents($js_file);
+                }
+
+              }
+
+              // inject forms into script
+              if( strpos($plugins_script, 'respond.forms') !== false ) {
+
+                $arr = Form::listAll($site);
+                $options = array();
+
+                // get id
+                foreach($arr as $item) {
+                  array_push($options, array(
+                    'text' => $item['name'],
+                    'value' => $item['id']
+                  ));
+                }
+
+                // inject forms into script
+                $plugins_script = str_replace("['respond.forms']", json_encode($options), $plugins_script);
+              }
+
+              // inject galleries into script
+              if( strpos($plugins_script, 'respond.galleries') !== false ) {
+
+                $arr = Gallery::listAll($site);
+                $options = array();
+
+                // get id
+                foreach($arr as $item) {
+                  array_push($options, array(
+                    'text' => $item['name'],
+                    'value' => $item['id']
+                  ));
+                }
+
+                // inject galleries into script
+                $plugins_script = str_replace("['respond.galleries']", json_encode($options), $plugins_script);
+              }
+
+              // inject routes into script
+              if( strpos($plugins_script, 'respond.routes') !== false ) {
+
+                $dir = $file = app()->basePath().'/public/sites/'.$site;
+                $arr = array_merge(array('/'), Utilities::listRoutes($dir, $site));
+
+                $options = array();
+
+                // get id
+                foreach($arr as $item) {
+                  array_push($options, array(
+                    'text' => $item,
+                    'value' => $item
+                  ));
+                }
+
+                // inject galleries into script
+                $plugins_script = str_replace("['respond.routes']", json_encode($options), $plugins_script);
+              }
+              
+              // setup references
+              $els = $doc['[hashedit-exclude]'];
+            
+              // add references to each element
+              foreach($els as $el) {            
+                pq($el)->remove();
+              }
+              
               // setup references
               $els = $doc['body *'];
               $i = 1;
 
               // add references to each element
-              foreach($els as $el) {
+              foreach($els as $el) {            
                 pq($el)->attr('data-ref', $i);
                 $i++;
               }
@@ -91,9 +192,8 @@ class EditController extends Controller
                             '<link type="text/css" href="/node_modules/dropzone/dist/min/dropzone.min.css" rel="stylesheet">'.
                             '<script src="/node_modules/sortablejs/Sortable.min.js"></script>'.
                             '<script src="/dev/hashedit/js/hashedit.js"></script>'.
-                            '<script src="/dev/respond-components/js/setup.js"></script>'.
-                            '<script></script>'.
-                            '<script>hashedit.menu = hashedit.menu.concat(respond.plugins); console.log(hashedit.menu); hashedit.setup();</script>';
+                            '<script>'.$plugins_script.'</script>'.
+                            '<script>hashedit.setup();</script>';
 
               }
               else {
@@ -105,8 +205,8 @@ class EditController extends Controller
                             '<link type="text/css" href="/node_modules/dropzone/dist/min/dropzone.min.css" rel="stylesheet">'.
                             '<script src="/node_modules/sortablejs/Sortable.min.js"></script>'.
                             '<script src="/node_modules/hashedit/js/hashedit.js"></script>'.
-                            '<script src="/node_modules/respond-components/js/setup.js"></script>'.
-                            '<script>hashedit.menu = hashedit.menu.concat(respond.plugins); hashedit.setup();</script>';
+                            '<script>'.$plugins_script.'</script>'.
+                            '<script>hashedit.setup();</script>';
 
               }
 

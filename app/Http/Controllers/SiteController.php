@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Respond\Models\Site;
+use App\Respond\Models\User;
+
 use \Illuminate\Http\Request;
 
 use App\Respond\Libraries\Publish;
@@ -16,10 +18,10 @@ class SiteController extends Controller
   * @return Response
   */
   public function test()
-  { 
-  
+  {
+
     return '[Respond] API works!';
-  
+
   }
 
   /**
@@ -36,11 +38,11 @@ class SiteController extends Controller
     $email = $request->json()->get('email');
     $password = $request->json()->get('password');
     $passcode = $request->json()->get('passcode');
-    
+
     if($passcode == env('PASSCODE')) {
-      
+
       $arr = Site::create($name, $theme, $email, $password);
-      
+
       return response()->json($arr);
     }
     else {
@@ -48,7 +50,7 @@ class SiteController extends Controller
     }
 
   }
-  
+
   /**
    * Reloads system files for sites (e.g. components)
    *
@@ -60,16 +62,20 @@ class SiteController extends Controller
     // get request data
     $email = $request->input('auth-email');
     $siteId = $request->input('auth-id');
-    
+
     // get site
     $site = Site::getById($siteId);
 
+    // get user
+    $user = User::getByEmail($email, $siteId);
+
     // publish components
     Publish::publishComponents($site);
+    Publish::publishSnippets($user, $site);
 
     return response('Ok', 200);
-    
+
   }
-  
+
 
 }
