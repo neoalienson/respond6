@@ -1,12 +1,12 @@
 # Respond CMS
 
-Respond 6 is a multi-site, flat-file CMS powered by Angular 2 and Lumen.  Sites built using Respond are front-end framework agnostic and use Polymer web components for advanced functionality.
+Respond 6 is a multi-site, flat-file CMS powered by Angular 2 and Lumen.  Sites built using Respond are static, front-end framework agnostic and use Polymer web components for advanced functionality.
 
 ### Status
 Version: 6.0.0
-Status: Pre-Beta (experienced devs only, not all pieces functional)
+Status: Pre-Beta
 
-### Prerequisitie (note: during development only)
+### Prerequisites
 1. npm install -g typings gulp
 2. npm install gulp
 3. install composer https://getcomposer.org/
@@ -14,28 +14,42 @@ Status: Pre-Beta (experienced devs only, not all pieces functional)
 ### Installation
 1. mkdir respond
 2. git clone https://github.com/madoublet/respond6 .
-3. npm install (note: during development only)
-4. gulp (note: during development only)
+3. npm install
+4. gulp
 5. cp .env.example .env
-6. update .env
+6. nano .env
 7. mkdir public/sites
 8. chown -R www-data public/sites
 9. mkdir resources/sites
 10. chown -R www-data resources/sites
-11. composer update (note: during development only)
+11. composer update
 
-### Implementation differences from Respond 5.x
-- No Database, YAML used to store site, menu, user data. Site structure (e.g. paths and page types) inferred from site.
-- YAML for theme description, combined into one file
-- No built-in LESS interpretation for themes (can be added by developer using build tools, e.g. gulp)
-- No index.html in theme, all html in layouts/*.html
-- No "magic" replacement for <body> in themes, use &lt;respond-content url="{{page.Url}}" render="publish"&gt;&lt;/respond-content&gt;
-- The role="main" attribute used to describe the primary content in a document
-- Page edits applied directly to html document, fragments used for XHR requests 
-- The render=publish applied at site creation, page add.  Thematic elements not re-published on edit
-- No render=publish support within editable content
+### Design Goals
+- Modern application stack: Angular 2 + Laravel
+- Static sites powered by Polymer
+- No database
+- Easy installation, no configuration
+- Easy to write plugins
+- Sites as themes
+- Intuitive editing experience
+- Powerful developer features to promote efficiency
 
-### Notes
+### Consumer features
+- Fast, easy-to-use app
+- Desktop focused, mobile ready
+- Intuitive editing experience
+- Quick access to common customizations (forms, galleries, etc.)
+
+### Developer features
+- Easy to write plugins
+- Sites as themes
+- Snippets to promote code re-use
+- Static sites lower deployment costs
+- Easy backups and migrations due to flat-file structure
+- Popular frameworks make it easier to build on the CMS
+
+
+### Developing for Respond
 
 ##### Install dependency via NPM, copy to public using gulp
 npm install
