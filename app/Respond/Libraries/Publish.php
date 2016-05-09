@@ -74,18 +74,78 @@ class Publish
         Utilities::copyDirectory($src, $dest);
 
         // paths to build file
-        $src = $dir . '/respond-components/respond-build.html';
-        $dest = app()->basePath() . '/public/sites/' . $site->id . '/components/respond-build.html';
+        $src = $dir . '/respond-components/build';
+        $dest = app()->basePath() . '/public/sites/' . $site->id . '/components/';
 
-        // make directory
-        $dir = app()->basePath() . '/public/sites/' . $site->id . '/components/';
+        // copy the directory
+        Utilities::copyDirectory($src, $dest);
 
-        if (!file_exists($dir)) {
-            mkdir($dir, 0777, true);
+    }
+
+    /**
+     * Pubishes snippets
+     *
+     * @param {Site} $site
+     */
+    public static function publishSnippets($user, $site)
+    {
+        // get snippets
+        $dir = app()->basePath().'/public/sites/'.$site->id.'/snippets/';
+        $exts = array('html');
+
+        $files = Utilities::listFiles($dir, $site->id, $exts);
+        $snippets = array();
+
+        foreach($files as $file) {
+
+          $path = app()->basePath().'/public/sites/'.$site->id.'/'.$file;
+
+          if(file_exists($path)) {
+
+            $html = file_get_contents($path);
+            $id = basename($path);
+            $id = str_replace('.html', '', $id);
+
+            // push snippet to array
+            array_push($snippets, array(
+              'id' => $id,
+              'html' => $html
+              ));
+
+          }
+
         }
 
-        // copy build file
-        copy($src, $dest);
+        // get all pages
+        $arr = Page::listAll($user, $site);
+
+        foreach($arr as $item) {
+
+          // get page
+          $page = new Page($item);
+
+          $location = app()->basePath().'/public/sites/'.$site->id.'/'.$page->url.'.html';
+
+          // get layout html
+          $html = file_get_contents($location);
+
+          foreach($snippets as $snippet) {
+
+            $start = '<!-- snippet:'.$snippet['id'].' -->';
+            $end = '<!-- /snippet:'.$snippet['id'].' -->';
+
+            // check for start and end
+            if(strpos($html, $start) !== FALSE && strpos($html, $end) !== FALSE) {
+              $html = Utilities::replaceBetween($html, $start, $end, $snippet['html']);
+            }
+
+          }
+
+          // put html back
+          file_put_contents($location, $html);
+
+        }
+
 
     }
 
@@ -138,8 +198,6 @@ class Publish
      * @param {User} $user
      */
     public static function republishComponents($site, $user) {
-
-      echo('republish components');
 
       $arr = Page::listAll($user, $site);
 
