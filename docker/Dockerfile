@@ -1,5 +1,9 @@
 FROM coderstephen/php7:latest
 
+# install supervisord
+RUN apt-get install -y supervisor && \
+mkdir -p /var/log/supervisor
+
 # install nodejs 6
 RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 RUN apt-get install -y nodejs
@@ -37,6 +41,10 @@ RUN sed  "s/var\\/www/var\\/www\\/public/" /etc/apache2/sites-enabled/000-defaul
 RUN a2enmod rewrite
 RUN apache2ctl restart
 
+VOLUME /var/www
+
 EXPOSE 80
 
-CMD ["/run.sh"]
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]
