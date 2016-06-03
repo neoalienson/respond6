@@ -1,3 +1,5 @@
+[![](https://imagelayers.io/badge/neoalienson/respond6:latest.svg)](https://imagelayers.io/?images=neoalienson/respond6:latest 'Get your own badge on imagelayers.io')
+
 # Respond CMS Docker Image
 
 ## The docker image
@@ -14,6 +16,7 @@ $ docker build -t respond .
 
 ```bash
 $ docker pull neoalienson/respond6
+$ docker tag neoalienson/respond6 respond
 ```
 
 ## Starting a container from the docker image
