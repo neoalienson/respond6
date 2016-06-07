@@ -37,7 +37,7 @@ npm install && \
 composer install
 
 # update apache config and mod
-RUN sed  "s/var\\/www/var\\/www\\/public/" /etc/apache2/sites-enabled/000-default.conf
+RUN sed -i "s/var\\/www/var\\/www\\/public/" /etc/apache2/sites-enabled/000-default.conf
 RUN a2enmod rewrite
 
 VOLUME /var/www
@@ -47,4 +47,4 @@ VOLUME ["/var/www/public/sites", "/var/www/resources"]
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
